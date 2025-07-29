@@ -4,20 +4,22 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import MyTag from "../components/Tag";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Chip from "@mui/material/Chip"; // Needed for renderTags
 import { v4 as uuidv4 } from "uuid";
+import { tags as initialTagsData } from "../data/note"; // Importing the tags data
+import { notes as initialNotesData } from "../data/note"; // Importing the notes data
+import type { Note, Tag } from "../types/index"; // Importing the Note type
 
-//import { useId } from "react";
-
-// a Note Json: {id: number,
-//                title: string,
-//                tags: string array ["dev", "food", "react"],
-//                lastEdit: Datetime,
-//                content: string,
-//                archive: boolean}
-
+// interface Note {
+//   id: string;
+//   title: string;
+//   tags: string[];
+//   lastEdit: string;
+//   content: string;
+//   archive: boolean;
+// }
 //***Start Note Header ***/
 interface NoteHeaderProps {
   handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -25,7 +27,7 @@ interface NoteHeaderProps {
   handleTitleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
   options: readonly string[];
-  title: string;
+  title: string | null;
   time: string;
   selectedTags: string[];
   onTagsChange: (newTags: string[]) => void;
@@ -79,6 +81,7 @@ const NoteHeader = ({
             slotProps={{
               input: {
                 disableUnderline: false,
+                readOnly: true, // Make the time field read-only
               },
             }}
             value={time}
@@ -136,31 +139,40 @@ const NoteAction = ({ handleSave, handleCancel }: NoteActionProps) => {
 //***End Note Action ***/
 
 interface NoteDetailProps {
-  initialTitleInput: string | null;
+  selectedNote: Note | null;
 }
-const NoteDetail = ({ initialTitleInput }: NoteDetailProps) => {
+const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
   const [noteId, setNoteId] = useState(() => uuidv4());
 
-  const [titleInput, setTitleInput] = useState(initialTitleInput);
+  const [titleInput, setTitleInput] = useState("");
 
   const [tagInput, setTagInput] = useState("");
-  const [availableTags, setAvailableTags] = useState<readonly string[]>([
-    "dev",
-    "react",
-    "test",
-  ]);
+  const [availableTags, setAvailableTags] =
+    useState<readonly Tag[]>(initialTagsData);
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const [time, setTime] = useState("");
+  const [noteInput, setNoteInput] = useState("");
+  const [notes, setNewNotes] = useState<Note[]>(initialNotesData);
 
   const handleSubmitNewTage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!tagInput.trim()) return;
-    if (!availableTags.includes(tagInput.trim())) {
-      setAvailableTags((prevTags) => [...prevTags, tagInput.trim()]);
+    const trimmedTag = tagInput.trim();
+    if (!trimmedTag) return;
+
+    // FIX: Check if the tag (by label) already exists in availableTags
+    const tagExists = availableTags.some((tag) => tag.label === trimmedTag);
+
+    if (!tagExists) {
+      const newTag: Tag = { id: uuidv4(), label: trimmedTag }; // Create a new Tag object
+      setAvailableTags((prevTags) => [...prevTags, newTag]); // Correctly add the Tag object
     }
-    console.log("availableTags", availableTags);
+
+    // Add the new tag's label to selectedTags if not already there
+    if (!selectedTags.includes(trimmedTag)) {
+      setSelectedTags((prevSelected) => [...prevSelected, trimmedTag]);
+    }
     setTagInput("");
   };
 
@@ -187,8 +199,25 @@ const NoteDetail = ({ initialTitleInput }: NoteDetailProps) => {
     console.log("titleInput", titleInput);
   };
 
+  useEffect(() => {
+    // If a note is selected, populate the fields with its data
+    if (selectedNote) {
+      setNoteId(selectedNote.id);
+      setTitleInput(selectedNote.title);
+      setSelectedTags(selectedNote.tags);
+      setTime(selectedNote.lastEdit);
+      setNoteInput(selectedNote.content);
+    } else {
+      //if no note is selected, reset the fields
+      setNoteId(uuidv4());
+      setTitleInput("");
+      setSelectedTags([]);
+      setTime(new Date().toLocaleString());
+      setNoteInput("");
+    }
+  }, [selectedNote]);
+
   // ** Start Note Body Function
-  const [noteInput, setNoteInput] = useState("");
 
   const handleNoteOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNoteInput(e.target.value);
@@ -196,21 +225,51 @@ const NoteDetail = ({ initialTitleInput }: NoteDetailProps) => {
   };
 
   const handleSave = () => {
-    if (!titleInput.trim() || !noteInput.trim()) return;
+    if (!titleInput.trim() || !noteInput.trim()) {
+      alert("Title and content cannot be empty");
+      return;
+    }
     const noteData = {
       id: noteId,
       title: titleInput,
       tags: selectedTags,
       lastEdit: new Date().toLocaleString(),
       content: noteInput,
-      archive: false,
+      archive: selectedNote ? selectedNote.archive : false,
     };
 
     console.log("newNote", noteData);
     setTime(new Date().toLocaleString());
+    //for save note
+    // To do : add save new note functionality
+
+    // after save note to clear the form for new note creation
+
+    setNoteId(uuidv4()); // Reset noteId for new note creation
+    setTitleInput(""); // Reset title input for new note creation
+    setSelectedTags([]); // Reset selected tags for new note creation
+    setNoteInput(""); // Reset note input for new note creation
+    setTagInput(""); // Reset tag input for new note creation
+    setTime(new Date().toLocaleString()); // Reset time for new note creation
+    alert("Note saved successfully!");
   };
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    console.log("Cancel clicked");
+    if (selectedNote) {
+      setTitleInput(selectedNote.title);
+      setSelectedTags(selectedNote.tags || []);
+      setTime(selectedNote.lastEdit);
+      setNoteInput(selectedNote.content);
+    } else {
+      // Reset to initial state for new note
+      setNoteId(uuidv4());
+      setTitleInput("");
+      setSelectedTags([]);
+      setTime(new Date().toLocaleString());
+      setNoteInput("");
+    }
+  };
 
   return (
     <Box
@@ -240,7 +299,7 @@ const NoteDetail = ({ initialTitleInput }: NoteDetailProps) => {
         {/* <Grid item xs={12} md={12} lg={12}> */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <NoteHeader
-            options={availableTags}
+            options={availableTags.map((tag) => tag.label)}
             handleSubmit={handleSubmitNewTage}
             value={tagInput}
             handleTagOnChange={handleTagOnChange}

@@ -15,30 +15,9 @@ import MyNoteContentCard from "../components/MyNoteContentCard";
 import AddIcon from "@mui/icons-material/Add";
 import NoteDetail from "../pages/NoteDetailPage";
 import { useNavigate } from "react-router-dom";
-
-const tags = [
-  { id: 1, label: "dev" },
-  { id: 2, label: "travel" },
-  { id: 3, label: "study" },
-  { id: 4, label: "food" },
-];
-
-const notes = [
-  {
-    id: 1,
-    title: "The First Note",
-    tags: ["dev", "food", "code"],
-    lastedit: "26 Jun 2025",
-    archive: false,
-  },
-  {
-    id: 2,
-    title: "The second Note",
-    tags: ["food", "location", "test"],
-    lastedit: "26 March 2025",
-    archive: true,
-  },
-];
+import { useState } from "react";
+import type { Note } from "../types/index";
+import { notes, tags } from "../data/note"; // Importing the notes data
 
 // New Component for the Left Sidebar
 const NoteListSidebar = () => {
@@ -60,6 +39,7 @@ const NoteListSidebar = () => {
           endIcon={<KeyboardArrowRightOutlinedIcon />}
           variant="outlined"
           onClick={showAllNote}
+          fullWidth={true}
         />
       </div>
       <div>
@@ -70,31 +50,36 @@ const NoteListSidebar = () => {
           endIcon={<KeyboardArrowRightOutlinedIcon />}
           variant="outlined"
           onClick={showArchivedNote}
+          fullWidth={true}
         />
       </div>
-      <div>
-        Tag
-        <div>
+      <Box>
+        <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
+        <Grid container spacing={1}>
           {tags.map((tag) => (
-            <MyCustomButton
-              title={tag.label}
-              disabled={false}
-              startIcon={<LocalOfferOutlinedIcon />}
-              variant="text"
-            />
+            <Grid key={tag.id}>
+              <MyCustomButton
+                title={tag.label}
+                disabled={false}
+                startIcon={<LocalOfferOutlinedIcon />}
+                variant="outlined"
+                fullWidth={true}
+              />
+            </Grid>
           ))}
-        </div>
-      </div>
+        </Grid>
+      </Box>
     </div>
   );
 };
 
-// New Component for the Middle Content Area
 interface NoteListContentProps {
   handleNewNote: () => void;
   handleArchive: () => void;
   handleDelete: () => void;
-  handleNoteClick: () => void;
+  handleNoteClick: (noteId: string) => void;
+  notes: Note[];
+  selectedNote: Note | null;
 }
 
 const NoteListContent = ({
@@ -102,6 +87,8 @@ const NoteListContent = ({
   handleArchive,
   handleDelete,
   handleNoteClick,
+  notes,
+  selectedNote,
 }: NoteListContentProps) => {
   return (
     <Grid container spacing={0}>
@@ -117,6 +104,7 @@ const NoteListContent = ({
           startIcon={<AddIcon />}
           size="large"
           onClick={handleNewNote}
+          fullWidth={true}
         />
 
         {notes.map((note) => {
@@ -124,11 +112,12 @@ const NoteListContent = ({
             console.log("note.archive", note.archive);
             return (
               <MyNoteContentCard
+                key={note.id}
                 id={note.id}
                 title={note.title}
                 tags={note.tags}
-                lastedit={note.lastedit}
-                handleNoteClick={handleNoteClick}
+                lastedit={note.lastEdit}
+                onCardClick={() => handleNoteClick(note.id)}
               />
             );
           }
@@ -136,8 +125,7 @@ const NoteListContent = ({
         })}
       </Grid>
       <Grid size={{ xs: 12, md: 7, lg: 7 }}>
-        {/* <MyNoteCard title="first note" tags="rev" note="123" /> */}
-        <NoteDetail initialTitleInput="" />
+        <NoteDetail selectedNote={selectedNote} />
       </Grid>
 
       <Grid size={{ xs: 12, md: 2, lg: 2 }}>
@@ -158,20 +146,40 @@ const NoteListContent = ({
 
 const NoteList = () => {
   const navigate = useNavigate();
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const handleNewNote = () => {
+    setSelectedNote(null); // Clear selected note for new note creation
     navigate("/detail");
   };
 
   const handleArchive = () => {
-    // change notearchive status according to note id
+    if (selectedNote) {
+      alert(`Arrchiving note with ID: ${selectedNote.id}`);
+    } else {
+      alert("Please select a note to archive");
+    }
   };
 
   const handleDelete = () => {
-    // delete whole note according to the note id
+    if (selectedNote) {
+      alert(`Seleting note with ID: ${selectedNote.id}`);
+    } else {
+      alert("Please select a note to delete");
+    }
   };
 
-  const handleNoteClick = () => {
-    //click this will load the note
+  const handleNoteClick = (noteId: string) => {
+    console.log("handleNoteClick", noteId);
+    const clickedNote = notes.find((note) => note.id === noteId);
+    console.log("clickedNote", clickedNote);
+
+    if (clickedNote) {
+      setSelectedNote(clickedNote);
+      // navigate(`/detail/${noteId}`);
+    } else {
+      console.warn(`Note with ID ${noteId} not found in the list.`);
+      setSelectedNote(null); // Clear selection if note not found
+    }
   };
 
   return (
@@ -187,6 +195,8 @@ const NoteList = () => {
             handleArchive={handleArchive}
             handleDelete={handleDelete}
             handleNoteClick={handleNoteClick}
+            notes={notes}
+            selectedNote={selectedNote}
           />
         </Grid>
       </Grid>

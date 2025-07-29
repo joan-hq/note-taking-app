@@ -9,25 +9,26 @@ import Chip from "@mui/material/Chip";
 import MyTag from "../components/Tag";
 
 interface MyNoteContentCardProps {
-  id: number;
+  id: string;
   title: string;
   tags?: string[];
   lastedit: string;
-  handleNoteClick: () => void;
+  onCardClick: () => void;
 }
 
 const MyNoteContentCard = ({
+  id,
   title,
   tags,
   lastedit,
-  handleNoteClick,
+  onCardClick,
 }: MyNoteContentCardProps) => {
   // const handleTagButtonClick = (buttonTitle: string) => {
   //   alert(`You clicked the "${buttonTitle}" button!`);
   // };
   return (
     <view>
-      <CardActionArea onClick={handleNoteClick}>
+      <CardActionArea onClick={onCardClick} id={id}>
         <Card variant="outlined">
           <CardHeader title={title} />
           <CardContent>
