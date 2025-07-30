@@ -32,4 +32,28 @@ export const notes: Note[] = [
     content: "This is the content of the Third note.",
     archive: false,
   },
+  {
+    id: "4",
+    title: "The fourth Note",
+    tags: ["food", "location", "test"],
+    lastEdit: "12 March 2025",
+    content: "This is the content of the fourth note.",
+    archive: false,
+  },
+  {
+    id: "5",
+    title: "The fifth Note",
+    tags: ["food", "location", "test"],
+    lastEdit: "14 March 2025",
+    content: "This is the content of the fifth note.",
+    archive: false,
+  },
+  {
+    id: "6",
+    title: "The sixth Note",
+    tags: ["food", "location", "test"],
+    lastEdit: "15 March 2025",
+    content: "This is the content of the sixth note.",
+    archive: false,
+  },
 ];

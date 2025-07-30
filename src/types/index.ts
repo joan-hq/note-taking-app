@@ -11,3 +11,5 @@ export interface Note {
   content: string;
   archive: boolean; // Assuming it's always present, not optional, based on usage
 }
+
+export type FilterType = "all" | "active" | "archived";

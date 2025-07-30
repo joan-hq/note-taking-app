@@ -14,21 +14,28 @@ import MyNoteContentCard from "../components/MyNoteContentCard";
 //import MyNoteCard from "../components/NoteCard";
 import AddIcon from "@mui/icons-material/Add";
 import NoteDetail from "../pages/NoteDetailPage";
-import { useNavigate } from "react-router-dom";
+
 import { useState } from "react";
-import type { Note } from "../types/index";
-import { notes, tags } from "../data/note"; // Importing the notes data
+import type { Note, FilterType } from "../types/index";
+import {
+  notes as initialNotesData,
+  tags as initialTagsData,
+} from "../data/note"; // Importing the notes data
 
 // New Component for the Left Sidebar
-const NoteListSidebar = () => {
-  const showAllNote = () => {
-    window.alert("showAllNote");
-  };
 
-  const showArchivedNote = () => {
-    window.alert("showArchivedNote");
-  };
-
+interface NoteListSidebarProps {
+  handleShowAllNote: () => void;
+  handleShowArchivedNote: () => void;
+  handleShowActiveNote: () => void;
+  currentPageFilter: "all" | "active" | "archived";
+}
+const NoteListSidebar = ({
+  handleShowAllNote,
+  handleShowArchivedNote,
+  handleShowActiveNote,
+  currentPageFilter,
+}: NoteListSidebarProps) => {
   return (
     <div>
       <div>
@@ -37,8 +44,19 @@ const NoteListSidebar = () => {
           disabled={false}
           startIcon={<HomeOutlinedIcon />}
           endIcon={<KeyboardArrowRightOutlinedIcon />}
-          variant="outlined"
-          onClick={showAllNote}
+          variant={currentPageFilter === "all" ? "contained" : "outlined"}
+          onClick={handleShowAllNote}
+          fullWidth={true}
+        />
+      </div>
+      <div>
+        <MyCustomButton
+          title="Active Notes"
+          disabled={false}
+          startIcon={<HomeOutlinedIcon />}
+          endIcon={<KeyboardArrowRightOutlinedIcon />}
+          variant={currentPageFilter === "active" ? "contained" : "outlined"}
+          onClick={handleShowActiveNote}
           fullWidth={true}
         />
       </div>
@@ -48,15 +66,15 @@ const NoteListSidebar = () => {
           disabled={false}
           startIcon={<ArchiveOutlinedIcon />}
           endIcon={<KeyboardArrowRightOutlinedIcon />}
-          variant="outlined"
-          onClick={showArchivedNote}
+          variant={currentPageFilter === "archived" ? "contained" : "outlined"}
+          onClick={handleShowArchivedNote}
           fullWidth={true}
         />
       </div>
       <Box>
         <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
         <Grid container spacing={1}>
-          {tags.map((tag) => (
+          {initialTagsData.map((tag) => (
             <Grid key={tag.id}>
               <MyCustomButton
                 title={tag.label}
@@ -80,6 +98,8 @@ interface NoteListContentProps {
   handleNoteClick: (noteId: string) => void;
   notes: Note[];
   selectedNote: Note | null;
+  handleNoteSave: (noteData: Note) => void;
+  filterType: "all" | "active" | "archived";
 }
 
 const NoteListContent = ({
@@ -87,14 +107,35 @@ const NoteListContent = ({
   handleArchive,
   handleDelete,
   handleNoteClick,
+  handleNoteSave,
   notes,
   selectedNote,
+  filterType,
 }: NoteListContentProps) => {
+  const filteredNotes = notes.filter((note) => {
+    if (filterType === "all") {
+      return true; // Show all notes
+    } else if (filterType === "active") {
+      return !note.archive; // Show non-archived notes
+    } else if (filterType === "archived") {
+      return note.archive; // Show only archived notes
+    }
+    return true; // Fallback, though ideally all cases are covered
+  });
+
   return (
     <Grid container spacing={0}>
       <Grid size={{ xs: 12, md: 12, lg: 12 }}>
         {/* Use item prop for Grid children */}
-        <MySearchAppBarProps title="All Notes" />
+        <MySearchAppBarProps
+          title={
+            filterType === "all"
+              ? "All Notes"
+              : filterType === "archived"
+              ? "Archived Notes"
+              : "Active Notes"
+          }
+        />
       </Grid>
 
       <Grid size={{ xs: 12, md: 3, lg: 3 }}>
@@ -107,25 +148,33 @@ const NoteListContent = ({
           fullWidth={true}
         />
 
-        {notes.map((note) => {
-          if (!note.archive) {
-            console.log("note.archive", note.archive);
-            return (
-              <MyNoteContentCard
-                key={note.id}
-                id={note.id}
-                title={note.title}
-                tags={note.tags}
-                lastedit={note.lastEdit}
-                onCardClick={() => handleNoteClick(note.id)}
-              />
-            );
-          }
-          return null;
-        })}
+        {filteredNotes.length === 0 ? (
+          <Box
+            sx={{ mt: 2, p: 2, textAlign: "center", color: "text.secondary" }}
+          >
+            {filterType === "archived"
+              ? "NO archived Note yet."
+              : "NO Note display yet"}
+          </Box>
+        ) : (
+          filteredNotes.map((note) => (
+            <MyNoteContentCard
+              key={note.id}
+              id={note.id}
+              title={note.title}
+              tags={note.tags}
+              lastedit={note.lastEdit}
+              onCardClick={() => handleNoteClick(note.id)}
+            />
+          ))
+        )}
       </Grid>
       <Grid size={{ xs: 12, md: 7, lg: 7 }}>
-        <NoteDetail selectedNote={selectedNote} />
+        <NoteDetail
+          selectedNote={selectedNote}
+          onNoteSave={handleNoteSave}
+          key={selectedNote ? selectedNote.id : "new-note"}
+        />
       </Grid>
 
       <Grid size={{ xs: 12, md: 2, lg: 2 }}>
@@ -145,16 +194,41 @@ const NoteListContent = ({
 };
 
 const NoteList = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [notes, setNotes] = useState<Note[]>(initialNotesData);
+  const [filterType, setFilterType] = useState<FilterType>("all");
+
+  //const [tags, setTags] = useState(initialTagsData); // ToDo: ahndle tags state
+
+  const handleShowAllNote = () => {
+    setFilterType("all");
+    setSelectedNote(null);
+  };
+
+  const handleShowArchivedNote = () => {
+    setFilterType("archived");
+    setSelectedNote(null);
+  };
+
+  const handleShowActiveNote = () => {
+    setFilterType("active");
+    setSelectedNote(null);
+  };
+
   const handleNewNote = () => {
     setSelectedNote(null); // Clear selected note for new note creation
-    navigate("/detail");
   };
 
   const handleArchive = () => {
     if (selectedNote) {
-      alert(`Arrchiving note with ID: ${selectedNote.id}`);
+      alert(`Arrchiving note: ${selectedNote.title}`);
+
+      selectedNote.archive = true;
+
+      // update the archving note status in the note data
+      setSelectedNote(selectedNote);
+      setSelectedNote(null);
     } else {
       alert("Please select a note to archive");
     }
@@ -162,7 +236,8 @@ const NoteList = () => {
 
   const handleDelete = () => {
     if (selectedNote) {
-      alert(`Seleting note with ID: ${selectedNote.id}`);
+      alert(`Deleting note: ${selectedNote.title}`);
+      setNotes(notes.filter((note) => note.id !== selectedNote.id));
     } else {
       alert("Please select a note to delete");
     }
@@ -175,18 +250,48 @@ const NoteList = () => {
 
     if (clickedNote) {
       setSelectedNote(clickedNote);
-      // navigate(`/detail/${noteId}`);
     } else {
       console.warn(`Note with ID ${noteId} not found in the list.`);
       setSelectedNote(null); // Clear selection if note not found
     }
   };
 
+  const handleNoteSave = (noteData: Note) => {
+    setNotes((prevNotes) => {
+      const existingNoteIndex = prevNotes.findIndex(
+        (note) => note.id === noteData.id
+      );
+
+      let updatedNotesArray: Note[];
+      if (existingNoteIndex !== -1) {
+        // Update existing note
+        updatedNotesArray = [...prevNotes];
+        updatedNotesArray[existingNoteIndex] = noteData;
+        console.log("updatedNotesArray", updatedNotesArray);
+      } else {
+        // Add new note
+        updatedNotesArray = [...prevNotes, noteData];
+      }
+
+      return updatedNotesArray;
+    });
+
+    setSelectedNote(null); // Update selected note after saving
+    console.log("Note saved:", noteData);
+
+    alert("Note saved successfully!");
+  };
+
   return (
     <Box>
       <Grid container spacing={0}>
         <Grid size={{ xs: 12, md: 2, lg: 2 }}>
-          <NoteListSidebar />
+          <NoteListSidebar
+            handleShowAllNote={handleShowAllNote}
+            handleShowArchivedNote={handleShowArchivedNote}
+            handleShowActiveNote={handleShowActiveNote}
+            currentPageFilter={filterType}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, md: 10, lg: 10 }}>
@@ -197,6 +302,8 @@ const NoteList = () => {
             handleNoteClick={handleNoteClick}
             notes={notes}
             selectedNote={selectedNote}
+            handleNoteSave={handleNoteSave}
+            filterType={filterType}
           />
         </Grid>
       </Grid>

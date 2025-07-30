@@ -16,7 +16,7 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 interface MyTagProps {
   options?: readonly string[];
   autoComplete?: boolean;
-  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (event: React.KeyboardEvent<HTMLFormElement>) => void;
   value: string;
   handleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedTags: string[];
@@ -63,10 +63,13 @@ const MyTag = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  variant="standard"
-                  placeholder="Type to add tags"
+                  variant="outlined"
+                  placeholder="Add Tags"
                   value={value} //<-- actural text input value
                   onChange={handleOnChange}
+                  //slotProps={{ input: { disableUnderline: false } }}
+                  fullWidth
+                  margin="normal"
                 />
               )}
             />

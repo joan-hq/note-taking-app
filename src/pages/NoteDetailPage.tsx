@@ -9,20 +9,11 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Chip from "@mui/material/Chip"; // Needed for renderTags
 import { v4 as uuidv4 } from "uuid";
 import { tags as initialTagsData } from "../data/note"; // Importing the tags data
-import { notes as initialNotesData } from "../data/note"; // Importing the notes data
 import type { Note, Tag } from "../types/index"; // Importing the Note type
 
-// interface Note {
-//   id: string;
-//   title: string;
-//   tags: string[];
-//   lastEdit: string;
-//   content: string;
-//   archive: boolean;
-// }
 //***Start Note Header ***/
 interface NoteHeaderProps {
-  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit?: (event: React.KeyboardEvent<HTMLFormElement>) => void;
   handleTagOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleTitleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
@@ -140,8 +131,9 @@ const NoteAction = ({ handleSave, handleCancel }: NoteActionProps) => {
 
 interface NoteDetailProps {
   selectedNote: Note | null;
+  onNoteSave: (note: Note) => void;
 }
-const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
+const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
   const [noteId, setNoteId] = useState(() => uuidv4());
 
   const [titleInput, setTitleInput] = useState("");
@@ -154,10 +146,9 @@ const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
 
   const [time, setTime] = useState("");
   const [noteInput, setNoteInput] = useState("");
-  const [notes, setNewNotes] = useState<Note[]>(initialNotesData);
 
-  const handleSubmitNewTage = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmitNewTage = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const trimmedTag = tagInput.trim();
     if (!trimmedTag) return;
 
@@ -186,12 +177,20 @@ const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
     console.log("selectdtags", selectedTags);
 
     //update availableTags if a new tag was truly added
-    const newlyAddedTags = newTags.filter(
-      (tag) => !availableTags.includes(tag)
-    );
+    const currentAvailableTags = new Set(availableTags.map((tag) => tag.label));
+    const newlyAddedTags: Tag[] = [];
+
+    newTags.forEach((tag) => {
+      if (!currentAvailableTags.has(tag)) {
+        newlyAddedTags.push({ id: uuidv4(), label: tagInput });
+      }
+    });
+
     if (newlyAddedTags.length > 0) {
       setAvailableTags((prevTags) => [...prevTags, ...newlyAddedTags]);
     }
+
+    console.log("available tags", availableTags);
   };
 
   const handleTitleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,9 +203,22 @@ const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
     if (selectedNote) {
       setNoteId(selectedNote.id);
       setTitleInput(selectedNote.title);
-      setSelectedTags(selectedNote.tags);
+      setSelectedTags(selectedNote.tags || []);
       setTime(selectedNote.lastEdit);
       setNoteInput(selectedNote.content);
+
+      const existingTags = new Set(availableTags.map((tag) => tag.label));
+      const newTagsAdded: Tag[] = [];
+
+      selectedNote.tags?.forEach((tag) => {
+        if (!existingTags.has(tag.trim())) {
+          newTagsAdded.push({ id: uuidv4(), label: tag });
+        }
+      });
+
+      if (newTagsAdded.length > 0) {
+        setAvailableTags((prevTags) => [...prevTags, ...newTagsAdded]);
+      }
     } else {
       //if no note is selected, reset the fields
       setNoteId(uuidv4());
@@ -215,7 +227,7 @@ const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
       setTime(new Date().toLocaleString());
       setNoteInput("");
     }
-  }, [selectedNote]);
+  }, [selectedNote, availableTags]);
 
   // ** Start Note Body Function
 
@@ -237,21 +249,10 @@ const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
       content: noteInput,
       archive: selectedNote ? selectedNote.archive : false,
     };
+    setTime(noteData.lastEdit);
 
-    console.log("newNote", noteData);
-    setTime(new Date().toLocaleString());
     //for save note
-    // To do : add save new note functionality
-
-    // after save note to clear the form for new note creation
-
-    setNoteId(uuidv4()); // Reset noteId for new note creation
-    setTitleInput(""); // Reset title input for new note creation
-    setSelectedTags([]); // Reset selected tags for new note creation
-    setNoteInput(""); // Reset note input for new note creation
-    setTagInput(""); // Reset tag input for new note creation
-    setTime(new Date().toLocaleString()); // Reset time for new note creation
-    alert("Note saved successfully!");
+    onNoteSave(noteData);
   };
 
   const handleCancel = () => {
