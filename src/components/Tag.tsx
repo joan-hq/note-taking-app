@@ -14,9 +14,9 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 // const tags = ["dev", "react", "text"];
 
 interface MyTagProps {
-  options?: readonly string[];
-  autoComplete?: boolean;
-  handleSubmit: (event: React.KeyboardEvent<HTMLFormElement>) => void;
+  options?: string[];
+
+  //handleSubmit: (event: React.KeyboardEvent<HTMLFormElement>) => void;
   value: string;
   handleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedTags: string[];
@@ -25,10 +25,8 @@ interface MyTagProps {
 
 const MyTag = ({
   options = [],
-  handleSubmit,
   value,
   handleOnChange,
-  autoComplete,
   selectedTags = [],
   onTagsChange,
 }: MyTagProps) => {
@@ -37,45 +35,96 @@ const MyTag = ({
       component="section"
       sx={{ display: "flex", alignItems: "center", gap: 1 }}
     >
-      <form onSubmit={handleSubmit}>
-        <FormControl variant="standard" fullWidth>
-          <Stack sx={{ display: "row", alignItems: "centerß" }}>
-            <MyChip
-              label="tag"
-              variant="outlined"
-              icon={<LocalOfferOutlinedIcon />}
-            />
-            <Autocomplete
-              autoComplete={autoComplete}
-              multiple
-              size="medium"
-              options={options}
-              freeSolo
-              value={selectedTags as string[]}
-              onChange={(event, newTags) => {
-                onTagsChange(newTags as string[]);
-              }}
-              renderValue={(tagValue, getTagProps) =>
-                tagValue.map((option, index) => (
-                  <Chip label={option} {...getTagProps({ index })} />
-                ))
+      {/* <form onSubmit={handleSubmit}> */}
+      <FormControl variant="standard" fullWidth>
+        <Stack sx={{ display: "row", alignItems: "centerß" }}>
+          <MyChip
+            label="tag"
+            variant="outlined"
+            icon={<LocalOfferOutlinedIcon />}
+          />
+          <Autocomplete
+            multiple
+            size="medium"
+            options={options}
+            freeSolo
+            value={selectedTags as string[]}
+            inputValue={value}
+            onInputChange={(event, newInputValue, reason) => {
+              if (reason === "input") {
+                if (handleOnChange) {
+                  handleOnChange({
+                    target: { value: newInputValue },
+                  } as React.ChangeEvent<HTMLInputElement>);
+                }
               }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Add Tags"
-                  value={value} //<-- actural text input value
-                  onChange={handleOnChange}
-                  //slotProps={{ input: { disableUnderline: false } }}
-                  fullWidth
-                  margin="normal"
-                />
-              )}
-            />
-          </Stack>
-        </FormControl>
-      </form>
+            }}
+            onChange={(event, newTags, reason) => {
+              if (
+                reason === "createOption" &&
+                value.trim() !== "" &&
+                !newTags.includes(value.trim())
+              ) {
+                onTagsChange([...newTags, value.trim()]);
+              } else if (reason !== "createOption") {
+                onTagsChange(newTags as string[]);
+              }
+
+              //clear the input value after a tag is added/selected
+
+              if (reason === "createOption" || reason === "selectOption") {
+                if (handleOnChange) {
+                  handleOnChange({
+                    target: { value: "" },
+                  } as React.ChangeEvent<HTMLInputElement>);
+                }
+              }
+              // onTagsChange(newTags as string[]);
+            }}
+            renderValue={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip label={option} {...getTagProps({ index })} />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Add Tags"
+                margin="normal"
+                inputProps={{
+                  ...params.inputProps,
+                  // Important: use `event.key` for reliable key detection
+                  onKeyDown: (event) => {
+                    const typedValue = params.inputProps.value; // Get the current value from inputProps
+                    if (
+                      event.key === "Enter" &&
+                      typeof typedValue === "string" &&
+                      typedValue.trim() !== ""
+                    ) {
+                      event.preventDefault(); // Prevent default form submission
+
+                      const trimmedTag = typedValue.trim();
+                      // Only add if it's not already in selectedTags to prevent duplicates
+                      if (!selectedTags.includes(trimmedTag)) {
+                        onTagsChange([...selectedTags, trimmedTag]);
+                      }
+
+                      // Clear the input field after adding the tag
+                      if (handleOnChange) {
+                        handleOnChange({
+                          target: { value: "" },
+                        } as React.ChangeEvent<HTMLInputElement>);
+                      }
+                    }
+                  },
+                }}
+              />
+            )}
+          />
+        </Stack>
+      </FormControl>
+      {/* </form> */}
     </Box>
   );
 };

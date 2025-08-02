@@ -1,7 +1,7 @@
 //import { useState } from "react";
 //import "./App.css";
-import NoteList from "./pages/NoteListPage";
-import NoteDetail from "./pages/NoteDetailPage";
+import NoteList from "./pages/NoteListPage/NoteList";
+import NoteDetail from "./pages/NoteDetailPage/NoteDetail";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 

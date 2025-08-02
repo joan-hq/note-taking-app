@@ -14,7 +14,7 @@ export const notes: Note[] = [
     tags: ["dev", "food", "code"],
     lastEdit: "26 Jun 2025",
     content: "This is the content of the first note.",
-    archive: false,
+    archive: true,
   },
   {
     id: "2",
@@ -30,7 +30,7 @@ export const notes: Note[] = [
     tags: ["food", "location", "test"],
     lastEdit: "26 March 2025",
     content: "This is the content of the Third note.",
-    archive: false,
+    archive: true,
   },
   {
     id: "4",
@@ -38,7 +38,7 @@ export const notes: Note[] = [
     tags: ["food", "location", "test"],
     lastEdit: "12 March 2025",
     content: "This is the content of the fourth note.",
-    archive: false,
+    archive: true,
   },
   {
     id: "5",
@@ -46,7 +46,7 @@ export const notes: Note[] = [
     tags: ["food", "location", "test"],
     lastEdit: "14 March 2025",
     content: "This is the content of the fifth note.",
-    archive: false,
+    archive: true,
   },
   {
     id: "6",
@@ -54,6 +54,6 @@ export const notes: Note[] = [
     tags: ["food", "location", "test"],
     lastEdit: "15 March 2025",
     content: "This is the content of the sixth note.",
-    archive: false,
+    archive: true,
   },
 ];

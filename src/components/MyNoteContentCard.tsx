@@ -3,16 +3,15 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
 import MyCustomButton from "../components/Button";
-import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
-
-import Chip from "@mui/material/Chip";
-import MyTag from "../components/Tag";
+import ArchiveIcon from "@mui/icons-material/Archive";
 
 interface MyNoteContentCardProps {
   id: string;
   title: string;
   tags?: string[];
   lastedit: string;
+  noteStatus: boolean;
+
   onCardClick: () => void;
 }
 
@@ -21,15 +20,21 @@ const MyNoteContentCard = ({
   title,
   tags,
   lastedit,
+  noteStatus,
   onCardClick,
 }: MyNoteContentCardProps) => {
-  // const handleTagButtonClick = (buttonTitle: string) => {
-  //   alert(`You clicked the "${buttonTitle}" button!`);
-  // };
   return (
     <view>
       <CardActionArea onClick={onCardClick} id={id}>
         <Card variant="outlined">
+          {noteStatus ? (
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <ArchiveIcon color="disabled" fontSize="small" />
+            </div>
+          ) : (
+            ""
+          )}
+
           <CardHeader title={title} />
           <CardContent>
             {tags && tags.length > 0 ? (
