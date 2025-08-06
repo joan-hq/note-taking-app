@@ -8,41 +8,24 @@ import { useNoteForm } from "../../hooks/useNoteFrom";
 
 interface NoteDetailProps {
   selectedNote: Note | null;
-  onNoteSave: (note: Note) => void;
 }
-const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
+const NoteDetail = ({ selectedNote }: NoteDetailProps) => {
   const {
     noteId,
     titleInput,
-    //tagInput,
-
+    tagInput,
     availableTags,
-    //selectedTags,
+    selectedTags,
     time,
     noteInput,
-
+    handleSubmitNewTage,
+    handleTagOnChange,
+    handleSelectedTagsChange,
     handleTitleOnChange,
     handleNoteOnChange,
     handleSave,
     handleCancel,
-    //****start tag params and function
-    addTagDialogs,
-    newTagValue,
-    handleTagSelectionOnChange,
-    handleAddTagDialogsOpen,
-    handleAddTagDialogsClose,
-    handleNewTagOnChange,
-    handleNewTagSave,
-    //****end tag params and function
-
-    //***start ErrorPopover */
-    customPopoverOpen,
-    popoverMessage,
-    popoverAnchorEl,
-    popoverType,
-    handlePopoverClose,
-    //***end ErrorPopover */
-  } = useNoteForm(selectedNote, onNoteSave);
+  } = useNoteForm(selectedNote);
 
   return (
     <Box
@@ -72,28 +55,15 @@ const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
         {/* <Grid item xs={12} md={12} lg={12}> */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <NoteHeader
-            options={availableTags}
-            value={titleInput}
+            options={availableTags.map((tag) => tag.label)}
+            handleSubmit={handleSubmitNewTage}
+            value={tagInput}
+            handleTagOnChange={handleTagOnChange}
             handleTitleOnChange={handleTitleOnChange}
             title={titleInput}
             time={time}
-            addTagDialogs={addTagDialogs}
-            newTagValue={newTagValue}
-            handleTagSelectionOnChange={handleTagSelectionOnChange}
-            handleAddTagDialogsOpen={handleAddTagDialogsOpen}
-            handleAddTagDialogsClose={handleAddTagDialogsClose}
-            handleNewTagOnChange={handleNewTagOnChange}
-            handleNewTagSave={handleNewTagSave}
-            //start ErrorPopover
-            customPopoverOpen={customPopoverOpen}
-            popoverMessage={popoverMessage}
-            popoverAnchorEl={popoverAnchorEl}
-            popoverType={popoverType}
-            handlePopoverClose={handlePopoverClose}
-            //End ErrorPopover
-
-            //selectedTags={selectedTags}
-            //onTagsChange={handleSelectedTagsChange}
+            selectedTags={selectedTags}
+            onTagsChange={handleSelectedTagsChange}
           />
         </Grid>
 

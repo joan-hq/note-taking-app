@@ -2,29 +2,64 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
-import MyTag from "../../components/Tag";
+//import MyTag from "../../components/Tag";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
+import Tags from "../../components/Tags";
+import type { AutocompleteChangeReason } from "@mui/material/useAutocomplete";
+import type { Tag, PopoverType } from "../../types/index";
+
 interface NoteHeaderProps {
-  handleSubmit?: (event: React.KeyboardEvent<HTMLFormElement>) => void;
-  handleTagOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  options: Tag[];
+  addTagDialogs: boolean;
+  newTagValue: string;
+  handleTagSelectionOnChange: (
+    event: React.SyntheticEvent,
+    value: Tag[],
+    reason: AutocompleteChangeReason
+  ) => void;
+  handleAddTagDialogsOpen: () => void;
+  handleAddTagDialogsClose: () => void;
+  handleNewTagOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNewTagSave: (event: React.FormEvent<HTMLFormElement>) => void;
+  //**** end tag params and functions
+
+  //***start ErrorPopover */
+  customPopoverOpen: boolean;
+  popoverMessage: string;
+  popoverAnchorEl: HTMLElement | null;
+  popoverType: PopoverType;
+  handlePopoverClose: () => void;
+  //***End ErrorPopover */
+
   handleTitleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
-  options: string[];
   title: string | null;
   time: string;
-  selectedTags: string[];
-  onTagsChange: (newTags: string[]) => void;
+  // selectedTags: string[];
+  // onTagsChange: (newTags: string[]) => void;
 }
 const NoteHeader = ({
-  value,
   options,
-  handleTagOnChange,
+  addTagDialogs,
+  newTagValue,
+  handleTagSelectionOnChange,
+  handleAddTagDialogsOpen,
+  handleAddTagDialogsClose,
+  handleNewTagSave,
+  handleNewTagOnChange,
+
+  // start error popover
+  customPopoverOpen,
+  popoverMessage,
+  popoverAnchorEl,
+  popoverType,
+  handlePopoverClose,
+  //***end ErrorPopover */
+
   handleTitleOnChange,
   title,
   time,
-  selectedTags,
-  onTagsChange,
 }: NoteHeaderProps) => {
   return (
     <Box>
@@ -43,15 +78,32 @@ const NoteHeader = ({
             value={title}
             onChange={handleTitleOnChange}
           />
-          <MyTag
+          {/* <MyTag
             options={options}
             value={value}
             handleOnChange={handleTagOnChange}
             selectedTags={selectedTags}
             onTagsChange={onTagsChange}
+          /> */}
+          <Tags
+            options={options}
+            addTagDialogs={addTagDialogs}
+            newTagValue={newTagValue}
+            handleTagSelectionOnChange={handleTagSelectionOnChange}
+            handleAddTagDialogsOpen={handleAddTagDialogsOpen}
+            handleAddTagDialogsClose={handleAddTagDialogsClose}
+            handleNewTagSave={handleNewTagSave}
+            handleNewTagOnChange={handleNewTagOnChange}
+            customPopoverOpen={customPopoverOpen}
+            popoverMessage={popoverMessage}
+            popoverAnchorEl={popoverAnchorEl}
+            popoverType={popoverType}
+            handlePopoverClose={handlePopoverClose}
           />
         </Grid>
-
+        {/* <Grid size={{ xs: 12, md: 12, lg: 12 }}>
+          <Tags options={tagsData} />
+        </Grid> */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <Chip
             label="Last Edit"

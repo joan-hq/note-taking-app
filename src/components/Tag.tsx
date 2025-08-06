@@ -7,16 +7,9 @@ import Stack from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import MyChip from "../components/Chip";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
-// import Input from "@mui/material/Input";
-// import type { useSubmit } from "react-router-dom";
-// import { useState } from "react";
-
-// const tags = ["dev", "react", "text"];
 
 interface MyTagProps {
   options?: string[];
-
-  //handleSubmit: (event: React.KeyboardEvent<HTMLFormElement>) => void;
   value: string;
   handleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedTags: string[];
@@ -35,7 +28,6 @@ const MyTag = ({
       component="section"
       sx={{ display: "flex", alignItems: "center", gap: 1 }}
     >
-      {/* <form onSubmit={handleSubmit}> */}
       <FormControl variant="standard" fullWidth>
         <Stack sx={{ display: "row", alignItems: "centerß" }}>
           <MyChip
@@ -124,7 +116,6 @@ const MyTag = ({
           />
         </Stack>
       </FormControl>
-      {/* </form> */}
     </Box>
   );
 };

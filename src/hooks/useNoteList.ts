@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Note, FilterType } from "../types";
 import { notes as initialNotesData } from "../data/note"; // Importing the notes data
 
@@ -117,9 +117,10 @@ export const useNoteList = (): useNoteListReturn => {
 
     setSelectedNote(null); // Update selected note after saving
     console.log("Note saved:", noteData);
-
-    alert("Note saved successfully!");
+    console.log("selected Note", selectedNote);
   };
+
+  useEffect(() => {}, [selectedNote]);
 
   return {
     selectedNote,

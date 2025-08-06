@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { tags as initialTagsData } from "../data/note";
-import type { Note, Tag } from "../types/index";
+import type { Note, Tag, PopoverType } from "../types/index";
+import type { AutocompleteChangeReason } from "@mui/material/useAutocomplete";
+import * as error from "../utils/errors";
+import { notes as notesInitialData } from "../data/note";
 
 export interface useNoteFormProps {
   noteId: string;
@@ -11,16 +14,44 @@ export interface useNoteFormProps {
   selectedTags: string[];
   time: string;
   noteInput: string;
-  handleSubmitNewTage: (event: React.KeyboardEvent<HTMLFormElement>) => void;
-  handleTagOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSelectedTagsChange: (newTags: string[]) => void;
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleNoteOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSave: () => void;
+  handleSave: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.FormEvent<HTMLFormElement>
+  ) => void;
   handleCancel: () => void;
+  onNoteSave: (note: Note) => void;
+
+  //***start tag params and function */
+  addTagDialogs: boolean;
+  newTagValue: string;
+  handleTagSelectionOnChange: (
+    event: React.SyntheticEvent,
+    value: Tag[],
+    reason: AutocompleteChangeReason
+  ) => void;
+  handleAddTagDialogsOpen: () => void;
+  handleAddTagDialogsClose: () => void;
+  handleNewTagOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNewTagSave: (event: React.FormEvent<HTMLFormElement>) => void;
+  //***end tag params and function */
+
+  //***start ErrorPopover */
+  customPopoverOpen: boolean;
+  popoverMessage: string;
+  popoverAnchorEl: HTMLElement | null;
+  popoverType: PopoverType;
+  handlePopoverClose: () => void;
+  //***End ErrorPopover */
 }
 
-export const useNoteForm = (selectedNote: Note | null): useNoteFormProps => {
+export const useNoteForm = (
+  selectedNote: Note | null,
+  onNoteSave: (note: Note) => void
+): useNoteFormProps => {
   const [noteId, setNoteId] = useState(() => uuidv4());
   const [titleInput, setTitleInput] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -28,30 +59,104 @@ export const useNoteForm = (selectedNote: Note | null): useNoteFormProps => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [time, setTime] = useState("");
   const [noteInput, setNoteInput] = useState("");
+  //const [newNote, setNewNote] = useState<Note[]>(notesInitialData);
 
-  const handleSubmitNewTage = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedTag = tagInput.trim();
-    if (!trimmedTag) return;
+  //***start tag params and function */
+  const [addTagDialogs, setaddTagDialogs] = useState<boolean>(false);
+  const [newTagValue, setnewTagValue] = useState<string>("");
 
-    // FIX: Check if the tag (by label) already exists in availableTags
-    const tagExists = availableTags.some((tag) => tag.label === trimmedTag);
+  //***ErrorPopover */
+  const [customPopoverOpen, setCustomPopoverOpen] = useState<boolean>(false);
+  const [popoverMessage, setPopoverMessage] = useState<string>("");
+  const [popoverType, setPopoverType] = useState<PopoverType>("error");
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
 
-    if (!tagExists) {
-      const newTag: Tag = { id: uuidv4(), label: trimmedTag }; // Create a new Tag object
-      setAvailableTags((prevTags) => [...prevTags, newTag]); // Correctly add the Tag object
-    }
-
-    // Add the new tag's label to selectedTags if not already there
-    if (!selectedTags.includes(trimmedTag)) {
-      setSelectedTags((prevSelected) => [...prevSelected, trimmedTag]);
-    }
-    setTagInput("");
+  const handleAddTagDialogsOpen = () => {
+    console.log();
+    setaddTagDialogs(true);
+  };
+  const handleAddTagDialogsClose = () => {
+    setaddTagDialogs(false);
   };
 
-  const handleTagOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTagInput(event.target.value);
-    console.log("tagInput", tagInput);
+  const handleTagSelectionOnChange = (
+    event: React.SyntheticEvent,
+    selectedTagValue: Tag[],
+    reason: AutocompleteChangeReason
+  ) => {
+    event.preventDefault();
+    const newSelectedTagLabel = selectedTagValue.map((tag) => tag.label);
+    setSelectedTags(newSelectedTagLabel);
+    console.log("selectedTags", selectedTags);
+  };
+
+  useEffect(() => {
+    console.log("selectedTags (updated via useEffect):", selectedTags);
+    // You can also perform other actions here, like making an API call.
+  }, [selectedTags]);
+
+  const handleNewTagOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setnewTagValue(event.target.value);
+    console.log("newTag", newTagValue);
+  };
+
+  const handleNewTagSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const newCleanTag = newTagValue.trim();
+    const newCleanTagLength = newCleanTag.length;
+
+    if (newCleanTagLength === 0) {
+      setCustomPopoverOpen(true);
+      setPopoverType("error");
+      setPopoverAnchorEl(event.currentTarget);
+
+      setPopoverMessage(error.WHITESPACE_ERROR_MESSAGE);
+    } else {
+      if (newCleanTagLength < 3) {
+        setCustomPopoverOpen(true);
+        setPopoverType("error");
+        setPopoverAnchorEl(event.currentTarget);
+
+        setPopoverMessage(error.TAG_MIN_LENGTH_ERROR);
+      }
+      if (newCleanTagLength > 20) {
+        setCustomPopoverOpen(true);
+        setPopoverType("error");
+        setPopoverAnchorEl(event.currentTarget);
+        setPopoverMessage(error.TAG_MAX_LENGTH_ERROR);
+      }
+    }
+    //check if the new tag alreat exit
+    const tagAlreadyExists = availableTags.some(
+      (tag) => tag.label === newCleanTag
+    );
+    console.log("tagAlreadyExists", tagAlreadyExists);
+    if (tagAlreadyExists) {
+      setCustomPopoverOpen(true);
+      setPopoverType("error");
+      setPopoverAnchorEl(event.currentTarget);
+      setPopoverMessage(error.TAG_ALREADY_EXISTS_MESSAGE);
+    }
+
+    if (!tagAlreadyExists && newCleanTagLength >= 3 && newCleanTagLength < 20) {
+      const newTagData = { id: uuidv4(), label: newCleanTag };
+      setAvailableTags((prevTags) => [...prevTags, newTagData]);
+      setCustomPopoverOpen(true);
+      setPopoverType("success");
+      setPopoverAnchorEl(event.currentTarget);
+      setPopoverMessage("Added New Tag");
+      console.log("updated available Tags", availableTags);
+      setnewTagValue("");
+      setaddTagDialogs(false);
+      setnewTagValue("");
+    }
+  };
+  //***end tag params and function */
+
+  const handlePopoverClose = () => {
+    setCustomPopoverOpen(false);
   };
 
   const handleSelectedTagsChange = (newTags: string[]) => {
@@ -118,7 +223,11 @@ export const useNoteForm = (selectedNote: Note | null): useNoteFormProps => {
     console.log("noteInput", noteInput);
   };
 
-  const handleSave = () => {
+  const handleSave = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.FormEvent<HTMLFormElement>
+  ) => {
     if (!titleInput.trim() || !noteInput.trim()) {
       alert("Title and content cannot be empty");
       return;
@@ -135,6 +244,11 @@ export const useNoteForm = (selectedNote: Note | null): useNoteFormProps => {
 
     //for save note
     onNoteSave(noteData);
+    //show note create successfully
+    setCustomPopoverOpen(true);
+    setPopoverType("success");
+    setPopoverAnchorEl(event.currentTarget);
+    setPopoverMessage("Note saved successfully!");
   };
 
   const handleCancel = () => {
@@ -162,12 +276,26 @@ export const useNoteForm = (selectedNote: Note | null): useNoteFormProps => {
     selectedTags,
     time,
     noteInput,
-    handleSubmitNewTage,
-    handleTagOnChange,
     handleSelectedTagsChange,
     handleTitleOnChange,
     handleNoteOnChange,
     handleSave,
     handleCancel,
+
+    addTagDialogs,
+    newTagValue,
+    handleTagSelectionOnChange,
+    handleAddTagDialogsOpen,
+    handleAddTagDialogsClose,
+    handleNewTagOnChange,
+    handleNewTagSave,
+
+    //***Start ErrorPopover */
+    customPopoverOpen,
+    popoverMessage,
+    popoverAnchorEl,
+    popoverType,
+    handlePopoverClose,
+    //***End ErrorPopover */
   };
 };

@@ -20,7 +20,7 @@ interface NoteListContentProps {
   notes: Note[];
   selectedNote: Note | null;
   handleNoteSave: (noteData: Note) => void;
-  filterType: "all" | "active" | "archived";
+  filterType: FilterType;
 }
 
 const NoteListContent = ({

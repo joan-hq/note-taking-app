@@ -1,7 +1,11 @@
 import Button from "@mui/material/Button";
 
 interface NoteActionProps {
-  handleSave: () => void;
+  handleSave: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.FormEvent<HTMLFormElement>
+  ) => void;
   handleCancel: () => void;
 }
 const NoteAction = ({ handleSave, handleCancel }: NoteActionProps) => {
