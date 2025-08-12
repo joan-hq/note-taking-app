@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import MyCustomButton from "../../components/Button";
-import type { Note, FilterType } from "../../types/index";
+import type { Note, Tag, FilterType } from "../../types/index";
 import MySearchAppBarProps from "../../components/SearchBar";
 import MyNoteContentCard from "../../components/MyNoteContentCard";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
@@ -20,7 +20,9 @@ interface NoteListContentProps {
   notes: Note[];
   selectedNote: Note | null;
   handleNoteSave: (noteData: Note) => void;
+  handleTagAdd: (newTag: Tag) => void;
   filterType: FilterType;
+  allTags: Tag[];
 }
 
 const NoteListContent = ({
@@ -29,10 +31,12 @@ const NoteListContent = ({
   handleDelete,
   handleNoteClick,
   handleNoteSave,
+  handleTagAdd,
   handleUnrchive,
   notes,
   selectedNote,
   filterType,
+  allTags,
 }: NoteListContentProps) => {
   const filteredNotes = notes.filter((note) => {
     if (filterType === "all") {
@@ -44,6 +48,8 @@ const NoteListContent = ({
     }
     return true; // Fallback, though ideally all cases are covered
   });
+
+  console.log("filteredNotes", filteredNotes);
 
   return (
     <Grid container spacing={0}>
@@ -88,14 +94,18 @@ const NoteListContent = ({
               lastedit={note.lastEdit}
               noteStatus={note.archive}
               onCardClick={() => handleNoteClick(note.id)}
+              allTags={allTags}
+              selectedNote={selectedNote}
             />
           ))
         )}
       </Grid>
       <Grid size={{ xs: 12, md: 7, lg: 7 }}>
         <NoteDetail
+          onTagAdd={handleTagAdd}
           selectedNote={selectedNote}
           onNoteSave={handleNoteSave}
+          availableTags={allTags}
           key={selectedNote ? selectedNote.id : "new-note"}
         />
       </Grid>

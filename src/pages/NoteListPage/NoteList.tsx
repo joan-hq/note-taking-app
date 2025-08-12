@@ -18,6 +18,8 @@ const NoteList = () => {
     handleDelete,
     handleNoteClick,
     handleNoteSave,
+    handleTagAdd,
+    allTags,
   } = useNoteList();
 
   return (
@@ -34,6 +36,8 @@ const NoteList = () => {
 
         <Grid size={{ xs: 12, md: 10, lg: 10 }}>
           <NoteListContent
+            handleTagAdd={handleTagAdd}
+            allTags={allTags}
             handleNewNote={handleNewNote}
             handleArchive={handleArchive}
             handleDelete={handleDelete}

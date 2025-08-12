@@ -17,12 +17,14 @@ import CustomPopover from "./customPopover";
 interface TagsProps {
   options: Tag[];
   addTagDialogs: boolean;
+  selectedTags: string[];
   newTagValue: string;
   handleTagSelectionOnChange: (
     event: React.SyntheticEvent,
     value: Tag[],
     reason: AutocompleteChangeReason
   ) => void;
+  onTagsChange: (newTags: string[]) => void; //to handle selected Tags Change
   handleAddTagDialogsOpen: () => void;
   handleAddTagDialogsClose: () => void;
   handleNewTagOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -38,7 +40,9 @@ const Tags = ({
   options,
   addTagDialogs,
   newTagValue,
+  selectedTags,
   handleTagSelectionOnChange,
+  onTagsChange,
   handleAddTagDialogsOpen,
   handleAddTagDialogsClose,
   handleNewTagOnChange,
@@ -49,6 +53,9 @@ const Tags = ({
   popoverType,
   handlePopoverClose,
 }: TagsProps) => {
+  const selectedTagObjects = options.filter((tag) =>
+    selectedTags.includes(tag.id)
+  );
   return (
     <Box
       component="section"
@@ -65,13 +72,34 @@ const Tags = ({
         fullWidth
         options={options}
         getOptionLabel={(option) => option.label}
-        onChange={handleTagSelectionOnChange}
+        value={selectedTagObjects}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        onChange={(event, value, reason) => {
+          handleTagSelectionOnChange(event, value, reason);
+          onTagsChange(value.map((tag) => tag.id));
+        }}
+        renderValue={(value) => (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {value.map((option: Tag) => (
+              <Chip
+                key={option.id}
+                label={option.label}
+                onDelete={() => {
+                  const newSelectedIds = selectedTags.filter(
+                    (id) => id !== option.id
+                  );
+                  onTagsChange(newSelectedIds);
+                }}
+              />
+            ))}
+          </Box>
+        )}
+        //***render all tags to choose for the note */
         renderInput={(params) => (
           <TextField
             {...params}
             placeholder="choose your tag"
             variant="standard"
-            disabled
           />
         )}
       />

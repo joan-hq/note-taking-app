@@ -50,12 +50,14 @@ export interface useNoteFormProps {
 
 export const useNoteForm = (
   selectedNote: Note | null,
-  onNoteSave: (note: Note) => void
+  onNoteSave: (note: Note) => void,
+  onTagAdd: (newTag: Tag) => void,
+  availableTags: Tag[]
 ): useNoteFormProps => {
   const [noteId, setNoteId] = useState(() => uuidv4());
   const [titleInput, setTitleInput] = useState("");
   const [tagInput, setTagInput] = useState("");
-  const [availableTags, setAvailableTags] = useState<Tag[]>(initialTagsData);
+  //const [availableTags, setAvailableTags] = useState<Tag[]>(initialTagsData);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [time, setTime] = useState("");
   const [noteInput, setNoteInput] = useState("");
@@ -83,8 +85,8 @@ export const useNoteForm = (
 
   const handleTagSelectionOnChange = (
     event: React.SyntheticEvent,
-    selectedTagValue: Tag[],
-    reason: AutocompleteChangeReason
+    selectedTagValue: Tag[]
+    //reason: AutocompleteChangeReason
   ) => {
     event.preventDefault();
     const newSelectedTagLabel = selectedTagValue.map((tag) => tag.label);
@@ -111,7 +113,6 @@ export const useNoteForm = (
       setCustomPopoverOpen(true);
       setPopoverType("error");
       setPopoverAnchorEl(event.currentTarget);
-
       setPopoverMessage(error.WHITESPACE_ERROR_MESSAGE);
     } else {
       if (newCleanTagLength < 3) {
@@ -138,16 +139,22 @@ export const useNoteForm = (
       setPopoverType("error");
       setPopoverAnchorEl(event.currentTarget);
       setPopoverMessage(error.TAG_ALREADY_EXISTS_MESSAGE);
+      return;
     }
 
     if (!tagAlreadyExists && newCleanTagLength >= 3 && newCleanTagLength < 20) {
       const newTagData = { id: uuidv4(), label: newCleanTag };
-      setAvailableTags((prevTags) => [...prevTags, newTagData]);
+
+      /**save new tag */
+      onTagAdd(newTagData);
       setCustomPopoverOpen(true);
       setPopoverType("success");
       setPopoverAnchorEl(event.currentTarget);
       setPopoverMessage("Added New Tag");
-      console.log("updated available Tags", availableTags);
+      /**render the new tag after save */
+      setSelectedTags((prevTags) => [...prevTags, newTagData.id]);
+
+      /**clean new tage input */
       setnewTagValue("");
       setaddTagDialogs(false);
       setnewTagValue("");
@@ -155,29 +162,38 @@ export const useNoteForm = (
   };
   //***end tag params and function */
 
+  // *** NEW: useEffect for auto-closing the popover ***
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (customPopoverOpen) {
+      if (popoverType === "success") {
+        timer = setTimeout(() => {
+          setCustomPopoverOpen(false);
+        }, 1000);
+      }
+    }
+
+    // Cleanup function: This will run if the component unmounts
+    // or if the customPopoverOpen dependency changes (e.g., if the user
+    // manually closes the popover before the timer finishes).
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [customPopoverOpen, popoverType]);
+  // *** END NEW ***
+
   const handlePopoverClose = () => {
     setCustomPopoverOpen(false);
   };
 
   const handleSelectedTagsChange = (newTags: string[]) => {
+    // `newTags` is the array of IDs from the Autocomplete component
+    console.log("handleSelectedTagsChange-newTag", newTags);
     setSelectedTags(newTags);
-    console.log("selectdtags", selectedTags);
 
-    //update availableTags if a new tag was truly added
-    const currentAvailableTags = new Set(availableTags.map((tag) => tag.label));
-    const newlyAddedTags: Tag[] = [];
-
-    newTags.forEach((tag) => {
-      if (!currentAvailableTags.has(tag)) {
-        newlyAddedTags.push({ id: uuidv4(), label: tagInput });
-      }
-    });
-
-    if (newlyAddedTags.length > 0) {
-      setAvailableTags((prevTags) => [...prevTags, ...newlyAddedTags]);
-    }
-
-    console.log("available tags", availableTags);
+    // This console.log will likely show the OLD state value
+    // To see the new value, use a useEffect hook.
+    console.log("selectedTags (old state)", selectedTags);
   };
 
   const handleTitleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,25 +203,13 @@ export const useNoteForm = (
 
   useEffect(() => {
     // If a note is selected, populate the fields with its data
+
     if (selectedNote) {
       setNoteId(selectedNote.id);
       setTitleInput(selectedNote.title);
       setSelectedTags(selectedNote.tags || []);
       setTime(selectedNote.lastEdit);
       setNoteInput(selectedNote.content);
-
-      const existingTags = new Set(availableTags.map((tag) => tag.label));
-      const newTagsAdded: Tag[] = [];
-
-      selectedNote.tags?.forEach((tag) => {
-        if (!existingTags.has(tag.trim())) {
-          newTagsAdded.push({ id: uuidv4(), label: tag });
-        }
-      });
-
-      if (newTagsAdded.length > 0) {
-        setAvailableTags((prevTags) => [...prevTags, ...newTagsAdded]);
-      }
     } else {
       //if no note is selected, reset the fields
       setNoteId(uuidv4());
@@ -214,7 +218,7 @@ export const useNoteForm = (
       setTime(new Date().toLocaleString());
       setNoteInput("");
     }
-  }, [selectedNote, availableTags]);
+  }, [selectedNote]);
 
   // ** Start Note Body Function
 
@@ -241,7 +245,6 @@ export const useNoteForm = (
       archive: selectedNote ? selectedNote.archive : false,
     };
     setTime(noteData.lastEdit);
-
     //for save note
     onNoteSave(noteData);
     //show note create successfully
@@ -280,6 +283,7 @@ export const useNoteForm = (
     handleTitleOnChange,
     handleNoteOnChange,
     handleSave,
+    onNoteSave,
     handleCancel,
 
     addTagDialogs,

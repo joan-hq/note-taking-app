@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import type { Note } from "../../types/index"; // Importing the Note type
+import type { Note, Tag } from "../../types/index"; // Importing the Note type
 import NoteHeader from "./NoteDetailHead";
 import NoteBody from "./NoteDetailBody";
 import NoteAction from "./NoteDetailAction";
@@ -9,15 +9,22 @@ import { useNoteForm } from "../../hooks/useNoteFrom";
 interface NoteDetailProps {
   selectedNote: Note | null;
   onNoteSave: (note: Note) => void;
+  onTagAdd: (newTag: Tag) => void;
+  availableTags: Tag[];
 }
-const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
+const NoteDetail = ({
+  selectedNote,
+  onNoteSave,
+  onTagAdd,
+  availableTags,
+}: NoteDetailProps) => {
   const {
     noteId,
     titleInput,
     //tagInput,
 
-    availableTags,
-    //selectedTags,
+    //availableTags,
+    selectedTags,
     time,
     noteInput,
 
@@ -33,6 +40,7 @@ const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
     handleAddTagDialogsClose,
     handleNewTagOnChange,
     handleNewTagSave,
+    handleSelectedTagsChange,
     //****end tag params and function
 
     //***start ErrorPopover */
@@ -42,7 +50,8 @@ const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
     popoverType,
     handlePopoverClose,
     //***end ErrorPopover */
-  } = useNoteForm(selectedNote, onNoteSave);
+  } = useNoteForm(selectedNote, onNoteSave, onTagAdd, availableTags);
+  console.log("****Noty-Detail", selectedTags);
 
   return (
     <Box
@@ -78,8 +87,10 @@ const NoteDetail = ({ selectedNote, onNoteSave }: NoteDetailProps) => {
             title={titleInput}
             time={time}
             addTagDialogs={addTagDialogs}
+            selectedTags={selectedTags}
             newTagValue={newTagValue}
             handleTagSelectionOnChange={handleTagSelectionOnChange}
+            handleSelectedTagsChange={handleSelectedTagsChange}
             handleAddTagDialogsOpen={handleAddTagDialogsOpen}
             handleAddTagDialogsClose={handleAddTagDialogsClose}
             handleNewTagOnChange={handleNewTagOnChange}

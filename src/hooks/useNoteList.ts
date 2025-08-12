@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import type { Note, FilterType } from "../types";
+import type { Note, Tag, FilterType } from "../types";
 import { notes as initialNotesData } from "../data/note"; // Importing the notes data
-
+import { tags as initialTagsData } from "../data/note";
 export interface useNoteListReturn {
   selectedNote: Note | null;
   notes: Note[];
   filterType: FilterType;
+  allTags: Tag[];
   handleShowAllNote: () => void;
   handleShowArchivedNote: () => void;
   handleShowActiveNote: () => void;
@@ -15,12 +16,14 @@ export interface useNoteListReturn {
   handleDelete: () => void;
   handleNoteClick: (noteId: string) => void;
   handleNoteSave: (noteData: Note) => void;
+  handleTagAdd: (newTag: Tag) => void;
 }
 
 export const useNoteList = (): useNoteListReturn => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [notes, setNotes] = useState<Note[]>(initialNotesData);
   const [filterType, setFilterType] = useState<FilterType>("all");
+  const [allTags, setAllTags] = useState(initialTagsData);
 
   const handleShowAllNote = () => {
     setFilterType("all");
@@ -115,9 +118,14 @@ export const useNoteList = (): useNoteListReturn => {
       return updatedNotesArray;
     });
 
-    setSelectedNote(null); // Update selected note after saving
+    //setSelectedNote(null); // Update selected note after saving
     console.log("Note saved:", noteData);
     console.log("selected Note", selectedNote);
+  };
+
+  const handleTagAdd = (newTag: Tag) => {
+    // Save the new tag to your persistent state/database
+    setAllTags((prevTags: Tag[]) => [...prevTags, newTag]);
   };
 
   useEffect(() => {}, [selectedNote]);
@@ -135,5 +143,7 @@ export const useNoteList = (): useNoteListReturn => {
     handleDelete,
     handleNoteClick,
     handleNoteSave,
+    handleTagAdd,
+    allTags,
   };
 };

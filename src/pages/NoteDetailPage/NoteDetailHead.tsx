@@ -12,12 +12,14 @@ import type { Tag, PopoverType } from "../../types/index";
 interface NoteHeaderProps {
   options: Tag[];
   addTagDialogs: boolean;
+  selectedTags: string[];
   newTagValue: string;
   handleTagSelectionOnChange: (
     event: React.SyntheticEvent,
     value: Tag[],
     reason: AutocompleteChangeReason
   ) => void;
+  handleSelectedTagsChange: (value: string[]) => void;
   handleAddTagDialogsOpen: () => void;
   handleAddTagDialogsClose: () => void;
   handleNewTagOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -36,18 +38,18 @@ interface NoteHeaderProps {
   value: string;
   title: string | null;
   time: string;
-  // selectedTags: string[];
-  // onTagsChange: (newTags: string[]) => void;
 }
 const NoteHeader = ({
   options,
   addTagDialogs,
+  selectedTags,
   newTagValue,
   handleTagSelectionOnChange,
   handleAddTagDialogsOpen,
   handleAddTagDialogsClose,
   handleNewTagSave,
   handleNewTagOnChange,
+  handleSelectedTagsChange,
 
   // start error popover
   customPopoverOpen,
@@ -61,6 +63,7 @@ const NoteHeader = ({
   title,
   time,
 }: NoteHeaderProps) => {
+  console.log("*****Note Detail Head", selectedTags);
   return (
     <Box>
       <Grid container spacing={1}>
@@ -78,18 +81,13 @@ const NoteHeader = ({
             value={title}
             onChange={handleTitleOnChange}
           />
-          {/* <MyTag
-            options={options}
-            value={value}
-            handleOnChange={handleTagOnChange}
-            selectedTags={selectedTags}
-            onTagsChange={onTagsChange}
-          /> */}
           <Tags
             options={options}
             addTagDialogs={addTagDialogs}
+            selectedTags={selectedTags}
             newTagValue={newTagValue}
             handleTagSelectionOnChange={handleTagSelectionOnChange}
+            onTagsChange={handleSelectedTagsChange}
             handleAddTagDialogsOpen={handleAddTagDialogsOpen}
             handleAddTagDialogsClose={handleAddTagDialogsClose}
             handleNewTagSave={handleNewTagSave}
