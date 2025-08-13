@@ -10,6 +10,12 @@ import SearchIcon from "@mui/icons-material/Search";
 
 interface MySearchAppBarProps {
   title: string;
+  handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNoteSearch: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.FormEvent<HTMLFormElement>
+  ) => void;
 }
 
 const Search = styled("div")(({ theme }) => ({
@@ -54,7 +60,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const MySearchAppBar = ({ title }: MySearchAppBarProps) => {
+// const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//   console.log("search bar event", event.target.value);
+// };
+
+const MySearchAppBar = ({
+  title,
+  handleSearchOnChange,
+  handleNoteSearch,
+}: MySearchAppBarProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -83,6 +97,8 @@ const MySearchAppBar = ({ title }: MySearchAppBarProps) => {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              onChange={handleSearchOnChange}
+              onClick={handleNoteSearch}
             />
           </Search>
         </Toolbar>

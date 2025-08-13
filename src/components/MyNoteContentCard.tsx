@@ -2,11 +2,9 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
-import MyCustomButton from "../components/Button";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import Chip from "@mui/material/Chip";
 import type { Tag, Note } from "../types";
-import { useTheme } from "@mui/material/styles";
 
 interface MyNoteContentCardProps {
   id: string;

@@ -23,6 +23,13 @@ interface NoteListContentProps {
   handleTagAdd: (newTag: Tag) => void;
   filterType: FilterType;
   allTags: Tag[];
+
+  handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNoteSearch: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.FormEvent<HTMLFormElement>
+  ) => void;
 }
 
 const NoteListContent = ({
@@ -37,6 +44,9 @@ const NoteListContent = ({
   selectedNote,
   filterType,
   allTags,
+
+  handleSearchOnChange,
+  handleNoteSearch,
 }: NoteListContentProps) => {
   const filteredNotes = notes.filter((note) => {
     if (filterType === "all") {
@@ -63,6 +73,8 @@ const NoteListContent = ({
               ? "Archived Notes"
               : "Active Notes"
           }
+          handleSearchOnChange={handleSearchOnChange}
+          handleNoteSearch={handleNoteSearch}
         />
       </Grid>
 

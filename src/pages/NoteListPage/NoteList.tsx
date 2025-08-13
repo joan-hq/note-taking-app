@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import NoteListSidebar from "./NoteListSideBar";
 import NoteListContent from "./NoteListContent";
 import { useNoteList } from "../../hooks/useNoteList";
+import CustomPopover from "../../components/CustomPopover";
 
 const NoteList = () => {
   const {
@@ -20,6 +21,14 @@ const NoteList = () => {
     handleNoteSave,
     handleTagAdd,
     allTags,
+
+    handleSearchOnChange,
+    handleNoteSearch,
+    popoverType,
+    customPopoverOpen,
+    popoverMessage,
+    popoverAnchorEl,
+    handlePopoverClose,
   } = useNoteList();
 
   return (
@@ -47,8 +56,18 @@ const NoteList = () => {
             handleNoteSave={handleNoteSave}
             filterType={filterType}
             handleUnrchive={handleUnarchive}
+            handleSearchOnChange={handleSearchOnChange}
+            handleNoteSearch={handleNoteSearch}
           />
         </Grid>
+
+        <CustomPopover
+          popoverType={popoverType}
+          customPopoverOpen={customPopoverOpen}
+          popoverMessage={popoverMessage}
+          anchorEl={popoverAnchorEl}
+          handlePopoverClose={handlePopoverClose}
+        />
       </Grid>
     </Box>
   );

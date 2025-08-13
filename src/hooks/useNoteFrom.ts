@@ -113,7 +113,7 @@ export const useNoteForm = (
       setCustomPopoverOpen(true);
       setPopoverType("error");
       setPopoverAnchorEl(event.currentTarget);
-      setPopoverMessage(error.WHITESPACE_ERROR_MESSAGE);
+      setPopoverMessage(error.TAG_WHITESPACE_ERROR_MESSAGE);
     } else {
       if (newCleanTagLength < 3) {
         setCustomPopoverOpen(true);
