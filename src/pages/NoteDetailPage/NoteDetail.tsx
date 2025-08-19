@@ -5,19 +5,25 @@ import NoteHeader from "./NoteDetailHead";
 import NoteBody from "./NoteDetailBody";
 import NoteAction from "./NoteDetailAction";
 import { useNoteForm } from "../../hooks/useNoteFrom";
+import { useParams } from "react-router-dom";
 
 interface NoteDetailProps {
   selectedNote: Note | null;
   onNoteSave: (note: Note) => void;
   onTagAdd: (newTag: Tag) => void;
   availableTags: Tag[];
+  //allNote: Note[];
 }
 const NoteDetail = ({
+  // allNote,
   selectedNote,
   onNoteSave,
   onTagAdd,
   availableTags,
 }: NoteDetailProps) => {
+  // const { eachNoteId } = useParams();
+  // const selectedNote = allNote.find((note) => note.id === eachNoteId) || null;
+
   const {
     noteId,
     titleInput,
@@ -51,7 +57,9 @@ const NoteDetail = ({
     handlePopoverClose,
     //***end ErrorPopover */
   } = useNoteForm(selectedNote, onNoteSave, onTagAdd, availableTags);
-  console.log("****Noty-Detail", selectedTags);
+  // if (!selectedNote && eachNoteId) {
+  //   return <h1>Note Not Found</h1>;
+  // }
 
   return (
     <Box

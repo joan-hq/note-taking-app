@@ -2,7 +2,6 @@
 //import "./App.css";
 import NoteList from "./pages/NoteListPage/NoteList";
 //import NoteDetail from "./pages/NoteDetailPage/NoteDetail";
-import Tags from "./components/Tags";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -12,7 +11,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<NoteList />} />
-          <Route path="/tags" element={<Tags />} />
+          {/* <Route
+            path="/note/:noteID"
+            element={<NoteDetail allNote={notes} />}
+          /> */}
+          {/* <Route path="*" element={<h1>404 Not Found</h1>} /> */}
         </Routes>
       </Router>
     </>

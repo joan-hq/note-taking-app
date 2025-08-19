@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import MyCustomButton from "../../components/Button";
+import CustomButton from "../../components/CustomButton";
 import type { Note, Tag, FilterType } from "../../types/index";
 import MySearchAppBarProps from "../../components/SearchBar";
-import MyNoteContentCard from "../../components/MyNoteContentCard";
+import MyNoteContentCard from "../../components/NoteContentCard";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -23,6 +23,7 @@ interface NoteListContentProps {
   handleTagAdd: (newTag: Tag) => void;
   filterType: FilterType;
   allTags: Tag[];
+  //allNote: Note[];
 
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -39,6 +40,7 @@ const NoteListContent = ({
   selectedNote,
   filterType,
   allTags,
+  //allNote,
 
   handleSearchOnChange,
 }: NoteListContentProps) => {
@@ -72,7 +74,7 @@ const NoteListContent = ({
       </Grid>
 
       <Grid size={{ xs: 12, md: 3, lg: 3 }}>
-        <MyCustomButton
+        <CustomButton
           title="Create New Note"
           variant="contained"
           startIcon={<AddIcon />}
@@ -112,25 +114,26 @@ const NoteListContent = ({
           onNoteSave={handleNoteSave}
           availableTags={allTags}
           key={selectedNote ? selectedNote.id : "new-note"}
+          //allNote={allNote}
         />
       </Grid>
 
       <Grid size={{ xs: 12, md: 2, lg: 2 }}>
         {filterType === "archived" ? (
-          <MyCustomButton
+          <CustomButton
             title="Unarchive Note"
             startIcon={<UnarchiveIcon />}
             onClick={handleUnrchive}
           />
         ) : (
-          <MyCustomButton
+          <CustomButton
             title="Archive Note"
             startIcon={<ArchiveOutlinedIcon />}
             onClick={handleArchive}
           />
         )}
 
-        <MyCustomButton
+        <CustomButton
           title="delete Note"
           startIcon={<DeleteOutlineOutlinedIcon />}
           onClick={handleDelete}

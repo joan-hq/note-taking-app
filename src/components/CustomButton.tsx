@@ -8,6 +8,7 @@ interface CustomButtonProps {
   endIcon?: React.ReactElement;
   variant?: "contained" | "outlined" | "text";
   size?: "small" | "Medium" | "large";
+  fullWidth?: boolean;
 }
 
 function CustomButton({
@@ -17,6 +18,7 @@ function CustomButton({
   startIcon,
   variant,
   endIcon,
+  fullWidth,
 }: CustomButtonProps) {
   const handleClick = () => {
     if (onClick) {
@@ -33,6 +35,7 @@ function CustomButton({
         startIcon={startIcon}
         variant={variant}
         endIcon={endIcon}
+        fullWidth={fullWidth}
       >
         {title}
       </Button>

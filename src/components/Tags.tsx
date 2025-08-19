@@ -3,7 +3,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
-import MyChip from "../components/Chip";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,7 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import type { AutocompleteChangeReason } from "@mui/material/useAutocomplete";
 import type { Tag, PopoverType } from "../types/index";
-import CustomPopover from "./customPopover";
+import CustomPopover from "./CustomPopover";
 
 interface TagsProps {
   options: Tag[];
@@ -61,11 +60,7 @@ const Tags = ({
       component="section"
       sx={{ display: "flex", alignItems: "center", gap: 1, width: "300px" }}
     >
-      <MyChip
-        label="tag"
-        variant="outlined"
-        icon={<LocalOfferOutlinedIcon />}
-      />
+      <Chip label="tag" variant="outlined" icon={<LocalOfferOutlinedIcon />} />
       <Autocomplete
         multiple
         id="tags"

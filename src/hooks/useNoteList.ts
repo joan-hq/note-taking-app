@@ -3,7 +3,6 @@ import type { Note, Tag, FilterType } from "../types";
 import { notes as initialNotesData } from "../data/note"; // Importing the notes data
 import { tags as initialTagsData } from "../data/note";
 import type { PopoverType } from "../types/index";
-import * as error from "../utils/errors";
 
 export interface useNoteListReturn {
   selectedNote: Note | null;
@@ -24,12 +23,26 @@ export interface useNoteListReturn {
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   searchQueryInput?: string;
-  handleTagDelete: (tagId: string) => void;
+  handleTagDelete: (
+    tagId: string,
+    event: React.SyntheticEvent<HTMLElement>
+  ) => void;
   customPopoverOpen: boolean;
   popoverMessage: string;
   popoverAnchorEl: HTMLElement | null;
   //   handlePopoverClose: () => void;
   popoverType: PopoverType;
+
+  open: boolean;
+  handleTagDeleteClose: () => void;
+  tagValue: string;
+  handleTagsDelete: () => void;
+  handleDeleteTagDialog: (
+    tagId: string,
+    event: React.SyntheticEvent<HTMLElement>
+  ) => void;
+
+  tagIdToDelete: string | null;
 }
 
 export const useNoteList = (): useNoteListReturn => {
@@ -46,6 +59,10 @@ export const useNoteList = (): useNoteListReturn => {
   const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(
     null
   );
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [tagValue, setTagValue] = useState<string>("");
+  const [tagIdToDelete, setTagIdToDelete] = useState<string | null>(null);
 
   const handleShowAllNote = () => {
     setFilterType("all");
@@ -184,40 +201,71 @@ export const useNoteList = (): useNoteListReturn => {
     }
   };
 
-  const handleTagDelete = (
-    tagId: string,
-    event: React.SyntheticEvent<HTMLElement>
-  ) => {
-    console.log("tag", tagId);
-
-    const notesListRemovedTag = notes.map((note) => {
-      const tagIndex = note.tags.indexOf(tagId);
-      console.log("tagindex", tagIndex);
-      if (tagIndex !== -1) {
-        const newTags = [
-          ...note.tags.slice(0, tagIndex),
-          ...note.tags.slice(tagIndex + 1),
-        ];
-        return { ...note, tags: newTags };
-      }
-      return note;
-    });
-
-    setNotes(notesListRemovedTag);
-    setAllTags((prevTags) => prevTags.filter((tag) => tag.id !== tagId));
-
-    setCustomPopoverOpen(true);
-    setPopoverMessage("Tag and all associated notes have been updated.");
-    setPopoverType("status");
-    setPopoverAnchorEl(event.currentTarget);
-
-    window.alert("Tag and all associated notes have been updated.");
-  };
   useEffect(() => {}, [selectedNote, notes]);
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (customPopoverOpen) {
       if (popoverType === "status") {
+        timer = setTimeout(() => {
+          setCustomPopoverOpen(false);
+        }, 1000);
+      }
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [customPopoverOpen, popoverType]);
+
+  const handleTagDeleteClose = () => {
+    setOpen(false);
+    setTagIdToDelete(null);
+  };
+
+  const handleTagsDelete = () => {
+    console.log("handleTagsDelete");
+  };
+
+  const handleDeleteTagDialog = (tagId: string) => {
+    const tagToDelete = allTags.find((tag) => tag.id === tagId);
+    setOpen(true);
+    setTagIdToDelete(tagId);
+    if (tagToDelete) {
+      setTagValue(tagToDelete.label);
+    }
+  };
+
+  const handleTagDelete = () => {
+    if (!tagIdToDelete) {
+      return;
+    }
+    const tagNeedDelete = allTags.find((tag) => tag.id === tagIdToDelete);
+    let tagNeedDeleteLabel;
+    if (tagNeedDelete) {
+      tagNeedDeleteLabel = tagNeedDelete.label;
+    }
+    const notesListRemovedTag = notes.map((note) => {
+      // The filter method is a cleaner way to remove an item
+      const newTags = note.tags.filter((id) => id !== tagIdToDelete);
+      return { ...note, tags: newTags };
+    });
+
+    setNotes(notesListRemovedTag);
+    setAllTags((prevTags) =>
+      prevTags.filter((tag) => tag.id !== tagIdToDelete)
+    );
+    handleTagDeleteClose();
+    setCustomPopoverOpen(true);
+    setPopoverMessage(
+      `Tag - ${tagNeedDeleteLabel} - has been deleted and all associated notes have been updated.`
+    );
+    setPopoverType("success");
+  };
+
+  useEffect(() => {}, [selectedNote, notes]);
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (customPopoverOpen) {
+      if (popoverType === "success") {
         timer = setTimeout(() => {
           setCustomPopoverOpen(false);
         }, 1000);
@@ -250,5 +298,12 @@ export const useNoteList = (): useNoteListReturn => {
     popoverMessage,
     popoverAnchorEl,
     // handlePopoverClose,
+
+    open,
+    handleTagDeleteClose,
+    tagValue,
+    handleTagsDelete,
+    handleDeleteTagDialog,
+    tagIdToDelete,
   };
 };
