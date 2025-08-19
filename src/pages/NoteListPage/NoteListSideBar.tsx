@@ -5,24 +5,31 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
-
-import {
-  notes as initialNotesData,
-  tags as initialTagsData,
-} from "../../data/note"; // Importing the notes data
-
+import Chip from "@mui/material/Chip";
+import type { Tag } from "../../types/index";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 interface NoteListSidebarProps {
   handleShowAllNote: () => void;
   handleShowArchivedNote: () => void;
   handleShowActiveNote: () => void;
   currentPageFilter: "all" | "active" | "archived";
+  allTags: Tag[];
+  handleTagDelete: (
+    tagId: string,
+    event: React.SyntheticEvent<HTMLElement>
+  ) => void;
 }
 const NoteListSidebar = ({
   handleShowAllNote,
   handleShowArchivedNote,
   handleShowActiveNote,
   currentPageFilter,
+  allTags,
+  handleTagDelete,
 }: NoteListSidebarProps) => {
+  // const handleTagDelete = () => {
+  //   console.log("hanle tag delete");
+  // };
   return (
     <div>
       <div>
@@ -61,14 +68,14 @@ const NoteListSidebar = ({
       <Box>
         <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
         <Grid container spacing={1}>
-          {initialTagsData.map((tag) => (
+          {allTags.map((tag) => (
             <Grid key={tag.id}>
-              <MyCustomButton
-                title={tag.label}
-                disabled={false}
-                startIcon={<LocalOfferOutlinedIcon />}
+              <Chip
+                label={tag.label}
+                icon={<LocalOfferOutlinedIcon />}
+                onDelete={() => handleTagDelete(tag.id)}
+                deleteIcon={<DeleteForeverIcon />}
                 variant="outlined"
-                fullWidth={true}
               />
             </Grid>
           ))}

@@ -8,7 +8,7 @@ interface CustomPopoverProps {
   customPopoverOpen: boolean;
   popoverMessage: string;
   anchorEl: HTMLElement | null;
-  handlePopoverClose: () => void;
+  handlePopoverClose?: () => void;
   popoverType: PopoverType;
 }
 

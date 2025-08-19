@@ -22,17 +22,13 @@ export interface useNoteListReturn {
   handleTagAdd: (newTag: Tag) => void;
 
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleNoteSearch: (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.FormEvent<HTMLFormElement>
-  ) => void;
-  searchQueryInput?: string;
 
+  searchQueryInput?: string;
+  handleTagDelete: (tagId: string) => void;
   customPopoverOpen: boolean;
   popoverMessage: string;
   popoverAnchorEl: HTMLElement | null;
-  handlePopoverClose: () => void;
+  //   handlePopoverClose: () => void;
   popoverType: PopoverType;
 }
 
@@ -154,43 +150,83 @@ export const useNoteList = (): useNoteListReturn => {
     setAllTags((prevTags: Tag[]) => [...prevTags, newTag]);
   };
 
-  useEffect(() => {}, [selectedNote]);
-
   const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQueryInput(event.target.value);
-    console.log("search bar event", event.target.value);
-  };
+    const searchQuary = event.target.value;
+    setSearchQueryInput(searchQuary);
+    console.log("searchQueryInput", searchQuary);
 
-  const handleNoteSearch = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.FormEvent<HTMLFormElement>
-  ) => {
-    if (searchQueryInput.length !== 0 && !searchQueryInput.trim()) {
-      setCustomPopoverOpen(true);
-      setPopoverType("error");
-      setPopoverAnchorEl(event.currentTarget);
-      setPopoverMessage(error.SEARCH_WHITESPACE_ERROR_MESSAGE);
-      return;
+    if (!searchQuary.trim()) {
+      setNotes(initialNotesData);
+      // setCustomPopoverOpen(false); // Hide any error popover
     } else {
-      const filtedNotesBySearch = notes.filter((notes) => {
-        const lowercaseSearchQueryInput = searchQueryInput.toLocaleLowerCase();
-        const titleMatch = notes.title
-          .toLowerCase()
-          .includes(lowercaseSearchQueryInput);
-        const contentMatch = notes.content
-          .toLowerCase()
-          .includes(lowercaseSearchQueryInput);
-        // const tagMatch = notes.tags.some((tag) => {
-        //   allTags.filter((allTag) => allTag === tag);
-        // });
+      const lowercaseSearchQuary = searchQuary.toLocaleLowerCase();
+      const filtedSearchNote = notes.filter((note) => {
+        const titleMatch = note.title
+          .toLocaleLowerCase()
+          .includes(lowercaseSearchQuary);
+        const contentMatch = note.content
+          .toLocaleLowerCase()
+          .includes(lowercaseSearchQuary);
+        // Now, perform the more complex tag matching.
+        const tagsMatch = note.tags.some((tagId) => {
+          // Find the tag object by its ID from the main tags array
+          const foundTag = allTags.find((tag) => tag.id === tagId);
+
+          return (
+            foundTag &&
+            foundTag.label.toLowerCase().includes(lowercaseSearchQuary)
+          );
+        });
+        return titleMatch || contentMatch || tagsMatch;
       });
+
+      setNotes(filtedSearchNote);
     }
   };
 
-  const handlePopoverClose = () => {
-    setCustomPopoverOpen(false);
+  const handleTagDelete = (
+    tagId: string,
+    event: React.SyntheticEvent<HTMLElement>
+  ) => {
+    console.log("tag", tagId);
+
+    const notesListRemovedTag = notes.map((note) => {
+      const tagIndex = note.tags.indexOf(tagId);
+      console.log("tagindex", tagIndex);
+      if (tagIndex !== -1) {
+        const newTags = [
+          ...note.tags.slice(0, tagIndex),
+          ...note.tags.slice(tagIndex + 1),
+        ];
+        return { ...note, tags: newTags };
+      }
+      return note;
+    });
+
+    setNotes(notesListRemovedTag);
+    setAllTags((prevTags) => prevTags.filter((tag) => tag.id !== tagId));
+
+    setCustomPopoverOpen(true);
+    setPopoverMessage("Tag and all associated notes have been updated.");
+    setPopoverType("status");
+    setPopoverAnchorEl(event.currentTarget);
+
+    window.alert("Tag and all associated notes have been updated.");
   };
+  useEffect(() => {}, [selectedNote, notes]);
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (customPopoverOpen) {
+      if (popoverType === "status") {
+        timer = setTimeout(() => {
+          setCustomPopoverOpen(false);
+        }, 1000);
+      }
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [customPopoverOpen, popoverType]);
 
   return {
     selectedNote,
@@ -208,11 +244,11 @@ export const useNoteList = (): useNoteListReturn => {
     handleTagAdd,
     allTags,
     handleSearchOnChange,
-    handleNoteSearch,
+    handleTagDelete,
     popoverType,
     customPopoverOpen,
     popoverMessage,
     popoverAnchorEl,
-    handlePopoverClose,
+    // handlePopoverClose,
   };
 };

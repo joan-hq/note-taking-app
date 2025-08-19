@@ -23,12 +23,13 @@ const NoteList = () => {
     allTags,
 
     handleSearchOnChange,
-    handleNoteSearch,
+    handleTagDelete,
+
     popoverType,
     customPopoverOpen,
     popoverMessage,
     popoverAnchorEl,
-    handlePopoverClose,
+    // handlePopoverClose,
   } = useNoteList();
 
   return (
@@ -40,6 +41,8 @@ const NoteList = () => {
             handleShowArchivedNote={handleShowArchivedNote}
             handleShowActiveNote={handleShowActiveNote}
             currentPageFilter={filterType}
+            allTags={allTags}
+            handleTagDelete={handleTagDelete}
           />
         </Grid>
 
@@ -57,7 +60,6 @@ const NoteList = () => {
             filterType={filterType}
             handleUnrchive={handleUnarchive}
             handleSearchOnChange={handleSearchOnChange}
-            handleNoteSearch={handleNoteSearch}
           />
         </Grid>
 
@@ -66,7 +68,7 @@ const NoteList = () => {
           customPopoverOpen={customPopoverOpen}
           popoverMessage={popoverMessage}
           anchorEl={popoverAnchorEl}
-          handlePopoverClose={handlePopoverClose}
+          //handlePopoverClose={handlePopoverClose}
         />
       </Grid>
     </Box>
