@@ -9,7 +9,11 @@ import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 import AddIcon from "@mui/icons-material/Add";
-import NoteDetail from "../NoteDetailPage/NoteDetail";
+//import { useNavigate } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+
+//import NoteDetail from "../NoteDetailPage/NoteDetail";
 
 interface NoteListContentProps {
   handleNewNote: () => void;
@@ -19,11 +23,10 @@ interface NoteListContentProps {
   handleNoteClick: (noteId: string) => void;
   notes: Note[];
   selectedNote: Note | null;
-  handleNoteSave: (noteData: Note) => void;
-  handleTagAdd: (newTag: Tag) => void;
+  // handleNoteSave: (noteData: Note) => void;
+  // handleTagAdd: (newTag: Tag) => void;
   filterType: FilterType;
   allTags: Tag[];
-  //allNote: Note[];
 
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -33,8 +36,8 @@ const NoteListContent = ({
   handleArchive,
   handleDelete,
   handleNoteClick,
-  handleNoteSave,
-  handleTagAdd,
+  // handleNoteSave,
+  // handleTagAdd,
   handleUnrchive,
   notes,
   selectedNote,
@@ -55,13 +58,21 @@ const NoteListContent = ({
     return true; // Fallback, though ideally all cases are covered
   });
 
-  console.log("filteredNotes", filteredNotes);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const handleCardClick = (noteId: string) => {
+    handleNoteClick(noteId); // Your existing state update handler
+    if (isMobile) {
+      // For mobile, open a new window
+      window.open(`/note/${noteId}`, "_blank");
+    }
+  };
   return (
     <Grid container spacing={0}>
-      <Grid size={{ xs: 12, md: 12, lg: 12 }}>
+      <Grid item xs={12} md={3} lg={3}>
         {/* Use item prop for Grid children */}
-        <MySearchAppBarProps
+        {/* <MySearchAppBarProps
           title={
             filterType === "all"
               ? "All Notes"
@@ -70,10 +81,10 @@ const NoteListContent = ({
               : "Active Notes"
           }
           handleSearchOnChange={handleSearchOnChange}
-        />
+        /> */}
       </Grid>
 
-      <Grid size={{ xs: 12, md: 3, lg: 3 }}>
+      <Grid item xs={12} md={3} lg={3}>
         <CustomButton
           title="Create New Note"
           variant="contained"
@@ -100,25 +111,15 @@ const NoteListContent = ({
               tags={note.tags}
               lastedit={note.lastEdit}
               noteStatus={note.archive}
-              onCardClick={() => handleNoteClick(note.id)}
+              onCardClick={() => handleCardClick(note.id)}
               allTags={allTags}
               selectedNote={selectedNote}
             />
           ))
         )}
       </Grid>
-      <Grid size={{ xs: 12, md: 7, lg: 7 }}>
-        <NoteDetail
-          onTagAdd={handleTagAdd}
-          selectedNote={selectedNote}
-          onNoteSave={handleNoteSave}
-          availableTags={allTags}
-          key={selectedNote ? selectedNote.id : "new-note"}
-          //allNote={allNote}
-        />
-      </Grid>
 
-      <Grid size={{ xs: 12, md: 2, lg: 2 }}>
+      {/* <Grid size={{ xs: 12, md: 2, lg: 2 }}>
         {filterType === "archived" ? (
           <CustomButton
             title="Unarchive Note"
@@ -138,7 +139,7 @@ const NoteListContent = ({
           startIcon={<DeleteOutlineOutlinedIcon />}
           onClick={handleDelete}
         />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

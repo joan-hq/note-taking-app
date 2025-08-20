@@ -12,18 +12,22 @@ interface NoteDetailProps {
   onNoteSave: (note: Note) => void;
   onTagAdd: (newTag: Tag) => void;
   availableTags: Tag[];
-  //allNote: Note[];
+  allNote: Note[];
 }
 const NoteDetail = ({
-  // allNote,
+  allNote,
   selectedNote,
   onNoteSave,
   onTagAdd,
   availableTags,
 }: NoteDetailProps) => {
-  // const { eachNoteId } = useParams();
-  // const selectedNote = allNote.find((note) => note.id === eachNoteId) || null;
-
+  const { noteID } = useParams();
+  console.log("eachNote", noteID);
+  const noteToDisplay =
+    selectedNote || allNote.find((note) => note.id === noteID) || null;
+  if (!noteToDisplay) {
+    return <div>Note not found!</div>;
+  }
   const {
     noteId,
     titleInput,
@@ -56,11 +60,12 @@ const NoteDetail = ({
     popoverType,
     handlePopoverClose,
     //***end ErrorPopover */
-  } = useNoteForm(selectedNote, onNoteSave, onTagAdd, availableTags);
+  } = useNoteForm(noteToDisplay, onNoteSave, onTagAdd, availableTags, allNote);
   // if (!selectedNote && eachNoteId) {
   //   return <h1>Note Not Found</h1>;
   // }
 
+  console.log("notedetail get all NOte", allNote);
   return (
     <Box
       id={noteId}
@@ -85,7 +90,7 @@ const NoteDetail = ({
           // backgroundColor: "white", // Optional: Background for the note container
         }}
       >
-        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
+        <Grid item xs={12} md={12} lg={12}>
           <NoteHeader
             options={availableTags}
             value={titleInput}
@@ -117,7 +122,10 @@ const NoteDetail = ({
         {/* Note Body */}
         <Grid
           sx={{ minHeight: "800px", height: "100%" }}
-          size={{ xs: 12, md: 12, lg: 12 }}
+          item
+          xs={12}
+          md={12}
+          lg={12}
         >
           <NoteBody
             handleNoteOnChange={handleNoteOnChange}
@@ -126,7 +134,7 @@ const NoteDetail = ({
         </Grid>
 
         {/* Note Action */}
-        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
+        <Grid item xs={12} md={12} lg={12}>
           <NoteAction handleSave={handleSave} handleCancel={handleCancel} />
         </Grid>
       </Grid>
