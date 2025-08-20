@@ -85,8 +85,6 @@ const NoteDetail = ({
           // backgroundColor: "white", // Optional: Background for the note container
         }}
       >
-        {/* Note Header */}
-        {/* <Grid item xs={12} md={12} lg={12}> */}
         <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           <NoteHeader
             options={availableTags}
