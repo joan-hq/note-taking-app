@@ -15,3 +15,4 @@ export interface Note {
 export type FilterType = "all" | "active" | "archived";
 
 export type PopoverType = "error" | "success" | "warning" | "info";
+
