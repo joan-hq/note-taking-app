@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
-interface MySearchAppBarProps {
+interface SearchBarProps {
   title: string;
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -22,7 +22,7 @@ const Search = styled("div")(({ theme }) => ({
   marginLeft: 0,
   width: "100%",
   [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(0),
     width: "auto",
   },
 }));
@@ -43,7 +43,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: `calc(1em + ${theme.spacing(6)})`,
     transition: theme.transitions.create("width"),
     [theme.breakpoints.up("sm")]: {
       width: "12ch",
@@ -54,35 +54,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//   console.log("search bar event", event.target.value);
-// };
-
-const MySearchAppBar = ({
-  title,
-  handleSearchOnChange,
-}: MySearchAppBarProps) => {
+const SearchBar = ({ title, handleSearchOnChange }: SearchBarProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          > */}
           {title}
-          {/* </IconButton> */}
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            {/* {title} */}
-          </Typography>
+          ></Typography>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -92,8 +75,6 @@ const MySearchAppBar = ({
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
               onChange={handleSearchOnChange}
-
-              // value={value}
             />
           </Search>
         </Toolbar>
@@ -102,4 +83,4 @@ const MySearchAppBar = ({
   );
 };
 
-export default MySearchAppBar;
+export default SearchBar;

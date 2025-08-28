@@ -4,23 +4,30 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import type { Tag } from "../../types/index";
 import AddIcon from "@mui/icons-material/Add";
 import { useDialog } from "../../hooks/useDialog";
+import { useState } from "react";
 
 import TagSelector from "./TagSelector";
 import AddNewTagDialog from "./AddNewTagDialog";
 
 interface TagsFieldProps {
   options: Tag[];
-  newTagValue: string;
-  handleNewTagSave: () => void;
-  handleNewTagOnChange: () => void;
+  noteTags: string[] | null;
+  onTagSaved: (newTag: string) => void;
 }
-const TagsField = ({
-  options,
-  newTagValue,
-  handleNewTagSave,
-  handleNewTagOnChange,
-}: TagsFieldProps) => {
+const TagsField = ({ options, noteTags, onTagSaved }: TagsFieldProps) => {
   const { open, showDialog, hideDialog } = useDialog();
+  const [newTagInputValue, setNewTagInputValue] = useState("");
+
+  const handleNewTagInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTagInputValue(event.target.value);
+  };
+
+  const handleNewTagSubmit = () => {
+    onTagSaved(newTagInputValue);
+    setNewTagInputValue("");
+    hideDialog();
+  };
+
   return (
     <>
       <Box>
@@ -39,9 +46,9 @@ const TagsField = ({
         />
         <AddNewTagDialog
           open={open}
-          newTagValue={newTagValue}
-          handleNewTagSave={handleNewTagSave}
-          handleNewTagOnChange={handleNewTagOnChange}
+          newTagInputValue={newTagInputValue}
+          handleNewTagInput={handleNewTagInput}
+          handleNewTagSubmit={handleNewTagSubmit}
           hideDialog={hideDialog}
         />
       </Box>

@@ -1,24 +1,29 @@
+import { Box, Grid } from "@mui/material";
+
 import NoteDetailHeader from "../components/NoteDetail/NoteDetailHeader";
 import NoteDetailContent from "../components/NoteDetail/NoteDetailContent";
 import NoteDetailAction from "../components/NoteDetail/NoteDetailAction";
-
-import type { Tag } from "../types/index";
+import type { Tag, Note } from "../types/index";
+import { tags } from "../data/note";
+import {
+  findTagsByIds,
+  getTagLabelsByIds,
+  findNoteById,
+} from "../helpers/noteHelpers";
 
 interface NoteDetailProps {
+  selectedNoteId: string;
+  allNotes: Note[];
+  allTags: Tag[];
+
   //**Header Params */
   // title:
-  title: string;
-  handleTitleOnChange: () => void;
-  // Tags:
-  options: Tag[];
-  newTagValue: string;
+
+  handleExistNoteTitleOnChange: () => void;
+
   handleNewTagSave: () => void;
-  handleNewTagOnChange: () => void;
-  //Time:
-  time: string;
 
   //**Content Params*/
-  noteValue: string;
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 
   //**Action Params */
@@ -30,45 +35,43 @@ interface NoteDetailProps {
   handleNoteEditCancel: () => void;
 }
 
-const options = [
-  { id: "1", label: "dev" },
-  { id: "2", label: "travel" },
-  { id: "3", label: "study" },
-  { id: "4", label: "food" },
-  { id: "5", label: "location" },
-  { id: "6", label: "test" },
-];
-
 const NoteDetail = ({
+  selectedNoteId,
+  allNotes,
+  allTags,
+
   //**Header Params */
-  title,
-  handleTitleOnChange,
+  handleExistNoteTitleOnChange,
   //options,
-  newTagValue,
+  // noteTags,
   handleNewTagSave,
-  handleNewTagOnChange,
-  time,
+
   //**Content Params*/
-  noteValue,
+
   handleContentOnChange,
   //**Action Params */
   handleNoteEditSave,
   handleNoteEditCancel,
 }: NoteDetailProps) => {
+  const selectedNote = findNoteById(selectedNoteId, allNotes);
+  if (!selectedNote) {
+    return <Box sx={{ p: 4, textAlign: "center" }}>Note not found.</Box>;
+  }
+  const existNoteTagLabels = getTagLabelsByIds(selectedNote.tags, tags);
+  const options = findTagsByIds(selectedNote.tags, allTags);
   return (
     <>
       <NoteDetailHeader
-        title={title}
-        handleTitleOnChange={handleTitleOnChange}
+        title={selectedNote.title}
+        handleTitleOnChange={handleExistNoteTitleOnChange}
         options={options}
-        newTagValue={newTagValue}
+        noteTags={existNoteTagLabels}
         handleNewTagSave={handleNewTagSave}
-        handleNewTagOnChange={handleNewTagOnChange}
-        time={time}
+        time={selectedNote.lastEdit}
       />
 
       <NoteDetailContent
-        noteValue={noteValue}
+        noteValue={selectedNote.content}
         handleContentOnChange={handleContentOnChange}
       />
       <NoteDetailAction

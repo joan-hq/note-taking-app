@@ -3,14 +3,17 @@ import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import type { FilterType } from "../../types/index";
+import Tooltip from "@mui/material/Tooltip";
 
 interface ActionBarProps {
+  selectedNoteId: string;
   filterType: FilterType;
-  handleArchiveNote: () => void;
-  handleUnrchiveNote: () => void;
-  handleDeleteNote: () => void;
+  handleArchiveNote: (noteId: string) => void;
+  handleUnrchiveNote: (noteId: string) => void;
+  handleDeleteNote: (noteId: string) => void;
 }
 const ActionBar = ({
+  selectedNoteId,
   filterType,
   handleDeleteNote,
   handleArchiveNote,
@@ -19,24 +22,26 @@ const ActionBar = ({
   return (
     <>
       {filterType === "archived" ? (
-        <Button
-          title="Unarchive Note"
-          startIcon={<UnarchiveIcon />}
-          onClick={handleUnrchiveNote}
-        ></Button>
+        <Tooltip title="Unarchive Note" arrow>
+          <Button
+            startIcon={<UnarchiveIcon />}
+            onClick={() => handleUnrchiveNote(selectedNoteId)}
+          ></Button>
+        </Tooltip>
       ) : (
         <Button
           title="Archive Note"
           startIcon={<ArchiveOutlinedIcon />}
-          onClick={handleArchiveNote}
+          onClick={() => handleArchiveNote(selectedNoteId)}
         ></Button>
       )}
 
-      <Button
-        title="Delete Note"
-        startIcon={<DeleteOutlineOutlinedIcon />}
-        onClick={handleDeleteNote}
-      ></Button>
+      <Tooltip title="Delete">
+        <Button
+          startIcon={<DeleteOutlineOutlinedIcon />}
+          onClick={() => handleDeleteNote(selectedNoteId)}
+        ></Button>
+      </Tooltip>
     </>
   );
 };

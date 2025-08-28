@@ -12,9 +12,9 @@ interface NoteDetailHeaderProps {
   handleTitleOnChange: () => void;
   // tag:
   options: Tag[];
-  newTagValue: string;
+  noteTags: string[] | null;
   handleNewTagSave: () => void;
-  handleNewTagOnChange: () => void;
+
   // time:
   time: string;
 }
@@ -22,9 +22,8 @@ const NoteDetailHeader = ({
   title,
   handleTitleOnChange,
   options,
-  newTagValue,
+  noteTags,
   handleNewTagSave,
-  handleNewTagOnChange,
   time,
 }: //time,
 NoteDetailHeaderProps) => {
@@ -40,9 +39,8 @@ NoteDetailHeaderProps) => {
       />
       <TagsField
         options={options}
-        newTagValue={newTagValue}
-        handleNewTagSave={handleNewTagSave}
-        handleNewTagOnChange={handleNewTagOnChange}
+        noteTags={noteTags}
+        onTagSaved={handleNewTagSave}
       />
       <Box>
         {" "}

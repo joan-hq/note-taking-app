@@ -12,7 +12,6 @@ export interface Note {
   archive: boolean; // Assuming it's always present, not optional, based on usage
 }
 
-export type FilterType = "all" | "active" | "archived";
+export type FilterType = "all" | "archived";
 
 export type PopoverType = "error" | "success" | "warning" | "info";
-

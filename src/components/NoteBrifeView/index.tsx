@@ -1,25 +1,26 @@
 import { tags } from "../../data/note";
 import type { Tag, Note } from "../../types";
 import NoteCard from "../NoteCard/index";
-import { findNoteTagsByIds } from "../../helpers/tagHelpers";
+import { findTagsByIds } from "../../helpers/noteHelpers";
 
 interface NoteBrifeViewProps {
   notes: Note[];
-  onNoteCardClick: (id: string) => void;
+  handleNoteCardClick: (id: string) => void;
 }
 
-const NoteBrifeView = ({ notes, onNoteCardClick }: NoteBrifeViewProps) => {
+const NoteBrifeView = ({ notes, handleNoteCardClick }: NoteBrifeViewProps) => {
   return (
     <>
       {notes.map((note) => {
         return (
           <NoteCard
+            id={note.id}
             key={note.id}
             title={note.title}
             lastedit={note.lastEdit}
-            tags={findNoteTagsByIds(note.tags, tags)}
+            tags={findTagsByIds(note.tags, tags)}
             noteStatus={note.archive}
-            onNoteCardClick={() => onNoteCardClick(note.id)}
+            onNoteCardClick={() => handleNoteCardClick(note.id)}
           />
         );
       })}

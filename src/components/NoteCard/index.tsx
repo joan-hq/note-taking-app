@@ -6,6 +6,7 @@ import NoteCardContent from "./NoteCardContent";
 import type { Tag } from "../../types/index";
 
 interface NoteCardProps {
+  id: string;
   title: string;
   lastedit: string;
   tags: Tag[];
@@ -14,6 +15,7 @@ interface NoteCardProps {
 }
 
 const NoteCard = ({
+  id,
   title,
   tags,
   lastedit,
@@ -23,7 +25,7 @@ const NoteCard = ({
   console.log("title", title);
   return (
     <>
-      <CardActionArea onClick={() => onNoteCardClick}>
+      <CardActionArea onClick={() => onNoteCardClick(id)}>
         <Card>
           <NoteCardHeader title={title} noteStatus={noteStatus} />
           <NoteCardContent tags={tags} lastedit={lastedit} />

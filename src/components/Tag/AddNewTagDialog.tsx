@@ -6,24 +6,24 @@ import TextField from "@mui/material/TextField";
 import { useDialog } from "../../hooks/useDialog";
 
 interface AddNewTagDialogProps {
-  newTagValue: string;
+  newTagInputValue: string;
   open: boolean;
-  handleNewTagSave: () => void;
-  handleNewTagOnChange: () => void;
+  handleNewTagSubmit: () => void;
+  handleNewTagInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
   hideDialog: () => void;
 }
 const AddNewTagDialog = ({
-  newTagValue,
+  newTagInputValue,
   open,
   hideDialog,
-  handleNewTagSave,
-  handleNewTagOnChange,
+  handleNewTagSubmit,
+  handleNewTagInput,
 }: AddNewTagDialogProps) => {
   return (
     <>
       <Dialog open={open} onClose={hideDialog}>
         <DialogContent>
-          <form onSubmit={handleNewTagSave} id="addnewtag-form">
+          <form onSubmit={handleNewTagSubmit} id="addnewtag-form">
             <TextField
               autoFocus
               //required
@@ -31,8 +31,8 @@ const AddNewTagDialog = ({
               variant="standard"
               margin="dense"
               placeholder="Enter a new tag"
-              onChange={handleNewTagOnChange}
-              value={newTagValue}
+              onChange={handleNewTagInput}
+              value={newTagInputValue}
             />
           </form>
         </DialogContent>

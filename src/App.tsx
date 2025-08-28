@@ -1,21 +1,19 @@
-
 //import "./App.css";
 import Grid from "@mui/material/Grid";
 
 import NoteDetail from "./pages/NoteDetail";
 import NoteList from "./pages/NoteList";
+import NoteLayout from "./pages/NoteLayout";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-
   return (
     <>
       <Router>
         <Routes>
-
-          <Route path="/" element={<NoteList />} />
+          <Route path="/" element={<NoteLayout />} />
+          <Route path="/list" element={<NoteList />} />
           <Route path="/detail" element={<NoteDetail />} />
-
         </Routes>
       </Router>
     </>

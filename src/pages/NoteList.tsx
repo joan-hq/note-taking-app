@@ -1,38 +1,76 @@
-import NoteBrifeView from "../components/NoteBrifeView";
+import React from "react";
+import { Box } from "@mui/material";
+import { useState, useMemo } from "react";
 
-import { notes as Notes, tags } from "../data/note";
-import ActionBar from "../components/NoteActions/ActionBar";
+import type { Note } from "../types/index";
+
 import type { FilterType } from "../types/index";
-
-import type { Note } from "../types";
-
-const handleNoteCardClick = () => {
-  return window.alert("card clicked");
-};
+import NewNoteButton from "../components/NoteActions/NewNoteButton";
+import SearchBar from "../components/NoteActions/SearchBar";
+import NoteBrifeView from "../components/NoteBrifeView/index";
+import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
+import { filterNotesByQuery } from "../helpers/noteHelpers";
 
 interface NoteListProps {
   filterType: FilterType;
+  handleNewNoteClick: () => void;
 
-  handleArchiveNote: () => void;
-  handleUnrchiveNote: () => void;
-  handleDeleteNote: () => void;
+  allNotes: Note[];
+  handleNoteCardClick: (id: string) => void;
 }
 
 const NoteList = ({
-  handleArchiveNote,
-  handleUnrchiveNote,
-  handleDeleteNote,
   filterType,
+  handleNewNoteClick,
+
+  allNotes,
+  handleNoteCardClick,
 }: NoteListProps) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredNotes = useMemo(() => {
+    if (!searchQuery) {
+      return allNotes;
+    }
+
+    return filterNotesByQuery(searchQuery, allNotes);
+  }, []);
+
+  let noteFilterTitle = "";
+  if (filterType === "all") {
+    noteFilterTitle = "All Notes";
+  } else if (filterType === "archived") {
+    noteFilterTitle = "Archived Note";
+  }
+
   return (
     <>
-      <NoteBrifeView notes={Notes} onNoteCardClick={handleNoteCardClick} />
-      <ActionBar
-        filterType={filterType}
-        handleArchiveNote={handleArchiveNote}
-        handleUnrchiveNote={handleUnrchiveNote}
-        handleDeleteNote={handleDeleteNote}
-      />
+      <Box sx={{ height: "100%", overflowY: "auto" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
+          <NoteFilterResultsTitle title={noteFilterTitle} />
+          <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
+          <SearchBar
+            title={searchQuery}
+            handleSearchOnChange={handleSearchOnChange}
+          />
+        </Box>
+
+        <NoteBrifeView
+          notes={filteredNotes}
+          handleNoteCardClick={handleNoteCardClick}
+        />
+      </Box>
     </>
   );
 };

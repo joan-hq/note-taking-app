@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { useState } from "react";
 
 import Grid from "@mui/material/Grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -11,36 +12,32 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useDialog } from "../hooks/useDialog";
 
 import type { Tag } from "../types/index";
+import { findTagById } from "../helpers/noteHelpers";
 
 interface TagManagementProps {
   allTags: Tag[];
-  open: boolean;
-  hideDialog: () => void;
-  handleDeleteTagDialog: (
-    tagId: string,
-    event: React.SyntheticEvent<HTMLElement>
-  ) => void;
-
-  tagValue: string;
-  handleTagDelete: (
-    tagId: string,
-    event: React.SyntheticEvent<HTMLElement>
-  ) => void;
-
-  tagId: string;
+  onTagDeleted: (tagId: string) => void;
 }
 
-const TagManagement = ({
-  allTags,
-  open,
-  hideDialog,
-  handleDeleteTagDialog,
-  tagValue,
-  handleTagDelete,
-  tagId,
-}: TagManagementProps) => {
+const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
+  const { open, showDialog, hideDialog } = useDialog();
+  const [tagIdToDelete, setTagIdToDelete] = useState<string>("");
+  const tagToDelete = findTagById(tagIdToDelete, allTags);
+
+  const handleDeleteTagDialog = (tagId: string) => {
+    setTagIdToDelete(tagId);
+    showDialog;
+  };
+
+  const handleDeleteConfirm = () => {
+    onTagDeleted(tagIdToDelete);
+    hideDialog;
+    setTagIdToDelete("");
+  };
+
   return (
     <>
       <Box>
@@ -51,9 +48,7 @@ const TagManagement = ({
               <Chip
                 label={tag.label}
                 icon={<LocalOfferOutlinedIcon />}
-                //onClick={handleDeleteTagDialog}
-                //onDelete={(event) => handleTagDelete(tag.id, event)}
-                onDelete={(event) => handleDeleteTagDialog(tag.id, event)}
+                onDelete={() => handleDeleteTagDialog(tag.id)}
                 deleteIcon={<DeleteForeverIcon />}
                 variant="outlined"
               />
@@ -67,20 +62,17 @@ const TagManagement = ({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id={tagId}>
-            {`Do you want to delete Tag - ${tagValue}`}
+          <DialogTitle id="alert-dialog-title">
+            {`Do you want to delete Tag - ${tagToDelete?.label}`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              If this tag - {tagValue} - deleted. All notes will be effect.
+              {`If this tag - ${tagToDelete?.label} - deleted. All notes will be effect.`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={hideDialog}>Cancel</Button>
-            <Button
-              onClick={(event) => handleTagDelete(tagId, event)}
-              autoFocus
-            >
+            <Button onClick={handleDeleteConfirm} autoFocus>
               Yes
             </Button>
           </DialogActions>

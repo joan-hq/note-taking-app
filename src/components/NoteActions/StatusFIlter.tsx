@@ -3,7 +3,6 @@ import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 
@@ -26,13 +25,17 @@ const NoteStatusFilter = ({
         startIcon={<HomeOutlinedIcon />}
         endIcon={<KeyboardArrowRightOutlinedIcon />}
         onClick={handleShowAllNote}
-      />
+      >
+        All Notes
+      </Button>
       <Button
         title="Archived Notes"
         startIcon={<ArchiveOutlinedIcon />}
         endIcon={<KeyboardArrowRightOutlinedIcon />}
         onClick={handleShowArchivedNote}
-      />
+      >
+        Archived Notes
+      </Button>
     </>
   );
 };
