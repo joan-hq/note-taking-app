@@ -13,7 +13,6 @@ interface NoteLayoutProps {}
 
 const NoteLayout = () => {
   //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
-  const { open, showDialog, hideDialog } = useDialog();
 
   const {
     handleShowAllNote,
@@ -75,6 +74,7 @@ const NoteLayout = () => {
             {/* right archive and delete button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
               <ActionBar
+                allNotes={allNotes}
                 filterType={filterType}
                 selectedNoteId={selectedNoteId}
                 handleArchiveNote={handleArchiveNote}

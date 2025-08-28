@@ -16,7 +16,7 @@ interface NoteListProps {
   handleNewNoteClick: () => void;
 
   allNotes: Note[];
-  handleNoteCardClick: (id: string) => void;
+  handleNoteCardClick: (noteId: string) => void;
 }
 
 const NoteList = ({
@@ -33,12 +33,18 @@ const NoteList = ({
   };
 
   const filteredNotes = useMemo(() => {
+    const filteredNoteByType = allNotes.filter((note) => {
+      if (filterType === "archived") {
+        return note.isArchive;
+      }
+      return true;
+    });
     if (!searchQuery) {
-      return allNotes;
+      return filteredNoteByType;
     }
 
-    return filterNotesByQuery(searchQuery, allNotes);
-  }, []);
+    return filterNotesByQuery(searchQuery, filteredNoteByType);
+  }, [setSearchQuery, filterType, allNotes]);
 
   let noteFilterTitle = "";
   if (filterType === "all") {

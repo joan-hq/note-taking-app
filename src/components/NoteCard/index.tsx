@@ -11,7 +11,7 @@ interface NoteCardProps {
   lastedit: string;
   tags: Tag[];
   noteStatus: boolean;
-  onNoteCardClick: (id: string) => void;
+  onNoteCardClick: (noteId: string) => void;
 }
 
 const NoteCard = ({
@@ -22,7 +22,6 @@ const NoteCard = ({
   noteStatus,
   onNoteCardClick,
 }: NoteCardProps) => {
-  console.log("title", title);
   return (
     <>
       <CardActionArea onClick={() => onNoteCardClick(id)}>

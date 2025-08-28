@@ -47,30 +47,32 @@ const CustomPopover = ({
   anchorEl,
   onClose,
 }: CustomPopoverProps) => {
-  <Popover
-    open={open}
-    anchorEl={anchorEl}
-    onClose={onClose}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center",
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: getBackgroundColor(type),
-        color: getTextColor(type),
-        padding: "10px 15px",
-        borderRadius: "4px",
+  return (
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "center",
       }}
     >
-      <Typography sx={{ p: 1, color: "white" }}>{message}</Typography>
-    </div>
-  </Popover>;
+      <div
+        style={{
+          backgroundColor: getBackgroundColor(type),
+          color: getTextColor(type),
+          padding: "10px 15px",
+          borderRadius: "4px",
+        }}
+      >
+        <Typography sx={{ p: 1, color: "white" }}>{message}</Typography>
+      </div>
+    </Popover>
+  );
 };
 
 export default CustomPopover;

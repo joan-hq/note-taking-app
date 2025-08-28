@@ -5,7 +5,7 @@ import { findTagsByIds } from "../../helpers/noteHelpers";
 
 interface NoteBrifeViewProps {
   notes: Note[];
-  handleNoteCardClick: (id: string) => void;
+  handleNoteCardClick: (noteId: string) => void;
 }
 
 const NoteBrifeView = ({ notes, handleNoteCardClick }: NoteBrifeViewProps) => {
@@ -19,7 +19,7 @@ const NoteBrifeView = ({ notes, handleNoteCardClick }: NoteBrifeViewProps) => {
             title={note.title}
             lastedit={note.lastEdit}
             tags={findTagsByIds(note.tags, tags)}
-            noteStatus={note.archive}
+            noteStatus={note.isArchive}
             onNoteCardClick={() => handleNoteCardClick(note.id)}
           />
         );

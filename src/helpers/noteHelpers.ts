@@ -1,4 +1,10 @@
 import type { Tag, Note } from "../types/index";
+import { useCustomPopover } from "../hooks/useCustomPopover";
+import type { CustomPopoverState } from "../hooks/useCustomPopover";
+
+export const findTagById = (tagId: string, allTags: Tag[]) => {
+  return allTags.find((tag) => tag.id === tagId);
+};
 
 // This findNoteTagsByIds function according a Tag Id string [],
 // to find the label of each Id ,and return type is Tag[]
@@ -25,8 +31,12 @@ export const getTagLabelsByIds = (
   return foundTags.map((tag) => tag.label);
 };
 
-export const findTagById = (tagId: string, allTags: Tag[]) => {
-  return allTags.find((tag) => tag.id === tagId);
+export const removeTagById = (tagId: string, allTags: Tag[]): Tag[] => {
+  return allTags.filter((tag) => tag.id !== tagId);
+};
+
+export const findNoteById = (noteId: string, allNotes: Note[]) => {
+  return allNotes.find((note) => note.id === noteId);
 };
 
 export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {
@@ -35,6 +45,91 @@ export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {
   );
 };
 
-export const findNoteById = (noteId: string, allNotes: Note[]) => {
-  return allNotes.find((note) => note.id === noteId);
+/**
+ * For function findAndModifyNote
+ * @param noteId: The note need to be modified.
+ * @param allNotes: The array of the notes
+ * @param updates: An object containing the properties need to be updated
+ * @returns A new array with formath Note[] with the modified note
+ */
+
+export const findAndModifyNote = (
+  noteId: string,
+  allNotes: Note[],
+  updates: Partial<Note>
+): Note[] => {
+  return allNotes.map((note) => {
+    if (note.id === noteId) {
+      return { ...note, ...updates };
+    }
+    return note;
+  });
+};
+
+export const removeTagFromNotesByTagId = (
+  tagId: string,
+  allNotes: Note[]
+): Note[] => {
+  return allNotes.map((note) => {
+    // For each note, create a new 'tags' array by filtering out the specified tagId.
+    const updatedTags = note.tags.filter((id) => id !== tagId);
+
+    // Return a new note object with the updated tags array.
+    // The spread operator (...) ensures the rest of the note's data remains unchanged.
+    return { ...note, tags: updatedTags };
+  });
+};
+
+interface ActionMessageConfig {
+  loadingMessage: string;
+  successMessage: string;
+  errorMessage: string;
+}
+
+export const handleAsyncAction = async (
+  action: (id: string) => Promise<boolean>,
+  id: string,
+  event: React.MouseEvent<HTMLElement>,
+  popoverManager: ReturnType<typeof useCustomPopover>,
+  messageConfig: ActionMessageConfig
+) => {
+  const { showPopover } = popoverManager;
+  const { loadingMessage, successMessage, errorMessage } = messageConfig;
+
+  // show loading popover
+  const loadingPopoverState: CustomPopoverState = {
+    message: loadingMessage,
+    type: "info",
+    anchorEl: event.currentTarget,
+  };
+  showPopover(loadingPopoverState);
+
+  // wait the action to complete
+  try {
+    const isSuccess = await action(id);
+    if (isSuccess) {
+      const successState: CustomPopoverState = {
+        message: successMessage,
+        type: "success",
+        anchorEl: event.currentTarget,
+      };
+      showPopover(successState);
+    } else {
+      const errorState: CustomPopoverState = {
+        message: errorMessage,
+        type: "error",
+        anchorEl: event.currentTarget,
+      };
+      showPopover(errorState);
+    }
+  } catch (error) {
+    const otherErrorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred.";
+    const otherErrorState: CustomPopoverState = {
+      message: otherErrorMessage,
+      type: "error",
+      anchorEl: event.currentTarget,
+    };
+    showPopover(otherErrorState);
+  }
 };

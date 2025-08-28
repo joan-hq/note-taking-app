@@ -29,12 +29,12 @@ const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
 
   const handleDeleteTagDialog = (tagId: string) => {
     setTagIdToDelete(tagId);
-    showDialog;
+    showDialog();
   };
 
   const handleDeleteConfirm = () => {
     onTagDeleted(tagIdToDelete);
-    hideDialog;
+    hideDialog();
     setTagIdToDelete("");
   };
 
