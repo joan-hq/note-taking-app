@@ -33,6 +33,8 @@ const NoteLayout = () => {
 
     handleExistNoteTitleOnChange,
     handleNewTagSave,
+    handleTagsChangeFromNote,
+    handleTagDeleteFromNote,
     handleContentOnChange,
     handleNoteEditSave,
     handleNoteEditCancel,
@@ -50,6 +52,7 @@ const NoteLayout = () => {
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <NoteStatusFilter
+            filterType={filterType}
             handleShowAllNote={handleShowAllNote}
             handleShowArchivedNote={handleShowArchivedNote}
           />
@@ -59,6 +62,7 @@ const NoteLayout = () => {
         {/* middle: brife view and action */}
         <Grid item xs={12} sm={8} md={4}>
           <NoteList
+            selectedNoteId={selectedNoteId}
             allNotes={allNotes}
             filterType={filterType}
             handleNewNoteClick={handleNewNoteClick}
@@ -89,6 +93,8 @@ const NoteLayout = () => {
                 allNotes={allNotes}
                 allTags={allTags}
                 selectedNoteId={selectedNoteId}
+                handleTagsChangeFromNote={handleTagsChangeFromNote}
+                handleTagDeleteFromNote={handleTagDeleteFromNote}
                 handleExistNoteTitleOnChange={handleExistNoteTitleOnChange}
                 handleNewTagSave={handleNewTagSave}
                 handleContentOnChange={handleContentOnChange}

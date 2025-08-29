@@ -9,12 +9,13 @@ import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRig
 import type { FilterType } from "../../types/index";
 
 interface NoteStatusFilterProps {
-  //   filterType: FilterType;
+  filterType: FilterType;
   handleShowAllNote: (event: React.MouseEvent<HTMLElement>) => void;
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const NoteStatusFilter = ({
+  filterType,
   handleShowAllNote,
   handleShowArchivedNote,
 }: NoteStatusFilterProps) => {
@@ -25,6 +26,7 @@ const NoteStatusFilter = ({
         startIcon={<HomeOutlinedIcon />}
         endIcon={<KeyboardArrowRightOutlinedIcon />}
         onClick={handleShowAllNote}
+        variant={filterType === "all" ? "contained" : "text"}
       >
         All Notes
       </Button>
@@ -33,6 +35,7 @@ const NoteStatusFilter = ({
         startIcon={<ArchiveOutlinedIcon />}
         endIcon={<KeyboardArrowRightOutlinedIcon />}
         onClick={handleShowArchivedNote}
+        variant={filterType === "archived" ? "contained" : "text"}
       >
         Archived Notes
       </Button>

@@ -21,10 +21,15 @@ interface NoteDetailProps {
 
   handleExistNoteTitleOnChange: () => void;
 
+  handleTagsChangeFromNote: (
+    event: React.ChangeEvent<HTMLElement>,
+    newTags: Tag[]
+  ) => void;
   handleNewTagSave: () => void;
 
   //**Content Params*/
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleTagDeleteFromNote: (tagId: string) => void;
 
   //**Action Params */
   handleNoteEditSave: (
@@ -44,6 +49,8 @@ const NoteDetail = ({
   handleExistNoteTitleOnChange,
   //options,
   // noteTags,
+  handleTagsChangeFromNote,
+  handleTagDeleteFromNote,
   handleNewTagSave,
 
   //**Content Params*/
@@ -58,14 +65,18 @@ const NoteDetail = ({
     return <Box sx={{ p: 4, textAlign: "center" }}>Note not found.</Box>;
   }
   const existNoteTagLabels = getTagLabelsByIds(selectedNote.tags, tags);
-  const options = findTagsByIds(selectedNote.tags, allTags);
+  // console.log("existNoteTagLabels", existNoteTagLabels);
+  const noteTags = findTagsByIds(selectedNote.tags, allTags);
+
   return (
     <>
       <NoteDetailHeader
         title={selectedNote.title}
         handleTitleOnChange={handleExistNoteTitleOnChange}
-        options={options}
-        noteTags={existNoteTagLabels}
+        options={allTags}
+        noteTags={noteTags}
+        handleTagsChangeFromNote={handleTagsChangeFromNote}
+        handleTagDeleteFromNote={handleTagDeleteFromNote}
         handleNewTagSave={handleNewTagSave}
         time={selectedNote.lastEdit}
       />

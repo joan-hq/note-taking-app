@@ -17,6 +17,8 @@ interface NoteListProps {
 
   allNotes: Note[];
   handleNoteCardClick: (noteId: string) => void;
+
+  selectedNoteId: string | null;
 }
 
 const NoteList = ({
@@ -25,6 +27,8 @@ const NoteList = ({
 
   allNotes,
   handleNoteCardClick,
+
+  selectedNoteId,
 }: NoteListProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -73,6 +77,7 @@ const NoteList = ({
         </Box>
 
         <NoteBrifeView
+          selectedNoteId={selectedNoteId}
           notes={filteredNotes}
           handleNoteCardClick={handleNoteCardClick}
         />

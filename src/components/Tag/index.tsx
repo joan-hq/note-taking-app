@@ -11,10 +11,19 @@ import AddNewTagDialog from "./AddNewTagDialog";
 
 interface TagsFieldProps {
   options: Tag[];
-  noteTags: string[] | null;
+  onChange: (event: any, newTags: Tag[]) => void;
+  onDelete: (tagId: string) => void;
+
+  noteTags?: Tag[];
   onTagSaved: (newTag: string) => void;
 }
-const TagsField = ({ options, noteTags, onTagSaved }: TagsFieldProps) => {
+const TagsField = ({
+  options,
+  noteTags,
+  onChange,
+  onDelete,
+  onTagSaved,
+}: TagsFieldProps) => {
   const { open, showDialog, hideDialog } = useDialog();
   const [newTagInputValue, setNewTagInputValue] = useState("");
 
@@ -36,7 +45,12 @@ const TagsField = ({ options, noteTags, onTagSaved }: TagsFieldProps) => {
           variant="outlined"
           icon={<LocalOfferOutlinedIcon />}
         />
-        <TagSelector options={options} />
+        <TagSelector
+          options={options}
+          value={noteTags}
+          onChange={onChange}
+          onDelete={onDelete}
+        />
         <Chip
           label="add new tag"
           onClick={showDialog}

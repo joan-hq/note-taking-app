@@ -9,6 +9,7 @@ import {
   findAndModifyNote,
   removeTagById,
   removeTagFromNotesByTagId,
+  findNoteById,
 } from "../helpers/noteHelpers";
 
 interface useNoteProps {
@@ -31,6 +32,11 @@ interface useNoteProps {
 
   handleExistNoteTitleOnChange: () => void;
   handleNewTagSave: () => void;
+  handleTagsChangeFromNote: (
+    event: React.ChangeEvent<HTMLElement>,
+    newTags: Tag[]
+  ) => void;
+  handleTagDeleteFromNote: (tagId: string) => void;
   handleContentOnChange: () => void;
   handleNoteEditSave: () => void;
   handleNoteEditCancel: () => void;
@@ -114,7 +120,6 @@ export const useNote = (): useNoteProps => {
   const handleTagDelete = (tagId: string) => {
     setAllTags(removeTagById(tagId, allTags));
     setAllNotes(removeTagFromNotesByTagId(tagId, allNotes));
-    return console.log("handleTagDelete");
   };
 
   const handleExistNoteTitleOnChange = () => {
@@ -122,6 +127,36 @@ export const useNote = (): useNoteProps => {
   };
   const handleNewTagSave = () => {
     return console.log("handleNewTagSave");
+  };
+
+  const handleTagsChangeFromNote = (
+    event: React.ChangeEvent<HTMLElement>,
+    newTags: Tag[]
+  ) => {
+    if (!selectedNoteId) return;
+    const newTagId = newTags.map((newTag) => newTag.id);
+    setAllNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === selectedNoteId ? { ...note, tags: newTagId } : note
+      )
+    );
+    console.log("Note", selectedNoteId, "tags updated:", newTags);
+  };
+
+  const handleTagDeleteFromNote = (tagId: string) => {
+    if (!selectedNoteId) return;
+
+    const selectedNote = findNoteById(selectedNoteId, allNotes);
+    if (!selectedNote) return;
+
+    const newTags = selectedNote.tags.filter((id) => id !== tagId);
+    const updatedNote = { ...selectedNote, tags: newTags };
+    const newAllNotes = allNotes.map((note) =>
+      note.id === updatedNote.id ? updatedNote : note
+    );
+
+    // need change to call save note in function handleNoteSave
+    //setAllNotes(newAllNotes);
   };
   const handleContentOnChange = () => {
     return console.log("handleContentOnChange");
@@ -151,6 +186,8 @@ export const useNote = (): useNoteProps => {
 
     handleExistNoteTitleOnChange,
     handleNewTagSave,
+    handleTagsChangeFromNote,
+    handleTagDeleteFromNote,
     handleContentOnChange,
     handleNoteEditSave,
     handleNoteEditCancel,

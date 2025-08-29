@@ -26,3 +26,11 @@ export const ACTION_MESSAGES = {
     errorMessage: "Delete Failed.",
   },
 };
+
+export const TAG_ACTION_MESSAGE = {
+  DELETE: {
+    loadingMessage: "Tag Deleting...",
+    successMessage: "Tag Delete Successful!",
+    errorMessage: "Tag Delete Failed.",
+  },
+};

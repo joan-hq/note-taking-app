@@ -6,9 +6,14 @@ import { findTagsByIds } from "../../helpers/noteHelpers";
 interface NoteBrifeViewProps {
   notes: Note[];
   handleNoteCardClick: (noteId: string) => void;
+  selectedNoteId: string | null;
 }
 
-const NoteBrifeView = ({ notes, handleNoteCardClick }: NoteBrifeViewProps) => {
+const NoteBrifeView = ({
+  notes,
+  handleNoteCardClick,
+  selectedNoteId,
+}: NoteBrifeViewProps) => {
   return (
     <>
       {notes.map((note) => {
@@ -21,6 +26,7 @@ const NoteBrifeView = ({ notes, handleNoteCardClick }: NoteBrifeViewProps) => {
             tags={findTagsByIds(note.tags, tags)}
             noteStatus={note.isArchive}
             onNoteCardClick={() => handleNoteCardClick(note.id)}
+            isSelected={note.id === selectedNoteId}
           />
         );
       })}

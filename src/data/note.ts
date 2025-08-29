@@ -7,6 +7,7 @@ export const tags: Tag[] = [
   { id: "4", label: "food" },
   { id: "5", label: "location" },
   { id: "6", label: "test" },
+  { id: "7", label: "code" },
 ];
 
 export const notes: Note[] = [

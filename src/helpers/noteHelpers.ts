@@ -39,6 +39,12 @@ export const findNoteById = (noteId: string, allNotes: Note[]) => {
   return allNotes.find((note) => note.id === noteId);
 };
 
+export const newTagValidation = (tag: string) => {
+  let cleanTag = tag.trim();
+  if (cleanTag) {
+  }
+};
+
 export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {
   return allNotes.filter((note) =>
     note.title.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())

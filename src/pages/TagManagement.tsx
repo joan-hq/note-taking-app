@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Grid from "@mui/material/Grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -15,7 +15,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useDialog } from "../hooks/useDialog";
 
 import type { Tag } from "../types/index";
-import { findTagById } from "../helpers/noteHelpers";
+import { findTagById, handleAsyncAction } from "../helpers/noteHelpers";
+import CustomPopover from "../components/CustomePopover";
+import { useCustomPopover } from "../hooks/useCustomPopover";
+import { TAG_ACTION_MESSAGE } from "../constants/messages";
 
 interface TagManagementProps {
   allTags: Tag[];
@@ -24,18 +27,26 @@ interface TagManagementProps {
 
 const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
   const { open, showDialog, hideDialog } = useDialog();
-  const [tagIdToDelete, setTagIdToDelete] = useState<string>("");
-  const tagToDelete = findTagById(tagIdToDelete, allTags);
+  //const [tagIdToDelete, setTagIdToDelete] = useState<string>("");
+  const popoverManage = useCustomPopover();
+  const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
 
   const handleDeleteTagDialog = (tagId: string) => {
-    setTagIdToDelete(tagId);
+    const foundTag = findTagById(tagId, allTags);
+    if (foundTag) {
+      setTagToDelete(foundTag);
+    }
     showDialog();
   };
 
-  const handleDeleteConfirm = () => {
-    onTagDeleted(tagIdToDelete);
+  const handleDeleteConfirm = async (tagId: string): Promise<boolean> => {
+    onTagDeleted(tagId);
     hideDialog();
-    setTagIdToDelete("");
+    return true;
+  };
+
+  const handleDialogExited = () => {
+    setTagToDelete(null);
   };
 
   return (
@@ -61,6 +72,7 @@ const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
           onClose={hideDialog}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          TransitionProps={{ onExited: handleDialogExited }}
         >
           <DialogTitle id="alert-dialog-title">
             {`Do you want to delete Tag - ${tagToDelete?.label}`}
@@ -72,11 +84,30 @@ const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={hideDialog}>Cancel</Button>
-            <Button onClick={handleDeleteConfirm} autoFocus>
+            <Button
+              onClick={(event) =>
+                handleAsyncAction(
+                  handleDeleteConfirm,
+                  tagToDelete?.id || "",
+                  event,
+                  popoverManage,
+                  TAG_ACTION_MESSAGE.DELETE
+                )
+              }
+              autoFocus
+            >
               Yes
             </Button>
           </DialogActions>
         </Dialog>
+
+        <CustomPopover
+          open={popoverManage.open}
+          type={popoverManage.type}
+          message={popoverManage.message}
+          anchorEl={popoverManage.anchorEl}
+          onClose={popoverManage.hidePopover}
+        />
       </Box>
     </>
   );

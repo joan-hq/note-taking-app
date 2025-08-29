@@ -12,6 +12,7 @@ interface NoteCardProps {
   tags: Tag[];
   noteStatus: boolean;
   onNoteCardClick: (noteId: string) => void;
+  isSelected: boolean;
 }
 
 const NoteCard = ({
@@ -21,11 +22,19 @@ const NoteCard = ({
   lastedit,
   noteStatus,
   onNoteCardClick,
+  isSelected,
 }: NoteCardProps) => {
   return (
     <>
       <CardActionArea onClick={() => onNoteCardClick(id)}>
-        <Card>
+        <Card
+          sx={{
+            border: isSelected ? "2px solid" : "1px solid",
+            borderColor: isSelected ? "primary.main" : "divider",
+            boxShadow: isSelected ? 4 : 1,
+            transition: "all 0.2s ease-in-out",
+          }}
+        >
           <NoteCardHeader title={title} noteStatus={noteStatus} />
           <NoteCardContent tags={tags} lastedit={lastedit} />
         </Card>
