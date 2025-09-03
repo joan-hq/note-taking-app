@@ -9,7 +9,7 @@ import type { Tag } from "../../types/index";
 interface NoteDetailHeaderProps {
   // title:
   title: string;
-  handleTitleOnChange: () => void;
+  handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   // tag:
   options: Tag[];
   noteTags?: Tag[];
@@ -19,7 +19,7 @@ interface NoteDetailHeaderProps {
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
 
-  handleNewTagSave: () => void;
+  handleNewTagSave: (newTag: Tag) => void;
 
   // time:
   time: string;

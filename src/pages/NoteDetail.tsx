@@ -19,13 +19,15 @@ interface NoteDetailProps {
   //**Header Params */
   // title:
 
-  handleExistNoteTitleOnChange: () => void;
+  handleExistNoteTitleOnChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
 
   handleTagsChangeFromNote: (
     event: React.ChangeEvent<HTMLElement>,
     newTags: Tag[]
   ) => void;
-  handleNewTagSave: () => void;
+  handleNewTagSave: (newTag: Tag) => void;
 
   //**Content Params*/
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

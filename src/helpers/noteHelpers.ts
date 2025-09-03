@@ -1,6 +1,7 @@
 import type { Tag, Note } from "../types/index";
 import { useCustomPopover } from "../hooks/useCustomPopover";
 import type { CustomPopoverState } from "../hooks/useCustomPopover";
+import { TAG_VALIDATION_MESSAGES } from "../constants/messages";
 
 export const findTagById = (tagId: string, allTags: Tag[]) => {
   return allTags.find((tag) => tag.id === tagId);
@@ -39,10 +40,29 @@ export const findNoteById = (noteId: string, allNotes: Note[]) => {
   return allNotes.find((note) => note.id === noteId);
 };
 
-export const newTagValidation = (tag: string) => {
-  let cleanTag = tag.trim();
-  if (cleanTag) {
+export const newTagValidation = (
+  tag: string,
+  allTags: Tag[]
+): string | null => {
+  const cleanTag = tag.trim();
+
+  if (!cleanTag) {
+    return TAG_VALIDATION_MESSAGES.WHITESPACE;
   }
+
+  if (cleanTag.length < 3) {
+    return TAG_VALIDATION_MESSAGES.MIN_LENGTH;
+  }
+
+  if (cleanTag.length > 20) {
+    return TAG_VALIDATION_MESSAGES.MAX_LENGTH;
+  }
+
+  if (allTags.some((tag) => tag.label === cleanTag)) {
+    return TAG_VALIDATION_MESSAGES.ALREADY_EXIST;
+  }
+
+  return null;
 };
 
 export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {

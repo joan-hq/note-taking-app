@@ -8,7 +8,7 @@ import { useDialog } from "../../hooks/useDialog";
 interface AddNewTagDialogProps {
   newTagInputValue: string;
   open: boolean;
-  handleNewTagSubmit: () => void;
+  handleNewTagSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   handleNewTagInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
   hideDialog: () => void;
 }

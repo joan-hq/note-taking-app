@@ -17,6 +17,7 @@ const NoteDetailContent = ({
         multiline
         value={noteValue}
         onChange={handleContentOnChange}
+        fullWidth
       />
     </Box>
   );

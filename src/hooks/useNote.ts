@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type FormEvent } from "react";
 import type { Note, Tag, FilterType, PopoverType } from "../types/index";
+import { useCustomPopover } from "../hooks/useCustomPopover";
+import type { CustomPopoverState } from "../hooks/useCustomPopover";
 import {
   notes as initialNotesData,
   tags as initialTagsData,
@@ -10,7 +12,9 @@ import {
   removeTagById,
   removeTagFromNotesByTagId,
   findNoteById,
+  newTagValidation,
 } from "../helpers/noteHelpers";
+import { Anchor } from "@mui/icons-material";
 
 interface useNoteProps {
   handleShowAllNote: () => void;
@@ -30,14 +34,16 @@ interface useNoteProps {
   handleUnrchiveNote: (noteId: string) => Promise<boolean>;
   handleDeleteNote: (noteId: string) => Promise<boolean>;
 
-  handleExistNoteTitleOnChange: () => void;
-  handleNewTagSave: () => void;
+  handleExistNoteTitleOnChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
+  handleNewTagSave: (newTag: Tag) => void;
   handleTagsChangeFromNote: (
     event: React.ChangeEvent<HTMLElement>,
     newTags: Tag[]
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
-  handleContentOnChange: () => void;
+  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleNoteEditSave: () => void;
   handleNoteEditCancel: () => void;
 }
@@ -122,11 +128,44 @@ export const useNote = (): useNoteProps => {
     setAllNotes(removeTagFromNotesByTagId(tagId, allNotes));
   };
 
-  const handleExistNoteTitleOnChange = () => {
-    return console.log("handleExistNoteTitleOnChange");
+  const handleExistNoteTitleOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    return console.log("handleExistNoteTitleOnChange", event.target.value);
   };
-  const handleNewTagSave = () => {
-    return console.log("handleNewTagSave");
+
+  const handleNewTagSave = (newTag: Tag) => {
+    setAllTags((prevTags) => {
+      return [...prevTags, newTag];
+    });
+
+    if (selectedNoteId) {
+      // This function must return a new array for `setAllNotes`.
+      setAllNotes((prevNotes) => {
+        const noteIndex = prevNotes.findIndex(
+          (note) => note.id === selectedNoteId
+        );
+
+        // If a matching note is found, create a new array.
+        if (noteIndex !== -1) {
+          const updatedNote = {
+            ...prevNotes[noteIndex],
+            tags: [...prevNotes[noteIndex].tags, newTag.id],
+          };
+
+          const updatedAllNotes = [
+            ...prevNotes.slice(0, noteIndex),
+            updatedNote,
+            ...prevNotes.slice(noteIndex + 1),
+          ];
+
+          return updatedAllNotes;
+        }
+
+        // If no note was found, return the original array unchanged.
+        return prevNotes;
+      });
+    }
   };
 
   const handleTagsChangeFromNote = (
@@ -158,8 +197,40 @@ export const useNote = (): useNoteProps => {
     // need change to call save note in function handleNoteSave
     //setAllNotes(newAllNotes);
   };
-  const handleContentOnChange = () => {
-    return console.log("handleContentOnChange");
+  const handleContentOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!selectedNoteId) {
+      return;
+    }
+
+    const newContent = event.target.value;
+    console.log(selectedNoteId);
+
+    setAllNotes((prevNotes) => {
+      const noteIndex = prevNotes.findIndex(
+        (note) => note.id === selectedNoteId
+      );
+
+      if (noteIndex !== -1) {
+        const updatedNote = {
+          ...prevNotes[noteIndex],
+          content: newContent,
+        };
+
+        // 3. Create a new array with the updated note
+        const updatedAllNotes = [
+          ...prevNotes.slice(0, noteIndex),
+          updatedNote,
+          ...prevNotes.slice(noteIndex + 1),
+        ];
+
+        return updatedAllNotes;
+      }
+
+      // If for some reason the note is not found, return the previous state
+      return prevNotes;
+    });
   };
   const handleNoteEditSave = () => {
     return console.log("handleNoteEditSave");

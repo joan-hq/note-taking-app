@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Paper, styled } from "@mui/material";
 import TagManagement from "./TagManagement";
 import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
 import NoteStatusFilter from "../components/NoteActions/StatusFilter";
@@ -10,6 +10,13 @@ import { useNote } from "../hooks/useNote";
 import { useDialog } from "../hooks/useDialog";
 
 interface NoteLayoutProps {}
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  padding: theme.spacing(2),
+}));
 
 const NoteLayout = () => {
   //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
@@ -51,30 +58,32 @@ const NoteLayout = () => {
           md={2}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-          <NoteStatusFilter
-            filterType={filterType}
-            handleShowAllNote={handleShowAllNote}
-            handleShowArchivedNote={handleShowArchivedNote}
-          />
-          <TagManagement allTags={allTags} onTagDeleted={handleTagDelete} />
+          <StyledPaper>
+            <NoteStatusFilter
+              filterType={filterType}
+              handleShowAllNote={handleShowAllNote}
+              handleShowArchivedNote={handleShowArchivedNote}
+            />
+            <TagManagement allTags={allTags} onTagDeleted={handleTagDelete} />
+          </StyledPaper>
         </Grid>
 
         {/* middle: brife view and action */}
         <Grid item xs={12} sm={8} md={4}>
-          <NoteList
-            selectedNoteId={selectedNoteId}
-            allNotes={allNotes}
-            filterType={filterType}
-            handleNewNoteClick={handleNewNoteClick}
-            handleNoteCardClick={handleNoteCardClick}
-          />
+          <StyledPaper>
+            <NoteList
+              selectedNoteId={selectedNoteId}
+              allNotes={allNotes}
+              filterType={filterType}
+              handleNewNoteClick={handleNewNoteClick}
+              handleNoteCardClick={handleNoteCardClick}
+            />
+          </StyledPaper>
         </Grid>
 
         {/* 右栏: 详情和操作按钮 */}
         <Grid item xs={12} md={6}>
-          <Box
-            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
+          <StyledPaper>
             {/* right archive and delete button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
               <ActionBar
@@ -102,7 +111,7 @@ const NoteLayout = () => {
                 handleNoteEditCancel={handleNoteEditCancel}
               />
             </Box>
-          </Box>
+          </StyledPaper>
         </Grid>
       </Grid>
     </Box>

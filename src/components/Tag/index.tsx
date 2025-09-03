@@ -8,6 +8,11 @@ import { useState } from "react";
 
 import TagSelector from "./TagSelector";
 import AddNewTagDialog from "./AddNewTagDialog";
+import CustomPopover from "../CustomePopover";
+import { useCustomPopover } from "../../hooks/useCustomPopover";
+import type { CustomPopoverState } from "../../hooks/useCustomPopover";
+import { newTagValidation } from "../../helpers/noteHelpers";
+import { v4 as uuidv4 } from "uuid";
 
 interface TagsFieldProps {
   options: Tag[];
@@ -15,7 +20,7 @@ interface TagsFieldProps {
   onDelete: (tagId: string) => void;
 
   noteTags?: Tag[];
-  onTagSaved: (newTag: string) => void;
+  onTagSaved: (newTag: Tag) => void;
 }
 const TagsField = ({
   options,
@@ -26,13 +31,27 @@ const TagsField = ({
 }: TagsFieldProps) => {
   const { open, showDialog, hideDialog } = useDialog();
   const [newTagInputValue, setNewTagInputValue] = useState("");
+  const popoverManager = useCustomPopover();
 
   const handleNewTagInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTagInputValue(event.target.value);
   };
 
-  const handleNewTagSubmit = () => {
-    onTagSaved(newTagInputValue);
+  const handleNewTagSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const errorMessage = newTagValidation(newTagInputValue, options);
+    if (errorMessage) {
+      const loadingPopoverState: CustomPopoverState = {
+        message: errorMessage,
+        type: "error",
+        anchorEl: event.currentTarget as HTMLElement,
+      };
+      popoverManager.showPopover(loadingPopoverState);
+      return;
+    }
+    const newTag = { id: uuidv4(), label: newTagInputValue };
+    popoverManager.hidePopover();
+    onTagSaved(newTag);
     setNewTagInputValue("");
     hideDialog();
   };
@@ -64,6 +83,14 @@ const TagsField = ({
           handleNewTagInput={handleNewTagInput}
           handleNewTagSubmit={handleNewTagSubmit}
           hideDialog={hideDialog}
+        />
+
+        <CustomPopover
+          open={popoverManager.open}
+          message={popoverManager.message}
+          type={popoverManager.type}
+          anchorEl={popoverManager.anchorEl}
+          onClose={popoverManager.hidePopover}
         />
       </Box>
     </>
