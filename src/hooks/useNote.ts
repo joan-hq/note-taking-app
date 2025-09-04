@@ -12,7 +12,7 @@ import {
   removeTagById,
   removeTagFromNotesByTagId,
   findNoteById,
-  newTagValidation,
+  updateNoteByNoteId,
 } from "../helpers/noteHelpers";
 import { Anchor } from "@mui/icons-material";
 
@@ -44,8 +44,6 @@ interface useNoteProps {
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleNoteEditSave: () => void;
-  handleNoteEditCancel: () => void;
 }
 
 export const useNote = (): useNoteProps => {
@@ -54,6 +52,8 @@ export const useNote = (): useNoteProps => {
   const [allNotes, setAllNotes] = useState<Note[]>(initialNotesData);
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+
+  useEffect(() => {}, [allNotes, allTags]);
 
   const handleShowAllNote = useCallback(() => {
     setFilterType("all");
@@ -69,6 +69,8 @@ export const useNote = (): useNoteProps => {
   const handleNoteCardClick = (nodeId: string) => {
     return setSelectedNoteId(nodeId);
   };
+
+  /* START ACTION BAR PROCESSING */
 
   const handleArchiveNote = useCallback(
     async (noteId: string): Promise<boolean> => {
@@ -123,16 +125,37 @@ export const useNote = (): useNoteProps => {
     },
     [allNotes]
   );
+
+  /* END ACTION BAR PROCESSING */
+
+  /**
+   * For Tag management
+   * @param tagId a tag need to be deleted
+   */
   const handleTagDelete = (tagId: string) => {
     setAllTags(removeTagById(tagId, allTags));
     setAllNotes(removeTagFromNotesByTagId(tagId, allNotes));
   };
 
+  /* START EXIST NOTE DETAILS EDIT PROCESSING */
   const handleExistNoteTitleOnChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    return console.log("handleExistNoteTitleOnChange", event.target.value);
+    const newTitle = event.target.value;
+    if (selectedNoteId) {
+      setAllNotes((prevNotes) =>
+        updateNoteByNoteId(prevNotes, selectedNoteId, (note) => ({
+          ...note,
+          title: newTitle,
+        }))
+      );
+    }
   };
+
+  /**
+   * For exist note tags edit, add a new tag to the note
+   * @param newTag
+   */
 
   const handleNewTagSave = (newTag: Tag) => {
     setAllTags((prevTags) => {
@@ -140,31 +163,12 @@ export const useNote = (): useNoteProps => {
     });
 
     if (selectedNoteId) {
-      // This function must return a new array for `setAllNotes`.
-      setAllNotes((prevNotes) => {
-        const noteIndex = prevNotes.findIndex(
-          (note) => note.id === selectedNoteId
-        );
-
-        // If a matching note is found, create a new array.
-        if (noteIndex !== -1) {
-          const updatedNote = {
-            ...prevNotes[noteIndex],
-            tags: [...prevNotes[noteIndex].tags, newTag.id],
-          };
-
-          const updatedAllNotes = [
-            ...prevNotes.slice(0, noteIndex),
-            updatedNote,
-            ...prevNotes.slice(noteIndex + 1),
-          ];
-
-          return updatedAllNotes;
-        }
-
-        // If no note was found, return the original array unchanged.
-        return prevNotes;
-      });
+      setAllNotes((prevNotes) =>
+        updateNoteByNoteId(prevNotes, selectedNoteId, (note) => ({
+          ...note,
+          tags: [...note.tags, newTag.id],
+        }))
+      );
     }
   };
 
@@ -195,8 +199,9 @@ export const useNote = (): useNoteProps => {
     );
 
     // need change to call save note in function handleNoteSave
-    //setAllNotes(newAllNotes);
+    setAllNotes(newAllNotes);
   };
+
   const handleContentOnChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -205,39 +210,14 @@ export const useNote = (): useNoteProps => {
     }
 
     const newContent = event.target.value;
-    console.log(selectedNoteId);
-
-    setAllNotes((prevNotes) => {
-      const noteIndex = prevNotes.findIndex(
-        (note) => note.id === selectedNoteId
-      );
-
-      if (noteIndex !== -1) {
-        const updatedNote = {
-          ...prevNotes[noteIndex],
-          content: newContent,
-        };
-
-        // 3. Create a new array with the updated note
-        const updatedAllNotes = [
-          ...prevNotes.slice(0, noteIndex),
-          updatedNote,
-          ...prevNotes.slice(noteIndex + 1),
-        ];
-
-        return updatedAllNotes;
-      }
-
-      // If for some reason the note is not found, return the previous state
-      return prevNotes;
-    });
+    setAllNotes((prevNotes) =>
+      updateNoteByNoteId(prevNotes, selectedNoteId, (note) => ({
+        ...note,
+        content: newContent,
+      }))
+    );
   };
-  const handleNoteEditSave = () => {
-    return console.log("handleNoteEditSave");
-  };
-  const handleNoteEditCancel = () => {
-    return console.log("handleNoteEditCancel");
-  };
+  /* END EXIST NOTE DETAILS EDIT PROCESSING */
 
   return {
     handleShowAllNote,
@@ -260,7 +240,5 @@ export const useNote = (): useNoteProps => {
     handleTagsChangeFromNote,
     handleTagDeleteFromNote,
     handleContentOnChange,
-    handleNoteEditSave,
-    handleNoteEditCancel,
   };
 };

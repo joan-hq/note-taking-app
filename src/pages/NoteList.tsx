@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import { useState, useMemo } from "react";
 
-import type { Note } from "../types/index";
+import type { Tag, Note } from "../types/index";
 
 import type { FilterType } from "../types/index";
 import NewNoteButton from "../components/NoteActions/NewNoteButton";
@@ -17,6 +17,7 @@ interface NoteListProps {
 
   allNotes: Note[];
   handleNoteCardClick: (noteId: string) => void;
+  allTags: Tag[];
 
   selectedNoteId: string | null;
 }
@@ -27,6 +28,7 @@ const NoteList = ({
 
   allNotes,
   handleNoteCardClick,
+  allTags,
 
   selectedNoteId,
 }: NoteListProps) => {
@@ -80,6 +82,7 @@ const NoteList = ({
           selectedNoteId={selectedNoteId}
           notes={filteredNotes}
           handleNoteCardClick={handleNoteCardClick}
+          allTags={allTags}
         />
       </Box>
     </>

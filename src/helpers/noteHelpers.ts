@@ -159,3 +159,34 @@ export const handleAsyncAction = async (
     showPopover(otherErrorState);
   }
 };
+
+/**
+ * For function updateNoteByNoteId
+ * @param prevNote the array of all notes
+ * @param noteId  the note id which need to be updated
+ * @param updateNoteDetails a function and accept one param, note object,
+ * for update the modified note
+ * @returns return the array of all notes
+ */
+
+export const updateNoteByNoteId = (
+  prevNote: Note[],
+  noteId: string,
+
+  /* This updateNoteDetails is a function to update the note object */
+  updateNoteDetails: (note: Note) => Note
+): Note[] => {
+  const noteIndex = prevNote.findIndex((note) => note.id === noteId);
+
+  if (noteIndex !== -1) {
+    const updatedNote = updateNoteDetails(prevNote[noteIndex]);
+
+    return [
+      ...prevNote.slice(0, noteIndex),
+      updatedNote,
+      ...prevNote.slice(noteIndex + 1),
+    ];
+  }
+
+  return prevNote;
+};

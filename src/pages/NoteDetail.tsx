@@ -32,14 +32,6 @@ interface NoteDetailProps {
   //**Content Params*/
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
-
-  //**Action Params */
-  handleNoteEditSave: (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.FormEvent<HTMLFormElement>
-  ) => void;
-  handleNoteEditCancel: () => void;
 }
 
 const NoteDetail = ({
@@ -58,9 +50,6 @@ const NoteDetail = ({
   //**Content Params*/
 
   handleContentOnChange,
-  //**Action Params */
-  handleNoteEditSave,
-  handleNoteEditCancel,
 }: NoteDetailProps) => {
   const selectedNote = findNoteById(selectedNoteId, allNotes);
   if (!selectedNote) {
@@ -86,10 +75,6 @@ const NoteDetail = ({
       <NoteDetailContent
         noteValue={selectedNote.content}
         handleContentOnChange={handleContentOnChange}
-      />
-      <NoteDetailAction
-        handleNoteEditSave={handleNoteEditSave}
-        handleNoteEditCancel={handleNoteEditCancel}
       />
     </>
   );

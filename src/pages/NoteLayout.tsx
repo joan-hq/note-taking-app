@@ -43,8 +43,6 @@ const NoteLayout = () => {
     handleTagsChangeFromNote,
     handleTagDeleteFromNote,
     handleContentOnChange,
-    handleNoteEditSave,
-    handleNoteEditCancel,
   } = useNote();
 
   return (
@@ -77,6 +75,7 @@ const NoteLayout = () => {
               filterType={filterType}
               handleNewNoteClick={handleNewNoteClick}
               handleNoteCardClick={handleNoteCardClick}
+              allTags={allTags}
             />
           </StyledPaper>
         </Grid>
@@ -107,8 +106,6 @@ const NoteLayout = () => {
                 handleExistNoteTitleOnChange={handleExistNoteTitleOnChange}
                 handleNewTagSave={handleNewTagSave}
                 handleContentOnChange={handleContentOnChange}
-                handleNoteEditSave={handleNoteEditSave}
-                handleNoteEditCancel={handleNoteEditCancel}
               />
             </Box>
           </StyledPaper>
