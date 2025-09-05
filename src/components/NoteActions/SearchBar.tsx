@@ -1,84 +1,47 @@
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
+import { IconButton } from "@mui/material";
+import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
 interface SearchBarProps {
-  title: string;
+  searchQuery: string;
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isOpen: boolean;
+  handleSearchIconClick: () => void;
+  handleBlur: () => void;
 }
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(0),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
+  padding: theme.spacing(1, 1, 1, 0),
   width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
 }));
 
-const SearchBar = ({ title, handleSearchOnChange }: SearchBarProps) => {
+const SearchBar = ({
+  searchQuery,
+  handleSearchOnChange,
+  isOpen,
+  handleSearchIconClick,
+  handleBlur,
+}: SearchBarProps) => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          {title}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          ></Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              name="search"
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-              onChange={handleSearchOnChange}
-            />
-          </Search>
-        </Toolbar>
-      </AppBar>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <IconButton onClick={handleSearchIconClick} size="large" color="primary">
+        <SearchIcon />
+      </IconButton>
+      {isOpen && (
+        <StyledInputBase
+          placeholder="Search..."
+          inputProps={{ "aria-label": "search" }}
+          value={searchQuery}
+          onChange={handleSearchOnChange}
+          onBlur={handleBlur}
+          autoFocus
+        />
+      )}
     </Box>
   );
 };

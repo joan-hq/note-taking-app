@@ -12,8 +12,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<NoteLayout />} />
-          <Route path="/list" element={<NoteList />} />
-          <Route path="/detail" element={<NoteDetail />} />
+          {/* <Route path="/note/:noteId" element={<NoteDetail />} /> */}
         </Routes>
       </Router>
     </>

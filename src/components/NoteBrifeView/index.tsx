@@ -15,9 +15,12 @@ const NoteBrifeView = ({
   selectedNoteId,
   allTags,
 }: NoteBrifeViewProps) => {
+  const sortedNote = [...notes].sort((a, b) => {
+    return new Date(b.lastEdit).getTime() - new Date(a.lastEdit).getTime();
+  });
   return (
     <>
-      {notes.map((note) => {
+      {sortedNote.map((note) => {
         return (
           <NoteCard
             id={note.id}

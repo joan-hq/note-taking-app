@@ -13,12 +13,13 @@ import { filterNotesByQuery } from "../helpers/noteHelpers";
 
 interface NoteListProps {
   filterType: FilterType;
-  handleNewNoteClick: () => void;
+  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
 
   allNotes: Note[];
   handleNoteCardClick: (noteId: string) => void;
   allTags: Tag[];
 
+  selectedTagId: string | null;
   selectedNoteId: string | null;
 }
 
@@ -30,12 +31,23 @@ const NoteList = ({
   handleNoteCardClick,
   allTags,
 
+  selectedTagId,
   selectedNoteId,
 }: NoteListProps) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Search query entered:", event.target.value);
     setSearchQuery(event.target.value);
+  };
+
+  const handleSearchIconClick = () => {
+    setIsSearchOpen(true);
+  };
+
+  const handleBlur = () => {
+    setIsSearchOpen(false);
   };
 
   const filteredNotes = useMemo(() => {
@@ -45,12 +57,20 @@ const NoteList = ({
       }
       return true;
     });
-    if (!searchQuery) {
-      return filteredNoteByType;
-    }
 
-    return filterNotesByQuery(searchQuery, filteredNoteByType);
-  }, [setSearchQuery, filterType, allNotes]);
+    console.log("Current searchQuery:", searchQuery);
+    console.log("Notes before search filter:", filteredNoteByType);
+
+    const filteredBySearch = searchQuery
+      ? filterNotesByQuery(searchQuery, filteredNoteByType, allTags)
+      : filteredNoteByType;
+
+    const filteredByTag = selectedTagId
+      ? filteredBySearch.filter((note) => note.tags.includes(selectedTagId))
+      : filteredBySearch;
+
+    return filteredByTag;
+  }, [searchQuery, filterType, allNotes, selectedTagId]);
 
   let noteFilterTitle = "";
   if (filterType === "all") {
@@ -73,8 +93,11 @@ const NoteList = ({
           <NoteFilterResultsTitle title={noteFilterTitle} />
           <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
           <SearchBar
-            title={searchQuery}
+            searchQuery={searchQuery}
             handleSearchOnChange={handleSearchOnChange}
+            isOpen={isSearchOpen}
+            handleBlur={handleBlur}
+            handleSearchIconClick={handleSearchIconClick}
           />
         </Box>
 

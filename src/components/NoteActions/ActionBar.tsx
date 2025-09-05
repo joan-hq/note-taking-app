@@ -12,7 +12,7 @@ import type { Note } from "../../types/index";
 
 interface ActionBarProps {
   allNotes: Note[];
-  selectedNoteId: string;
+  selectedNoteId: string | null;
   filterType: FilterType;
   handleArchiveNote: (noteId: string) => Promise<boolean>;
   handleUnrchiveNote: (noteId: string) => Promise<boolean>;
@@ -27,7 +27,9 @@ const ActionBar = ({
   handleUnrchiveNote,
 }: ActionBarProps) => {
   const popoverManager = useCustomPopover();
-  const selectedNote = findNoteById(selectedNoteId, allNotes);
+  const selectedNote = selectedNoteId
+    ? findNoteById(selectedNoteId, allNotes)
+    : null;
 
   return (
     <>
@@ -38,7 +40,7 @@ const ActionBar = ({
             onClick={(event) =>
               handleAsyncAction(
                 handleUnrchiveNote,
-                selectedNoteId,
+                selectedNoteId as string,
                 event,
                 popoverManager,
                 ACTION_MESSAGES.UNARCHIVE
@@ -55,7 +57,7 @@ const ActionBar = ({
           onClick={(event) =>
             handleAsyncAction(
               handleArchiveNote,
-              selectedNoteId,
+              selectedNoteId as string,
               event,
               popoverManager,
               ACTION_MESSAGES.ARCHIVE
@@ -72,7 +74,7 @@ const ActionBar = ({
           onClick={(event) =>
             handleAsyncAction(
               handleDeleteNote,
-              selectedNoteId,
+              selectedNoteId as string,
               event,
               popoverManager,
               ACTION_MESSAGES.DELETE

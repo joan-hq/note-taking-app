@@ -2,6 +2,7 @@ import type { Tag, Note } from "../types/index";
 import { useCustomPopover } from "../hooks/useCustomPopover";
 import type { CustomPopoverState } from "../hooks/useCustomPopover";
 import { TAG_VALIDATION_MESSAGES } from "../constants/messages";
+import { v4 as uuidv4 } from "uuid";
 
 export const findTagById = (tagId: string, allTags: Tag[]) => {
   return allTags.find((tag) => tag.id === tagId);
@@ -65,9 +66,72 @@ export const newTagValidation = (
   return null;
 };
 
-export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {
-  return allNotes.filter((note) =>
-    note.title.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+export const getTagIdsBySearchQuery = (searchQuery: string, allTags: Tag[]) => {
+  const lowerCaseSearchQuery = searchQuery.toLocaleLowerCase();
+  return allTags
+    .filter((tag) =>
+      tag.label.toLocaleLowerCase().includes(lowerCaseSearchQuery)
+    )
+    .map((tag) => tag.id);
+};
+
+export const filterNotesByQuery = (
+  searchQuery: string,
+  allNotes: Note[],
+  allTags: Tag[]
+) => {
+  const lowerCaseSearchQuery = searchQuery.toLocaleLowerCase();
+
+  const machedTagIds = getTagIdsBySearchQuery(lowerCaseSearchQuery, allTags);
+
+  return allNotes.filter((note) => {
+    const titleMatch = note.title
+      .toLocaleLowerCase()
+      .includes(lowerCaseSearchQuery);
+    const contentMatch = note.content
+      .toLocaleLowerCase()
+      .includes(lowerCaseSearchQuery);
+    const tagsMatch = note.tags.some((tagId) => machedTagIds.includes(tagId));
+    return titleMatch || contentMatch || tagsMatch;
+  });
+};
+
+/**
+ * For function createNewNote, to create a new note
+ * @param Partial<Note>: expect an object,
+ * and the object is valid of the Note.It don't have to contain all properties of a Note.
+ * @returns n new note
+ */
+export const createNewNote = (changes: Partial<Note>): Note => {
+  const newId = uuidv4();
+  const timeString = new Date().toISOString();
+  const datePart = timeString.split("T")[0];
+  const timePart = timeString.split("T")[1].slice(0, 8);
+  const editTime = `${datePart} ${timePart}`;
+  const newNote = {
+    id: newId,
+    title: "New Note",
+    content: "",
+    tags: [],
+    isArchive: false,
+    lastEdit: editTime,
+    ...changes,
+  };
+
+  return newNote;
+};
+
+/**
+ * For function isEmptyNote
+ * @param note a note object, to check if the note is a empty note
+ * @returns return boolean
+ */
+
+export const isEmptyNote = (note: Note) => {
+  return (
+    note.title === "New Note" &&
+    note.content.trim() === "" &&
+    note.tags.length === 0
   );
 };
 
@@ -78,7 +142,6 @@ export const filterNotesByQuery = (searchQuery: string, allNotes: Note[]) => {
  * @param updates: An object containing the properties need to be updated
  * @returns A new array with formath Note[] with the modified note
  */
-
 export const findAndModifyNote = (
   noteId: string,
   allNotes: Note[],
@@ -97,11 +160,7 @@ export const removeTagFromNotesByTagId = (
   allNotes: Note[]
 ): Note[] => {
   return allNotes.map((note) => {
-    // For each note, create a new 'tags' array by filtering out the specified tagId.
     const updatedTags = note.tags.filter((id) => id !== tagId);
-
-    // Return a new note object with the updated tags array.
-    // The spread operator (...) ensures the rest of the note's data remains unchanged.
     return { ...note, tags: updatedTags };
   });
 };
@@ -161,6 +220,47 @@ export const handleAsyncAction = async (
 };
 
 /**
+ * For function handleNoteStateChanges to handle all note detail changes if there is a note selected
+ * to create a new note if there is no note selected.
+ * @param prevNotes the array of all note.
+ * @param selectedNoteId the selected note id to indecate which note have changes.
+ * @param changes: some changes from the note.
+ * @returns updatedNotes which is Note[], newSelectedNoteId string or null.
+ */
+export const handleNoteStateChanges = (
+  prevNotes: Note[],
+  selectedNoteId: string | null,
+  changes: Partial<Note>
+): { updatedNotes: Note[]; newSelectedNoteId: string | null } => {
+  if (selectedNoteId) {
+    const noteIndex = prevNotes.findIndex((note) => note.id === selectedNoteId);
+    if (noteIndex !== -1) {
+      // note founded
+      const updatedNote = {
+        ...prevNotes[noteIndex],
+        ...changes,
+      };
+
+      const updatedNotes = [
+        ...prevNotes.slice(0, noteIndex),
+        updatedNote,
+        ...prevNotes.slice(noteIndex + 1),
+      ];
+
+      return { updatedNotes, newSelectedNoteId: selectedNoteId };
+    } else {
+      //no note founded
+      return { updatedNotes: prevNotes, newSelectedNoteId: selectedNoteId };
+    }
+  } else {
+    // create a new note
+    const newNote = createNewNote(changes);
+    const updatedNotes = [...prevNotes, newNote];
+    return { updatedNotes, newSelectedNoteId: newNote.id };
+  }
+};
+
+/**
  * For function updateNoteByNoteId
  * @param prevNote the array of all notes
  * @param noteId  the note id which need to be updated
@@ -170,23 +270,23 @@ export const handleAsyncAction = async (
  */
 
 export const updateNoteByNoteId = (
-  prevNote: Note[],
+  prevNotes: Note[],
   noteId: string,
 
   /* This updateNoteDetails is a function to update the note object */
   updateNoteDetails: (note: Note) => Note
 ): Note[] => {
-  const noteIndex = prevNote.findIndex((note) => note.id === noteId);
+  const noteIndex = prevNotes.findIndex((note) => note.id === noteId);
 
   if (noteIndex !== -1) {
-    const updatedNote = updateNoteDetails(prevNote[noteIndex]);
+    const updatedNote = updateNoteDetails(prevNotes[noteIndex]);
 
     return [
-      ...prevNote.slice(0, noteIndex),
+      ...prevNotes.slice(0, noteIndex),
       updatedNote,
-      ...prevNote.slice(noteIndex + 1),
+      ...prevNotes.slice(noteIndex + 1),
     ];
   }
 
-  return prevNote;
+  return prevNotes;
 };

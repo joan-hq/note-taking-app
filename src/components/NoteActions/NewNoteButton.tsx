@@ -2,14 +2,14 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
 interface NewNoteButtonProps {
-  handleNewNoteClick: () => void;
+  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const NewNoteButton = ({ handleNewNoteClick }: NewNoteButtonProps) => {
   return (
     <>
       <Button
-        variant="contained"
+        variant="outlined"
         startIcon={<AddIcon />}
         onClick={handleNewNoteClick}
       ></Button>

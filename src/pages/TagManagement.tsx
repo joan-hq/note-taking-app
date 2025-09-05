@@ -23,11 +23,19 @@ import { TAG_ACTION_MESSAGE } from "../constants/messages";
 interface TagManagementProps {
   allTags: Tag[];
   onTagDeleted: (tagId: string) => void;
+  selectedTagId: string | null;
+  handleTagClick: (tagId: string) => void;
+  handleClearTagFilter: () => void;
 }
 
-const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
+const TagManagement = ({
+  allTags,
+  onTagDeleted,
+  selectedTagId,
+  handleTagClick,
+  handleClearTagFilter,
+}: TagManagementProps) => {
   const { open, showDialog, hideDialog } = useDialog();
-  //const [tagIdToDelete, setTagIdToDelete] = useState<string>("");
   const popoverManage = useCustomPopover();
   const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
 
@@ -53,15 +61,22 @@ const TagManagement = ({ allTags, onTagDeleted }: TagManagementProps) => {
     <>
       <Box>
         <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
+        {selectedTagId && (
+          <Button onClick={handleClearTagFilter} size="small" sx={{ mb: 1 }}>
+            Clear Filter
+          </Button>
+        )}
+
         <Grid container spacing={0}>
           {allTags.map((tag) => (
             <Grid key={tag.id}>
               <Chip
                 label={tag.label}
                 icon={<LocalOfferOutlinedIcon />}
+                onClick={() => handleTagClick(tag.id)}
                 onDelete={() => handleDeleteTagDialog(tag.id)}
                 deleteIcon={<DeleteForeverIcon />}
-                variant="outlined"
+                variant={selectedTagId === tag.id ? "filled" : "outlined"}
               />
             </Grid>
           ))}

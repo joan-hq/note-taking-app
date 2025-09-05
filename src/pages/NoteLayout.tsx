@@ -27,6 +27,9 @@ const NoteLayout = () => {
 
     allTags,
     handleTagDelete,
+    selectedTagId,
+    handleTagClick,
+    handleClearTagFilter,
 
     allNotes,
     filterType,
@@ -38,7 +41,7 @@ const NoteLayout = () => {
     handleUnrchiveNote,
     handleDeleteNote,
 
-    handleExistNoteTitleOnChange,
+    handleTitleOnChange,
     handleNewTagSave,
     handleTagsChangeFromNote,
     handleTagDeleteFromNote,
@@ -62,7 +65,13 @@ const NoteLayout = () => {
               handleShowAllNote={handleShowAllNote}
               handleShowArchivedNote={handleShowArchivedNote}
             />
-            <TagManagement allTags={allTags} onTagDeleted={handleTagDelete} />
+            <TagManagement
+              allTags={allTags}
+              onTagDeleted={handleTagDelete}
+              selectedTagId={selectedTagId}
+              handleTagClick={handleTagClick}
+              handleClearTagFilter={handleClearTagFilter}
+            />
           </StyledPaper>
         </Grid>
 
@@ -76,14 +85,15 @@ const NoteLayout = () => {
               handleNewNoteClick={handleNewNoteClick}
               handleNoteCardClick={handleNoteCardClick}
               allTags={allTags}
+              selectedTagId={selectedTagId}
             />
           </StyledPaper>
         </Grid>
 
-        {/* 右栏: 详情和操作按钮 */}
+        {/* right: note details and action button */}
         <Grid item xs={12} md={6}>
           <StyledPaper>
-            {/* right archive and delete button */}
+            {/* archive and delete button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
               <ActionBar
                 allNotes={allNotes}
@@ -95,7 +105,6 @@ const NoteLayout = () => {
               />
             </Box>
 
-            {/* note details */}
             <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
               <NoteDetail
                 allNotes={allNotes}
@@ -103,7 +112,7 @@ const NoteLayout = () => {
                 selectedNoteId={selectedNoteId}
                 handleTagsChangeFromNote={handleTagsChangeFromNote}
                 handleTagDeleteFromNote={handleTagDeleteFromNote}
-                handleExistNoteTitleOnChange={handleExistNoteTitleOnChange}
+                handleTitleOnChange={handleTitleOnChange}
                 handleNewTagSave={handleNewTagSave}
                 handleContentOnChange={handleContentOnChange}
               />
