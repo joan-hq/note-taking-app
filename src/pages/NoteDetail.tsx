@@ -59,7 +59,7 @@ const NoteDetail = ({
   const noteTags = findTagsByIds(noteToDisplay.tags, allTags);
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
       <NoteDetailHeader
         title={noteToDisplay.title}
         handleTitleOnChange={handleTitleOnChange}
@@ -75,7 +75,7 @@ const NoteDetail = ({
         noteValue={noteToDisplay.content}
         handleContentOnChange={handleContentOnChange}
       />
-    </>
+    </Box>
   );
 };
 

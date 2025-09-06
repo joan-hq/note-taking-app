@@ -36,11 +36,7 @@ const TagSelector = ({
           ))
         }
         renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Choose your tag"
-            variant="standard"
-          />
+          <TextField {...params} placeholder="tags" variant="standard" />
         )}
       />
     </>

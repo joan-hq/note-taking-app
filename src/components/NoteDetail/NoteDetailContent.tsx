@@ -18,6 +18,7 @@ const NoteDetailContent = ({
         value={noteValue}
         onChange={handleContentOnChange}
         fullWidth
+        InputProps={{ disableUnderline: true }}
       />
     </Box>
   );

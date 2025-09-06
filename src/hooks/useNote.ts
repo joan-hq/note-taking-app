@@ -14,6 +14,7 @@ import {
   handleNoteStateChanges,
   createNewNote,
   isEmptyNote,
+  timeFormat,
 } from "../helpers/noteHelpers";
 
 interface useNoteProps {
@@ -167,10 +168,11 @@ export const useNote = (): useNoteProps => {
   /* START EXIST NOTE DETAILS EDIT PROCESSING */
   const handleTitleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = event.target.value;
+
     const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
       allNotes,
       selectedNoteId,
-      { title: newTitle, lastEdit: new Date().toISOString() }
+      { title: newTitle, lastEdit: timeFormat() }
     );
     setAllNotes(updatedNotes);
     setSelectedNoteId(newSelectedNoteId);
@@ -207,14 +209,15 @@ export const useNote = (): useNoteProps => {
     event: React.ChangeEvent<HTMLElement>,
     newTags: Tag[]
   ) => {
-    if (!selectedNoteId) return;
-    const newTagId = newTags.map((newTag) => newTag.id);
-    setAllNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === selectedNoteId ? { ...note, tags: newTagId } : note
-      )
+    const newTagIds = newTags.map((newTag) => newTag.id);
+    const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
+      allNotes,
+      selectedNoteId,
+      { tags: newTagIds, lastEdit: timeFormat() }
     );
-    console.log("Note", selectedNoteId, "tags updated:", newTags);
+
+    setAllNotes(updatedNotes);
+    setSelectedNoteId(newSelectedNoteId);
   };
 
   const handleTagDeleteFromNote = (tagId: string) => {
@@ -238,7 +241,7 @@ export const useNote = (): useNoteProps => {
     const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
       allNotes,
       selectedNoteId,
-      { content: newContent, lastEdit: new Date().toISOString() }
+      { content: newContent, lastEdit: timeFormat() }
     );
     setAllNotes(updatedNotes);
     setSelectedNoteId(newSelectedNoteId);

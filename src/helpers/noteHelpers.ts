@@ -96,6 +96,14 @@ export const filterNotesByQuery = (
   });
 };
 
+export const timeFormat = () => {
+  const timeString = new Date().toISOString();
+  const datePart = timeString.split("T")[0];
+  const timePart = timeString.split("T")[1].slice(0, 8);
+  const editTime = `${datePart} ${timePart}`;
+  return editTime;
+};
+
 /**
  * For function createNewNote, to create a new note
  * @param Partial<Note>: expect an object,
@@ -104,10 +112,8 @@ export const filterNotesByQuery = (
  */
 export const createNewNote = (changes: Partial<Note>): Note => {
   const newId = uuidv4();
-  const timeString = new Date().toISOString();
-  const datePart = timeString.split("T")[0];
-  const timePart = timeString.split("T")[1].slice(0, 8);
-  const editTime = `${datePart} ${timePart}`;
+
+  const editTime = timeFormat();
   const newNote = {
     id: newId,
     title: "New Note",

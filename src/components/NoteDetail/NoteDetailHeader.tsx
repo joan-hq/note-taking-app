@@ -36,7 +36,7 @@ const NoteDetailHeader = ({
 }: //time,
 NoteDetailHeaderProps) => {
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <TextField
         variant="standard"
         placeholder="Enter your  title here..."
@@ -44,6 +44,12 @@ NoteDetailHeaderProps) => {
         multiline={false}
         value={title}
         onChange={handleTitleOnChange}
+        InputProps={{
+          disableUnderline: true,
+          sx: {
+            fontSize: "32px",
+          },
+        }}
       />
       <TagsField
         options={options}
@@ -53,11 +59,15 @@ NoteDetailHeaderProps) => {
         onTagSaved={handleNewTagSave}
       />
       <Box>
-        {" "}
-        <Chip label="Last Edit" variant="outlined" icon={<AccessTimeIcon />} />
-        <TextField variant="standard" value={time} />
+        <Chip label="Edit" variant="outlined" icon={<AccessTimeIcon />} />
+        &nbsp;&nbsp;
+        <TextField
+          variant="standard"
+          value={time}
+          InputProps={{ disableUnderline: true }}
+        />
       </Box>
-    </>
+    </Box>
   );
 };
 export default NoteDetailHeader;
