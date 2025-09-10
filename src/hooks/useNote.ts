@@ -44,7 +44,7 @@ interface useNoteProps {
     newTags: Tag[]
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleContentOnChange: () => void;
 }
 
 export const useNote = (): useNoteProps => {

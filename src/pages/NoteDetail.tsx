@@ -26,7 +26,7 @@ interface NoteDetailProps {
   handleNewTagSave: (newTag: Tag) => void;
 
   //**Content Params*/
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleContentOnChange: () => void;
   handleTagDeleteFromNote: (tagId: string) => void;
 }
 

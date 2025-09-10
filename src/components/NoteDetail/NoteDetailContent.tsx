@@ -1,8 +1,10 @@
-import { TextField, Box } from "@mui/material";
+import { Box } from "@mui/material";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface NoteDetailContentProps {
   noteValue: string;
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleContentOnChange: (content: string) => void;
 }
 
 const NoteDetailContent = ({
@@ -10,15 +12,23 @@ const NoteDetailContent = ({
   handleContentOnChange,
 }: NoteDetailContentProps) => {
   return (
-    <Box>
-      <TextField
-        variant="standard"
-        placeholder="Enter your  note here..."
-        multiline
+    <Box id="note-content">
+      <ReactQuill
+        theme="snow"
+        placeholder="Enter your note here..."
         value={noteValue}
         onChange={handleContentOnChange}
-        fullWidth
-        InputProps={{ disableUnderline: true }}
+        modules={{
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],
+            ["blockquote", "code-block"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ color: [] }, { background: [] }],
+            ["link", "image"],
+            ["clean"],
+          ],
+        }}
       />
     </Box>
   );
