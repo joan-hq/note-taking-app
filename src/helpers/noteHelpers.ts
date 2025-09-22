@@ -241,7 +241,6 @@ export const handleNoteStateChanges = (
   if (selectedNoteId) {
     const noteIndex = prevNotes.findIndex((note) => note.id === selectedNoteId);
     if (noteIndex !== -1) {
-      // note founded
       const updatedNote = {
         ...prevNotes[noteIndex],
         ...changes,
@@ -255,11 +254,9 @@ export const handleNoteStateChanges = (
 
       return { updatedNotes, newSelectedNoteId: selectedNoteId };
     } else {
-      //no note founded
       return { updatedNotes: prevNotes, newSelectedNoteId: selectedNoteId };
     }
   } else {
-    // create a new note
     const newNote = createNewNote(changes);
     const updatedNotes = [...prevNotes, newNote];
     return { updatedNotes, newSelectedNoteId: newNote.id };

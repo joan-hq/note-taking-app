@@ -1,13 +1,13 @@
 import { Box, Grid, Paper, styled } from "@mui/material";
 import TagManagement from "./TagManagement";
-import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
 import NoteStatusFilter from "../components/NoteActions/StatusFilter";
+import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
+
 import NoteList from "./NoteList"; // 中间栏
 import NoteDetail from "./NoteDetail"; // 右栏
 import ActionBar from "../components/NoteActions/ActionBar"; // 右栏，只包含 archive 和 delete
 
 import { useNote } from "../hooks/useNote";
-import { useDialog } from "../hooks/useDialog";
 
 interface NoteLayoutProps {}
 
@@ -22,6 +22,7 @@ const NoteLayout = () => {
   //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
   const {
+    noteFilterTitle,
     handleShowAllNote,
     handleShowArchivedNote,
 
@@ -78,6 +79,7 @@ const NoteLayout = () => {
         {/* middle: brife view and action */}
         <Grid item xs={12} sm={8} md={4}>
           <StyledPaper>
+            <NoteFilterResultsTitle title={noteFilterTitle} />
             <NoteList
               selectedNoteId={selectedNoteId}
               allNotes={allNotes}

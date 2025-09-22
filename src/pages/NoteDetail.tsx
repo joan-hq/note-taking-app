@@ -26,7 +26,7 @@ interface NoteDetailProps {
   handleNewTagSave: (newTag: Tag) => void;
 
   //**Content Params*/
-  handleContentOnChange: () => void;
+  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
 }
 
@@ -45,6 +45,7 @@ const NoteDetail = ({
   handleContentOnChange,
 }: NoteDetailProps) => {
   let noteToDisplay: Note | null = null;
+  console.log("NoteDetail-selectedNoteId", selectedNoteId);
 
   if (selectedNoteId) {
     noteToDisplay = findNoteById(selectedNoteId, allNotes) ?? null;
@@ -57,10 +58,13 @@ const NoteDetail = ({
   }
 
   const noteTags = findTagsByIds(noteToDisplay.tags, allTags);
+  console.log("NoteDetail-noteToDisplay-title", noteToDisplay.title);
+  console.log("NoteDetail-noteToDisplay-noteTags", noteTags);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
       <NoteDetailHeader
+        key={noteToDisplay.id}
         title={noteToDisplay.title}
         handleTitleOnChange={handleTitleOnChange}
         options={allTags}

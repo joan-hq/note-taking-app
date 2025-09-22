@@ -18,6 +18,7 @@ const TagSelector = ({
   onDelete,
 }: TagSelectorProps) => {
   console.log("Tag Selector-options", options);
+  console.log("Tag Selector-value", value);
   return (
     <>
       <Autocomplete

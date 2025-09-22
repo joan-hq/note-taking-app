@@ -15,9 +15,8 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
 
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     "moduleDetection": "force",
     "noEmit": true,
@@ -27,11 +26,12 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
-    "erasableSyntaxOnly": true,
-
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+
+    "erasableSyntaxOnly": true
+
+    // "verbatimModuleSyntax": true,
+    // "noUncheckedSideEffectImports": true
   },
   "include": ["src"]
 }

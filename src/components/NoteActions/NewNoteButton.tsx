@@ -10,8 +10,8 @@ const NewNoteButton = ({ handleNewNoteClick }: NewNoteButtonProps) => {
   const MyStyledButton = styled(Button)(({ theme }) => ({
     backgroundColor: "#1976d2",
     color: "white",
-    padding: theme.spacing(1, 3),
-    borderRadius: 20,
+    padding: theme.spacing(1, 2),
+    borderRadius: 50,
     "&:hover": {
       backgroundColor: "#115293",
     },
@@ -20,12 +20,10 @@ const NewNoteButton = ({ handleNewNoteClick }: NewNoteButtonProps) => {
     <>
       <MyStyledButton
         variant="contained"
-        startIcon={<AddIcon sx={{ fontSize: "3rem" }} />}
+        startIcon={<AddIcon sx={{ fontSize: "5rem" }} />}
         onClick={handleNewNoteClick}
         sx={{ border: "none" }}
-      >
-        Add
-      </MyStyledButton>
+      ></MyStyledButton>
     </>
   );
 };

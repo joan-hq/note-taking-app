@@ -8,7 +8,6 @@ import type { FilterType } from "../types/index";
 import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
-import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
 import { filterNotesByQuery } from "../helpers/noteHelpers";
 
 interface NoteListProps {
@@ -70,14 +69,7 @@ const NoteList = ({
       : filteredBySearch;
 
     return filteredByTag;
-  }, [searchQuery, filterType, allNotes, selectedTagId]);
-
-  let noteFilterTitle = "";
-  if (filterType === "all") {
-    noteFilterTitle = "All Notes";
-  } else if (filterType === "archived") {
-    noteFilterTitle = "Archived Note";
-  }
+  }, [searchQuery, filterType, allNotes, selectedTagId, allTags]);
 
   return (
     <>
@@ -90,7 +82,6 @@ const NoteList = ({
             mb: 2,
           }}
         >
-          <NoteFilterResultsTitle title={noteFilterTitle} />
           <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
           <SearchBar
             searchQuery={searchQuery}

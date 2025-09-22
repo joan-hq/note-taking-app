@@ -35,6 +35,9 @@ const NoteDetailHeader = ({
   time,
 }: //time,
 NoteDetailHeaderProps) => {
+  console.log("NoteDetailHeader-title", title);
+  console.log("NoteDetailHeader-options", options);
+  console.log("NoteDetailHeader-noteTags", noteTags);
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <TextField

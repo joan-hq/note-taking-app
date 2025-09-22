@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import type { Note, Tag, FilterType } from "../types/index";
-import { useCustomPopover } from "../hooks/useCustomPopover";
-import type { CustomPopoverState } from "../hooks/useCustomPopover";
-import {
-  notes as initialNotesData,
-  tags as initialTagsData,
-} from "../data/note";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from "react";
+
 import {
   findAndModifyNote,
   removeTagById,
@@ -16,8 +17,13 @@ import {
   isEmptyNote,
   timeFormat,
 } from "../helpers/noteHelpers";
+import {
+  notes as initialNotesData,
+  tags as initialTagsData,
+} from "../data/note";
+import type { Note, Tag, FilterType } from "../types/index";
 
-interface useNoteProps {
+interface NoteContextValue {
   noteFilterTitle: string;
   handleShowAllNote: () => void;
   handleShowArchivedNote: () => void;
@@ -48,7 +54,13 @@ interface useNoteProps {
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const useNote = (): useNoteProps => {
+const NoteContext = createContext<NoteContextValue | null>(null);
+
+interface NoteProviderProps {
+  children: React.ReactNode;
+}
+
+export const NoteProvider = ({ children }: NoteProviderProps) => {
   const [allTags, setAllTags] = useState<Tag[]>(initialTagsData);
   const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
   const [allNotes, setAllNotes] = useState<Note[]>(initialNotesData);
@@ -103,6 +115,7 @@ export const useNote = (): useNoteProps => {
     },
     []
   );
+
   // const handleNoteCardClick = useCallback(
   //   (noteId: string) => {
   //     console.log("handleNoteCardClick-noteId", noteId);
@@ -283,7 +296,7 @@ export const useNote = (): useNoteProps => {
   };
   /* END EXIST NOTE DETAILS EDIT PROCESSING */
 
-  return {
+  const value: NoteContextValue = {
     noteFilterTitle,
     handleShowAllNote,
     handleShowArchivedNote,
@@ -309,4 +322,14 @@ export const useNote = (): useNoteProps => {
     handleTagDeleteFromNote,
     handleContentOnChange,
   };
+
+  return <NoteContextValue.Provider value={value}>{children}</NoteContext.Provider>;
+};
+
+export const useNote = () => {
+  const context = useContext(NoteContext);
+  if (context === null) {
+    throw new Error("useNote must be used within a NoteProvider");
+  }
+  return context;
 };

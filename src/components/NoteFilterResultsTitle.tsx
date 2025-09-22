@@ -5,8 +5,9 @@ interface NoteFilterResultsTitleProps {
 }
 
 const NoteFilterResultsTitle = ({ title }: NoteFilterResultsTitleProps) => {
+  console.log("title", title);
   return (
-    <Typography variant="h4" component="h2" className="text-red-600">
+    <Typography variant="h4" component="h2">
       {title}
     </Typography>
   );
