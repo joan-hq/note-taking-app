@@ -1,15 +1,16 @@
+import React from "react";
 import NoteStatusFilter from "../../components/NoteActions/StatusFilter";
 import TagManagement from "../TagManagement";
-import { useNote } from "../../hooks/useNote";
+import { useNoteContext } from "../../contexts/NoteProvider";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
+import { useState, useEffect, useCallback } from "react";
 
 import IconButton from "@mui/material/IconButton";
 
-const drawerWidth = 50;
+const drawerWidth = 150;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -22,7 +23,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 interface NoteSideBarMobileProps {
   open: boolean;
-  handleDrawerClose: (event: React.MouseEvent<HTMLElement>) => void;
+  handleDrawerClose?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const NoteSideBarMobile = ({
@@ -38,7 +39,39 @@ const NoteSideBarMobile = ({
     handleTagDelete,
     handleTagClick,
     handleClearTagFilter,
-  } = useNote();
+  } = useNoteContext();
+
+  // 💡 NEW STATE: Track if a filter was just clicked
+  const [filterClicked, setFilterClicked] = useState(false);
+
+  // 💡 NEW EFFECT: Close the drawer ONLY AFTER a filter has been clicked
+  useEffect(() => {
+    if (filterClicked && handleDrawerClose) {
+      // Small timeout to ensure the state update from useNote is processed
+      const timer = setTimeout(() => {
+        // The event object is irrelevant here, as it's a forced close
+        handleDrawerClose({} as React.MouseEvent<HTMLElement>);
+        setFilterClicked(false); // Reset the flag
+      }, 0); // Use setTimeout(..., 0) to push the action to the end of the event queue
+      return () => clearTimeout(timer);
+    }
+  }, [filterClicked, handleDrawerClose]);
+
+  const handleAllClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log("````clciked all button`````");
+    handleShowAllNote(event);
+    // 💡 SET THE FLAG INSTEAD OF CLOSING IMMEDIATELY
+    setFilterClicked(true);
+  };
+
+  const handleArchivedClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log("````clciked archived button`````");
+
+    handleShowArchivedNote(event);
+    // 💡 SET THE FLAG INSTEAD OF CLOSING IMMEDIATELY
+    setFilterClicked(true);
+  };
+
   return (
     <>
       <Drawer
@@ -64,8 +97,8 @@ const NoteSideBarMobile = ({
 
         <NoteStatusFilter
           filterType={filterType}
-          handleShowAllNote={handleShowAllNote}
-          handleShowArchivedNote={handleShowArchivedNote}
+          handleShowAllNote={handleAllClick}
+          handleShowArchivedNote={handleArchivedClick}
         />
         <Divider />
 

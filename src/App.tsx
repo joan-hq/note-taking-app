@@ -6,18 +6,17 @@ import NoteList from "./pages/NoteList";
 import NoteLayout from "./pages/NoteLayout";
 import NoteIndex from "./pages/NoteIndex";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { NoteProvider } from "./contexts/NoteProvider";
+import { useNote } from "./hooks/useNote";
 function App() {
   return (
-    <>
+    <NoteProvider>
       <Router>
         <Routes>
-          {/* <Route path="/" element={<NoteLayout />} /> */}
           <Route path="/" element={<NoteIndex />} />
-          {/* <Route path="/note/:noteId" element={<NoteDetail />} /> */}
         </Routes>
       </Router>
-    </>
+    </NoteProvider>
   );
 }
 

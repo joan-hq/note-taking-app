@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Note, Tag, FilterType } from "../types/index";
-import { useCustomPopover } from "../hooks/useCustomPopover";
-import type { CustomPopoverState } from "../hooks/useCustomPopover";
 import {
   notes as initialNotesData,
   tags as initialTagsData,
@@ -17,10 +15,10 @@ import {
   timeFormat,
 } from "../helpers/noteHelpers";
 
-interface useNoteProps {
+export interface useNoteProps {
   noteFilterTitle: string;
-  handleShowAllNote: () => void;
-  handleShowArchivedNote: () => void;
+  handleShowAllNote: (event: React.MouseEvent<HTMLElement>) => void;
+  handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
 
   allTags: Tag[];
   handleTagDelete: (tagId: string) => void;
@@ -55,13 +53,21 @@ export const useNote = (): useNoteProps => {
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
-  const handleShowAllNote = useCallback(() => {
-    setFilterType("all");
-  }, []);
+  const handleShowAllNote = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      console.log("use note show all note");
+      setFilterType("all");
+    },
+    []
+  );
 
-  const handleShowArchivedNote = useCallback(() => {
-    setFilterType("archived");
-  }, []);
+  const handleShowArchivedNote = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      console.log("**** use note show archived note");
+      setFilterType("archived");
+    },
+    []
+  );
 
   const noteFilterTitle = useMemo(() => {
     if (filterType === "all") {
@@ -72,7 +78,13 @@ export const useNote = (): useNoteProps => {
     return "";
   }, [filterType]);
 
-  console.log("useNote - noteFilterTitlenoteFilterTitle + ", noteFilterTitle);
+  useEffect(() => {
+    console.log("*** useNote - The value of the filterType:", filterType);
+    console.log(
+      "*** useNote - The value of the noteFilterTitle:",
+      noteFilterTitle
+    );
+  }, [filterType, noteFilterTitle]);
 
   const handleTagClick = useCallback((tagId: string) => {
     console.log("tagId", tagId);
@@ -99,7 +111,7 @@ export const useNote = (): useNoteProps => {
       setSelectedNoteId(newNote.id);
       //setSearchQuery("");
       setSelectedTagId(null);
-      setFilterType("all");
+      // setFilterType("all");
     },
     []
   );

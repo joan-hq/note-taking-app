@@ -1,7 +1,8 @@
+import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import NoteFilterResultsTitle from "../../components/NoteFilterResultsTitle";
 import NoteBrifeView from "../../components/NoteBrifeView/index";
-import { useNote } from "../../hooks/useNote";
+import { useNoteContext } from "../../contexts/NoteProvider";
 import NoteSideBarMobile from "./NoteSideBarMobile";
 import NewNoteButton from "../../components/NoteActions/NewNoteButton";
 import SearchBar from "../../components/NoteActions/SearchBar";
@@ -12,7 +13,7 @@ import { filterNotesByQuery } from "../../helpers/noteHelpers";
 
 import IconButton from "@mui/material/IconButton";
 import MuiAppBar from "@mui/material/AppBar";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 const drawerWidth = 200;
 
@@ -38,8 +39,6 @@ const AppBar = styled(MuiAppBar, {
   ],
 }));
 
-interface NoteLayoutMobileProps {}
-
 const NoteLayoutMobile = () => {
   const {
     noteFilterTitle,
@@ -50,8 +49,10 @@ const NoteLayoutMobile = () => {
     filterType,
     handleNewNoteClick,
     handleNoteCardClick,
-  } = useNote();
+  } = useNoteContext();
+  console.log("******** Mobile layout filterType", filterType);
 
+  console.log("******** Mobile layout noteFilterTitle", noteFilterTitle);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -62,9 +63,12 @@ const NoteLayoutMobile = () => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const handleDrawerClose = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setOpen(false);
+    },
+    []
+  );
 
   console.log("MobileLayout-filterType", filterType);
   console.log("MobileLayout-noteFilterTitle", noteFilterTitle);
@@ -116,12 +120,6 @@ const NoteLayoutMobile = () => {
               aria-label="open drawer"
               onClick={handleDrawerOpen}
               edge="start"
-              //   sx={[
-              //     {
-              //       mr: 2,
-              //     },
-              //     open && { display: "none" },
-              //   ]}
             >
               <MenuIcon />
             </IconButton>
@@ -129,24 +127,33 @@ const NoteLayoutMobile = () => {
           </Toolbar>
         </AppBar>
       </Box>
+      <Box component="main">
+        <Box className="fixed bottom-6 right-6 z-1000">
+          <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
+        </Box>
+        <Box className="pt-16">
+          <SearchBar
+            searchQuery={searchQuery}
+            handleSearchOnChange={handleSearchOnChange}
+            isOpen={isSearchOpen}
+            handleBlur={handleBlur}
+            handleSearchIconClick={handleSearchIconClick}
+          />
+        </Box>
 
-      <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
-      <SearchBar
-        searchQuery={searchQuery}
-        handleSearchOnChange={handleSearchOnChange}
-        isOpen={isSearchOpen}
-        handleBlur={handleBlur}
-        handleSearchIconClick={handleSearchIconClick}
+        <NoteBrifeView
+          selectedNoteId={selectedNoteId}
+          notes={filteredNotes}
+          handleNoteCardClick={handleNoteCardClick}
+          allTags={allTags}
+        />
+      </Box>
+
+      <NoteSideBarMobile
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        key={filterType}
       />
-
-      <NoteBrifeView
-        selectedNoteId={selectedNoteId}
-        notes={filteredNotes}
-        handleNoteCardClick={handleNoteCardClick}
-        allTags={allTags}
-      />
-
-      <NoteSideBarMobile open={open} handleDrawerClose={handleDrawerClose} />
     </>
   );
 };
