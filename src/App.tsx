@@ -13,7 +13,7 @@ function App() {
     <NoteProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<NoteIndex />} />
+          <Route path="/*" element={<NoteIndex />} />
         </Routes>
       </Router>
     </NoteProvider>

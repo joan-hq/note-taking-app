@@ -4,6 +4,9 @@ import Card from "@mui/material/Card";
 import NoteCardHeader from "./NoteCardHeader";
 import NoteCardContent from "./NoteCardContent";
 import type { Tag } from "../../types/index";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Component } from "react";
+import { Link } from "react-router-dom";
 
 interface NoteCardProps {
   id: string;
@@ -24,21 +27,30 @@ const NoteCard = ({
   onNoteCardClick,
   isSelected,
 }: NoteCardProps) => {
+  const isDesktop = useMediaQuery("(min-width:900px)");
+  const noteLink = `/note/${id}`;
+
+  const actionProps = isDesktop
+    ? { onClick: () => onNoteCardClick(id) }
+    : { component: Link, to: noteLink };
+
   return (
     <>
-      <CardActionArea onClick={() => onNoteCardClick(id)}>
-        <Card
-          sx={{
-            border: isSelected ? "2px solid" : "1px solid",
-            borderColor: isSelected ? "primary.main" : "divider",
-            boxShadow: isSelected ? 4 : 1,
-            transition: "all 0.2s ease-in-out",
-          }}
-        >
-          <NoteCardHeader title={title} noteStatus={noteStatus} />
-          <NoteCardContent tags={tags} lastedit={lastedit} />
-        </Card>
-      </CardActionArea>
+      <Card
+        sx={{
+          border: isSelected ? "2px solid" : "1px solid",
+          borderColor: isSelected ? "primary.main" : "divider",
+          boxShadow: isSelected ? 4 : 1,
+          transition: "all 0.2s ease-in-out",
+        }}
+      >
+        <CardActionArea {...actionProps}>
+          <div>
+            <NoteCardHeader title={title} noteStatus={noteStatus} />
+            <NoteCardContent tags={tags} lastedit={lastedit} />
+          </div>
+        </CardActionArea>
+      </Card>
     </>
   );
 };
