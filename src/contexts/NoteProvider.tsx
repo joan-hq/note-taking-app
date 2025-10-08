@@ -190,6 +190,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
 
   const handleDeleteNote = useCallback(
     async (noteId: string): Promise<boolean> => {
+      console.log("****to Delete Note Function*******");
       try {
         console.log("noteId", noteId);
         if (!noteId) return false;

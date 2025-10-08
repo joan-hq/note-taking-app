@@ -47,7 +47,7 @@ const ActionBar = ({
               )
             }
           >
-            Unarchive
+            {/* Unarchive */}
           </Button>
         </Tooltip>
       ) : (
@@ -64,7 +64,7 @@ const ActionBar = ({
             )
           }
         >
-          Archive
+          {/* Archive */}
         </Button>
       )}
 
@@ -81,7 +81,7 @@ const ActionBar = ({
             )
           }
         >
-          Delete
+          {/* Delete */}
         </Button>
       </Tooltip>
 

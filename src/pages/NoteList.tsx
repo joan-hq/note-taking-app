@@ -74,14 +74,7 @@ const NoteList = ({
   return (
     <>
       <Box sx={{ height: "100%", overflowY: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
+        <Box className="flex">
           <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
           <SearchBar
             searchQuery={searchQuery}

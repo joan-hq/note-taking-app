@@ -59,4 +59,12 @@ export const notes: Note[] = [
     content: "This is the content of the sixth note.",
     isArchive: true,
   },
+  {
+    id: "7",
+    title: "The seventh Note",
+    tags: ["2", "1", "6"],
+    lastEdit: "15 March 2025",
+    content: "This is the content of the seventh note.",
+    isArchive: true,
+  },
 ];

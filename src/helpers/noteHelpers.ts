@@ -186,12 +186,13 @@ export const handleAsyncAction = async (
 ) => {
   const { showPopover } = popoverManager;
   const { loadingMessage, successMessage, errorMessage } = messageConfig;
+  const anchorElReference = event.currentTarget;
 
   // show loading popover
   const loadingPopoverState: CustomPopoverState = {
     message: loadingMessage,
     type: "info",
-    anchorEl: event.currentTarget,
+    anchorEl: anchorElReference,
   };
   showPopover(loadingPopoverState);
 
@@ -202,14 +203,14 @@ export const handleAsyncAction = async (
       const successState: CustomPopoverState = {
         message: successMessage,
         type: "success",
-        anchorEl: event.currentTarget,
+        anchorEl: anchorElReference,
       };
       showPopover(successState);
     } else {
       const errorState: CustomPopoverState = {
         message: errorMessage,
         type: "error",
-        anchorEl: event.currentTarget,
+        anchorEl: anchorElReference,
       };
       showPopover(errorState);
     }
@@ -219,7 +220,7 @@ export const handleAsyncAction = async (
     const otherErrorState: CustomPopoverState = {
       message: otherErrorMessage,
       type: "error",
-      anchorEl: event.currentTarget,
+      anchorEl: anchorElReference,
     };
     showPopover(otherErrorState);
   }

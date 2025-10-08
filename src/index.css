@@ -1,2 +1,11 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 @import "tailwindcss";
-@import "./styles/quill-custom.css";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities"; /* @import "./styles/quill-custom.css"; */

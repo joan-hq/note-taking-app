@@ -62,7 +62,7 @@ NoteDetailHeaderProps) => {
         onTagSaved={handleNewTagSave}
       />
       <Box>
-        <Chip label="Edit" variant="outlined" icon={<AccessTimeIcon />} />
+        <Chip variant="outlined" icon={<AccessTimeIcon />} />
         &nbsp;&nbsp;
         <TextField
           variant="standard"

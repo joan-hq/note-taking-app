@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Note, Tag, FilterType } from "../types/index";
+import { useNavigate } from "react-router-dom";
 import {
   notes as initialNotesData,
   tags as initialTagsData,
@@ -136,12 +137,16 @@ export const useNote = (): useNoteProps => {
   //   },
   //   [selectedNoteId, allNotes]
   // );
-
-  const handleNoteCardClick = useCallback((noteId: string) => {
-    console.log("handleNoteCardClick-noteId", noteId);
-    setSelectedNoteId(noteId);
-    setSelectedTagId(null);
-  }, []);
+  const navigate = useNavigate();
+  const handleNoteCardClick = useCallback(
+    (noteId: string) => {
+      console.log("handleNoteCardClick-noteId", noteId);
+      setSelectedNoteId(noteId);
+      setSelectedTagId(null);
+      navigate(`/note/${noteId}`);
+    },
+    [setSelectedNoteId, setSelectedTagId, navigate]
+  );
 
   useEffect(() => {
     if (selectedNoteId) {

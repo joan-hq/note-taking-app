@@ -59,11 +59,7 @@ const TagsField = ({
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Chip
-          label="tag"
-          variant="outlined"
-          icon={<LocalOfferOutlinedIcon />}
-        />
+        <Chip variant="outlined" icon={<LocalOfferOutlinedIcon />} />
         <TagSelector
           options={options}
           value={noteTags}
@@ -71,7 +67,7 @@ const TagsField = ({
           onDelete={onDelete}
         />
         <Chip
-          label="add new tag"
+          // label="add new tag"
           onClick={showDialog}
           icon={<AddIcon />}
           variant="outlined"
