@@ -1,22 +1,15 @@
 import { Box, Grid, Paper, styled } from "@mui/material";
 import TagManagement from "./TagManagement";
-import NoteStatusFilter from "../components/NoteActions/StatusFilter";
+import NoteStatusFilter from "../components/NoteActions/StatusFIlter";
 import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
 
-import NoteList from "./NoteList"; // 中间栏
-import NoteDetail from "./NoteDetail"; // 右栏
-import ActionBar from "../components/NoteActions/ActionBar"; // 右栏，只包含 archive 和 delete
+import NoteDetail from "./NoteDetail";
+import ActionBar from "../components/NoteActions/ActionBar";
 
+import NewNoteButton from "../components/NoteActions/NewNoteButton";
+import SearchBar from "../components/NoteActions/SearchBar";
+import NoteBrifeView from "../components/NoteBrifeView/index";
 import { useNote } from "../hooks/useNote";
-
-interface NoteLayoutProps {}
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  padding: theme.spacing(2),
-}));
 
 const NoteLayout = () => {
   //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
@@ -25,6 +18,12 @@ const NoteLayout = () => {
     noteFilterTitle,
     handleShowAllNote,
     handleShowArchivedNote,
+    handleSearchOnChange,
+    handleSearchIconClick,
+    handleBlur,
+    filteredNotes,
+    isSearchOpen,
+    searchQuery,
 
     allTags,
     handleTagDelete,
@@ -54,36 +53,51 @@ const NoteLayout = () => {
       <Grid container spacing={4} className="h-full">
         {/* left: filter and Tag management */}
         <Grid item xs={12} sm={3} md={2}>
-          <NoteStatusFilter
-            filterType={filterType}
-            handleShowAllNote={handleShowAllNote}
-            handleShowArchivedNote={handleShowArchivedNote}
-          />
-          <Box className="flex-grow overflow-y-auto min-h-0">
-            <TagManagement
-              allTags={allTags}
-              onTagDeleted={handleTagDelete}
-              selectedTagId={selectedTagId}
-              handleTagClick={handleTagClick}
-              handleClearTagFilter={handleClearTagFilter}
+          <Box className="flex flex-col h-full">
+            <NoteStatusFilter
+              filterType={filterType}
+              handleShowAllNote={handleShowAllNote}
+              handleShowArchivedNote={handleShowArchivedNote}
             />
+            <Box className="flex-grow overflow-y-auto min-h-0">
+              <TagManagement
+                allTags={allTags}
+                onTagDeleted={handleTagDelete}
+                selectedTagId={selectedTagId}
+                handleTagClick={handleTagClick}
+                handleClearTagFilter={handleClearTagFilter}
+              />
+            </Box>
           </Box>
         </Grid>
 
-        {/* middle: brife view and action */}
-        <Grid item xs={12} sm={9} md={4} className="flex flex-col h-full">
-          <NoteFilterResultsTitle title={noteFilterTitle} />
+        <Grid item xs={12} sm={9} md={4} className="h-full">
+          <Box className="flex flex-col h-full">
+            <Box className="flex justify-between items-center mb-4">
+              <NoteFilterResultsTitle
+                title={noteFilterTitle}
+                // className="!text-2xl !font-semibold"
+              />
+              <Box className="flex items-center gap-2">
+                <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
+                <SearchBar
+                  searchQuery={searchQuery}
+                  handleSearchOnChange={handleSearchOnChange}
+                  isOpen={isSearchOpen}
+                  handleBlur={handleBlur}
+                  handleSearchIconClick={handleSearchIconClick}
+                />
+              </Box>
+            </Box>
 
-          <Box className="flex-grow overflow-y-auto min-h-0">
-            <NoteList
-              selectedNoteId={selectedNoteId}
-              allNotes={allNotes}
-              filterType={filterType}
-              handleNewNoteClick={handleNewNoteClick}
-              handleNoteCardClick={handleNoteCardClick}
-              allTags={allTags}
-              selectedTagId={selectedTagId}
-            />
+            <Box className="flex-grow overflow-y-auto min-h-0">
+              <NoteBrifeView
+                selectedNoteId={selectedNoteId}
+                notes={filteredNotes}
+                handleNoteCardClick={handleNoteCardClick}
+                allTags={allTags}
+              />
+            </Box>
           </Box>
         </Grid>
 

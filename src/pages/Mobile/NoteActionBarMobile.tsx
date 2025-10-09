@@ -1,5 +1,3 @@
-import React from "react";
-
 import ActionBar from "../../components/NoteActions/ActionBar";
 import { useNoteContext } from "../../contexts/NoteProvider";
 

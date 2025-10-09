@@ -14,12 +14,19 @@ import {
   createNewNote,
   isEmptyNote,
   timeFormat,
+  filterNotesByQuery,
 } from "../helpers/noteHelpers";
 
 export interface useNoteProps {
   noteFilterTitle: string;
   handleShowAllNote: (event: React.MouseEvent<HTMLElement>) => void;
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
+  filteredNotes: Note[];
+  handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSearchIconClick: () => void;
+  handleBlur: () => void;
+  isSearchOpen: boolean;
+  searchQuery: string;
 
   allTags: Tag[];
   handleTagDelete: (tagId: string) => void;
@@ -116,27 +123,6 @@ export const useNote = (): useNoteProps => {
     },
     []
   );
-  // const handleNoteCardClick = useCallback(
-  //   (noteId: string) => {
-  //     console.log("handleNoteCardClick-noteId", noteId);
-  //     console.log("handleNoteCardClick-selectedNoteId", selectedNoteId);
-
-  //     const currentNote = selectedNoteId
-  //       ? findNoteById(selectedNoteId, allNotes)
-  //       : null;
-
-  //     console.log("handleNoteCardClick", currentNote);
-  //     if (currentNote && isEmptyNote(currentNote)) {
-  //       const updatedNotes = allNotes.filter(
-  //         (note) => note.id !== selectedNoteId
-  //       );
-  //       setAllNotes(updatedNotes);
-  //     }
-  //     setSelectedNoteId(noteId);
-  //     setSelectedTagId(null);
-  //   },
-  //   [selectedNoteId, allNotes]
-  // );
   const navigate = useNavigate();
   const handleNoteCardClick = useCallback(
     (noteId: string) => {
@@ -158,6 +144,46 @@ export const useNote = (): useNoteProps => {
       }
     }
   }, [selectedNoteId, allNotes]);
+
+  /****Start Addnew + Search function */
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Search query entered:", event.target.value);
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchIconClick = () => {
+    setIsSearchOpen(true);
+  };
+
+  const handleBlur = () => {
+    setIsSearchOpen(false);
+  };
+
+  const filteredNotes = useMemo(() => {
+    const filteredNoteByType = allNotes.filter((note) => {
+      if (filterType === "archived") {
+        return note.isArchive;
+      }
+      return true;
+    });
+
+    console.log("Current searchQuery:", searchQuery);
+    console.log("Notes before search filter:", filteredNoteByType);
+
+    const filteredBySearch = searchQuery
+      ? filterNotesByQuery(searchQuery, filteredNoteByType, allTags)
+      : filteredNoteByType;
+
+    const filteredByTag = selectedTagId
+      ? filteredBySearch.filter((note) => note.tags.includes(selectedTagId))
+      : filteredBySearch;
+
+    return filteredByTag;
+  }, [searchQuery, filterType, allNotes, selectedTagId, allTags]);
+  /****End Addnew + Search function */
 
   /* START ACTION BAR PROCESSING */
 
@@ -304,6 +330,12 @@ export const useNote = (): useNoteProps => {
     noteFilterTitle,
     handleShowAllNote,
     handleShowArchivedNote,
+    handleSearchOnChange,
+    handleSearchIconClick,
+    handleBlur,
+    filteredNotes,
+    isSearchOpen,
+
     allTags,
     handleTagDelete,
     selectedTagId,
