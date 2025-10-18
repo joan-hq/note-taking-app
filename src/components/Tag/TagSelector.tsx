@@ -23,6 +23,7 @@ const TagSelector = ({
     <>
       <Autocomplete
         multiple
+        fullWidth
         options={options}
         getOptionLabel={(option) => option.label}
         value={value}
@@ -37,7 +38,21 @@ const TagSelector = ({
           ))
         }
         renderInput={(params) => (
-          <TextField {...params} placeholder="tags" variant="standard" />
+          <TextField
+            {...params}
+            placeholder="Please choose your tag..."
+            variant="standard"
+            sx={{
+              "& .MuiInput-underline:after": {
+                borderBottomColor: "var(--color-brand-primary)",
+              },
+
+              // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              //   {
+              //     borderColor: "",
+              //   },
+            }}
+          />
         )}
       />
     </>

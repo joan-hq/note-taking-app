@@ -54,20 +54,26 @@ NoteDetailHeaderProps) => {
           },
         }}
       />
-      <TagsField
-        options={options}
-        noteTags={noteTags}
-        onChange={handleTagsChangeFromNote}
-        onDelete={handleTagDeleteFromNote}
-        onTagSaved={handleNewTagSave}
-      />
       <Box>
-        <Chip variant="outlined" icon={<AccessTimeIcon />} />
+        <Chip
+          variant="outlined"
+          icon={<AccessTimeIcon className="!text-primary-color" />}
+          sx={{ border: "none" }}
+        />
         &nbsp;&nbsp;
         <TextField
           variant="standard"
           value={time}
           InputProps={{ disableUnderline: true }}
+        />
+      </Box>
+      <Box>
+        <TagsField
+          options={options}
+          noteTags={noteTags}
+          onChange={handleTagsChangeFromNote}
+          onDelete={handleTagDeleteFromNote}
+          onTagSaved={handleNewTagSave}
         />
       </Box>
     </Box>

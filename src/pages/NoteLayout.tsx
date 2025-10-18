@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, styled } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import TagManagement from "./TagManagement";
 import NoteStatusFilter from "../components/NoteActions/StatusFIlter";
 import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
@@ -51,14 +51,15 @@ const NoteLayout = () => {
   return (
     <Box className="flex-grow p-4 h-screen overflow-hidden">
       <Grid container spacing={4} className="h-full">
-        {/* left: filter and Tag management */}
-        <Grid item xs={12} sm={3} md={2}>
+        <Grid item xs={12} sm={3} md={2} className="h-full">
           <Box className="flex flex-col h-full">
-            <NoteStatusFilter
-              filterType={filterType}
-              handleShowAllNote={handleShowAllNote}
-              handleShowArchivedNote={handleShowArchivedNote}
-            />
+            <Box>
+              <NoteStatusFilter
+                filterType={filterType}
+                handleShowAllNote={handleShowAllNote}
+                handleShowArchivedNote={handleShowArchivedNote}
+              />
+            </Box>
             <Box className="flex-grow overflow-y-auto min-h-0">
               <TagManagement
                 allTags={allTags}
@@ -71,23 +72,27 @@ const NoteLayout = () => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} sm={9} md={4} className="h-full">
+        <Grid item xs={12} sm={9} md={3} className="h-full">
           <Box className="flex flex-col h-full">
             <Box className="flex justify-between items-center mb-4">
               <NoteFilterResultsTitle
                 title={noteFilterTitle}
-                // className="!text-2xl !font-semibold"
+                className="!text-4xl text-primary-color"
               />
               <Box className="flex items-center gap-2">
-                <NewNoteButton handleNewNoteClick={handleNewNoteClick} />
-                <SearchBar
-                  searchQuery={searchQuery}
-                  handleSearchOnChange={handleSearchOnChange}
-                  isOpen={isSearchOpen}
-                  handleBlur={handleBlur}
-                  handleSearchIconClick={handleSearchIconClick}
+                <NewNoteButton
+                  handleNewNoteClick={handleNewNoteClick}
+                  className="!min-w-0"
                 />
               </Box>
+            </Box>
+
+            <Box>
+              <SearchBar
+                searchQuery={searchQuery}
+                handleSearchOnChange={handleSearchOnChange}
+                className="!rounded-full"
+              />
             </Box>
 
             <Box className="flex-grow overflow-y-auto min-h-0">
@@ -102,9 +107,7 @@ const NoteLayout = () => {
         </Grid>
 
         {/* right: note details and action button */}
-        <Grid item xs={12} md={6} className="relative flex flex-col h-full">
-          {/* archive and delete button */}
-
+        <Grid item xs={12} md={7} className="relative flex flex-col h-full">
           <Box className="flex-grow overflow-y-auto pt-16">
             <NoteDetail
               allNotes={allNotes}
@@ -118,7 +121,7 @@ const NoteLayout = () => {
             />
           </Box>
 
-          <Box className="absolute top-2 right-2 z-10 p-2">
+          <Box className="absolute top-2 right-2 z-10 p-5">
             <ActionBar
               allNotes={allNotes}
               filterType={filterType}

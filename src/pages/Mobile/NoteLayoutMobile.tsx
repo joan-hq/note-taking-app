@@ -8,12 +8,15 @@ import NewNoteButton from "../../components/NoteActions/NewNoteButton";
 import SearchBar from "../../components/NoteActions/SearchBar";
 import { Box } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { filterNotesByQuery } from "../../helpers/noteHelpers";
 
 import IconButton from "@mui/material/IconButton";
 import MuiAppBar from "@mui/material/AppBar";
 import { useState, useEffect, useMemo, useCallback } from "react";
+
+import * as styledModule from "styled-components";
+const styled = styledModule.default || styledModule;
 
 const drawerWidth = 200;
 

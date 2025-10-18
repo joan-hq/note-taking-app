@@ -1,29 +1,29 @@
-import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { styled } from "@mui/material/styles";
+import CustomButton from "../CustomButton";
+import styled from "styled-components";
 
 interface NewNoteButtonProps {
   handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
+  className?: string;
 }
 
-const NewNoteButton = ({ handleNewNoteClick }: NewNoteButtonProps) => {
-  const MyStyledButton = styled(Button)(({ theme }) => ({
-    backgroundColor: "#1976d2",
-    color: "white",
-    padding: theme.spacing(1, 2),
-    borderRadius: 50,
-    "&:hover": {
-      backgroundColor: "#115293",
-    },
-  }));
+const StyledCustomButton = styled(CustomButton)`
+  && {
+    background-color: var(--color-brand-primary);
+  }
+`;
+
+const NewNoteButton = ({
+  className,
+  handleNewNoteClick,
+}: NewNoteButtonProps) => {
   return (
     <>
-      <MyStyledButton
-        variant="contained"
-        startIcon={<AddIcon sx={{ fontSize: "5rem" }} />}
+      <StyledCustomButton
+        startIcon={<AddIcon className="text-white !text-3xl" />}
         onClick={handleNewNoteClick}
-        sx={{ border: "none" }}
-      ></MyStyledButton>
+        className={className}
+      ></StyledCustomButton>
     </>
   );
 };

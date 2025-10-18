@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
-import { useState, useEffect } from "react";
-
-import Grid from "@mui/material/Grid";
+import { useState, useRef } from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import Chip from "@mui/material/Chip";
@@ -19,6 +17,7 @@ import { findTagById, handleAsyncAction } from "../helpers/noteHelpers";
 import CustomPopover from "../components/CustomePopover";
 import { useCustomPopover } from "../hooks/useCustomPopover";
 import { TAG_ACTION_MESSAGE } from "../constants/messages";
+import TagsPopover from "../components/TagsPopover";
 
 interface TagManagementProps {
   allTags: Tag[];
@@ -27,6 +26,7 @@ interface TagManagementProps {
   handleTagClick: (tagId: string) => void;
   handleClearTagFilter: () => void;
 }
+const MAX_VISIBLE_TAGS = 6;
 
 const TagManagement = ({
   allTags,
@@ -38,6 +38,16 @@ const TagManagement = ({
   const { open, showDialog, hideDialog } = useDialog();
   const popoverManage = useCustomPopover();
   const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
+
+  const [isTagsPopoverOpen, setIsTagsPopoverOpen] = useState(false);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const handleToggleTagsPopover = () => {
+    setIsTagsPopoverOpen((prev) => !prev);
+  };
+
+  const handleCloseTagsPopover = () => {
+    setIsTagsPopoverOpen(false);
+  };
 
   const handleDeleteTagDialog = (tagId: string) => {
     const foundTag = findTagById(tagId, allTags);
@@ -57,6 +67,23 @@ const TagManagement = ({
     setTagToDelete(null);
   };
 
+  const visibleTags = allTags.slice(0, MAX_VISIBLE_TAGS);
+  const hiddenTags = allTags.slice(MAX_VISIBLE_TAGS);
+  const moreCount = hiddenTags.length;
+  let finalVisibleTags = [...visibleTags];
+
+  if (selectedTagId && !visibleTags.some((tag) => tag.id === selectedTagId)) {
+    const selectedTag = allTags.find((tag) => tag.id === selectedTagId);
+    if (selectedTag) {
+      finalVisibleTags = [
+        selectedTag,
+        ...visibleTags.filter((tag) => tag.id !== selectedTagId),
+      ];
+
+      finalVisibleTags = finalVisibleTags.slice(0, MAX_VISIBLE_TAGS);
+    }
+  }
+
   return (
     <>
       <Box>
@@ -67,20 +94,49 @@ const TagManagement = ({
           </Button>
         )}
 
-        <Grid container spacing={0}>
-          {allTags.map((tag) => (
-            <Grid key={tag.id}>
-              <Chip
-                label={tag.label}
-                icon={<LocalOfferOutlinedIcon />}
-                onClick={() => handleTagClick(tag.id)}
-                onDelete={() => handleDeleteTagDialog(tag.id)}
-                deleteIcon={<DeleteForeverIcon />}
-                variant={selectedTagId === tag.id ? "filled" : "outlined"}
-              />
-            </Grid>
+        <Box className="flex flex-wrap gap-1 border-b border-gray-200 pb-2 mb-2">
+          {finalVisibleTags.map((tag) => (
+            <Chip
+              key={tag.id}
+              label={tag.label}
+              icon={<LocalOfferOutlinedIcon className="!w-4 !h-4" />}
+              onClick={() => handleTagClick(tag.id)}
+              onDelete={() => handleDeleteTagDialog(tag.id)}
+              deleteIcon={<DeleteForeverIcon />}
+              variant={selectedTagId === tag.id ? "filled" : "outlined"}
+              // Tailwind styling for better Chip appearance
+              className={`
+                    !text-sm !font-medium !rounded-full !m-0
+                    ${
+                      selectedTagId === tag.id
+                        ? "!bg-primary-color !text-white hover:!bg-primary-hover"
+                        : "!bg-gray-100 !text-gray-700 hover:!bg-gray-200 border-none"
+                    }
+                `}
+            />
           ))}
-        </Grid>
+
+          {moreCount > 0 && (
+            <Button
+              ref={moreButtonRef}
+              onClick={handleToggleTagsPopover}
+              size="small"
+              className="!mt-1 !text-sm !font-semibold !text-gray-500 hover:!text-gray-700 !p-1"
+            >
+              + {moreCount} More Tags
+            </Button>
+          )}
+        </Box>
+
+        <TagsPopover
+          allTags={allTags}
+          selectedTagId={selectedTagId}
+          handleTagClick={handleTagClick}
+          handleDeleteTagDialog={handleDeleteTagDialog}
+          onClose={handleCloseTagsPopover}
+          anchorEl={moreButtonRef.current}
+          open={isTagsPopoverOpen}
+        />
 
         <Dialog
           open={open}
@@ -90,15 +146,20 @@ const TagManagement = ({
           TransitionProps={{ onExited: handleDialogExited }}
         >
           <DialogTitle id="alert-dialog-title">
-            {`Do you want to delete Tag - ${tagToDelete?.label}`}
+            {`Do you want to delete Tag - "${tagToDelete?.label}"`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {`If this tag - ${tagToDelete?.label} - deleted. All notes will be effect.`}
+              {`If this tag - "${tagToDelete?.label}" - deleted. All notes will be effect.`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={hideDialog}>Cancel</Button>
+            <Button
+              onClick={hideDialog}
+              sx={{ color: "var(--color-brand-primary)" }}
+            >
+              Cancel
+            </Button>
             <Button
               onClick={(event) =>
                 handleAsyncAction(
@@ -110,6 +171,10 @@ const TagManagement = ({
                 )
               }
               autoFocus
+              sx={{
+                backgroundColor: "var(--color-brand-primary)",
+                color: "white",
+              }}
             >
               Yes
             </Button>

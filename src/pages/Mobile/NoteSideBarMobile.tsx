@@ -5,8 +5,11 @@ import { useNoteContext } from "../../contexts/NoteProvider";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { styled } from "@mui/material/styles";
+// import { styled } from "@mui/material/styles";
 import { useState, useEffect, useCallback } from "react";
+
+import * as styledModule from "styled-components";
+const styled = styledModule.default || styledModule;
 
 import IconButton from "@mui/material/IconButton";
 

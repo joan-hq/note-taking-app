@@ -26,7 +26,6 @@ const CustomDialog = ({
       <form onSubmit={handleDialogSubmit} id="addnewtag-form">
         <TextField
           autoFocus
-          //required
           fullWidth
           variant="standard"
           margin="dense"

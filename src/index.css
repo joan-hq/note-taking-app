@@ -6,6 +6,11 @@ body,
   padding: 0;
 }
 
-@import "tailwindcss";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities"; /* @import "./styles/quill-custom.css"; */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand-primary: theme("colors.primary-color");
+  --color-primary-hover: theme("colors.primary-hover");
+}

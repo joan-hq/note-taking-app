@@ -39,10 +39,12 @@ const NoteCard = ({
       <Card
         sx={{
           border: isSelected ? "2px solid" : "1px solid",
-          borderColor: isSelected ? "primary.main" : "divider",
+          borderColor: isSelected ? "var(--color-brand-primary)" : "divider",
           boxShadow: isSelected ? 4 : 1,
           transition: "all 0.2s ease-in-out",
+          borderRadius: "15px",
         }}
+        className="border-b shadow-non"
       >
         <CardActionArea {...actionProps}>
           <div>

@@ -9,6 +9,7 @@ import { useCustomPopover } from "../../hooks/useCustomPopover";
 import { handleAsyncAction, findNoteById } from "../../helpers/noteHelpers";
 import { ACTION_MESSAGES } from "../../constants/messages";
 import type { Note } from "../../types/index";
+import CustomButton from "../CustomButton";
 
 interface ActionBarProps {
   allNotes: Note[];
@@ -35,8 +36,10 @@ const ActionBar = ({
     <>
       {filterType === "archived" || selectedNote?.isArchive === true ? (
         <Tooltip title="Unarchive Note" arrow>
-          <Button
-            startIcon={<UnarchiveOutlinedIcon />}
+          <CustomButton
+            startIcon={
+              <UnarchiveOutlinedIcon className="text-primary-color !w-10 !h-10" />
+            }
             onClick={(event) =>
               handleAsyncAction(
                 handleUnrchiveNote,
@@ -48,29 +51,34 @@ const ActionBar = ({
             }
           >
             {/* Unarchive */}
-          </Button>
+          </CustomButton>
         </Tooltip>
       ) : (
-        <Button
-          title="Archive Note"
-          startIcon={<ArchiveOutlinedIcon />}
-          onClick={(event) =>
-            handleAsyncAction(
-              handleArchiveNote,
-              selectedNoteId as string,
-              event,
-              popoverManager,
-              ACTION_MESSAGES.ARCHIVE
-            )
-          }
-        >
-          {/* Archive */}
-        </Button>
+        <Tooltip title="Archive Note">
+          <CustomButton
+            startIcon={
+              <ArchiveOutlinedIcon className="text-primary-color !w-10 !h-10 " />
+            }
+            onClick={(event) =>
+              handleAsyncAction(
+                handleArchiveNote,
+                selectedNoteId as string,
+                event,
+                popoverManager,
+                ACTION_MESSAGES.ARCHIVE
+              )
+            }
+          >
+            {/* Archive */}
+          </CustomButton>
+        </Tooltip>
       )}
 
       <Tooltip title="Delete">
-        <Button
-          startIcon={<DeleteOutlineOutlinedIcon />}
+        <CustomButton
+          startIcon={
+            <DeleteOutlineOutlinedIcon className="text-primary-color !w-10 !h-10" />
+          }
           onClick={(event) =>
             handleAsyncAction(
               handleDeleteNote,
@@ -82,7 +90,7 @@ const ActionBar = ({
           }
         >
           {/* Delete */}
-        </Button>
+        </CustomButton>
       </Tooltip>
 
       <CustomPopover

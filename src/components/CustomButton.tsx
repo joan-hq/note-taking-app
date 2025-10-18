@@ -1,17 +1,29 @@
 import Button from "@mui/material/Button";
+import styled from "styled-components";
 
 interface CustomButtonProps {
-  title: string;
+  title?: string;
   disabled?: boolean;
-  onClick?: (buttonTitle: string) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   startIcon?: React.ReactElement;
   endIcon?: React.ReactElement;
   variant?: "contained" | "outlined" | "text";
-  size?: "small" | "Medium" | "large";
+  size?: "small" | "medium" | "large";
   fullWidth?: boolean;
+  className?: string;
 }
 
-function CustomButton({
+const StyledButton = styled(Button)`
+  && {
+    & .MuiButton-startIcon,
+    & .MuiButton-endIcon {
+      margin: 0 !important;
+    }
+    border-radius: 50% !important;
+  }
+`;
+
+const CustomButton = ({
   title,
   onClick,
   disabled,
@@ -19,28 +31,24 @@ function CustomButton({
   variant,
   endIcon,
   fullWidth,
-}: CustomButtonProps) {
-  const handleClick = () => {
-    if (onClick) {
-      onClick(title);
-    }
-  };
-
+  className,
+}: CustomButtonProps) => {
   return (
     <view>
-      <Button
+      <StyledButton
         title={title}
-        onClick={handleClick}
+        onClick={onClick}
         disabled={disabled}
         startIcon={startIcon}
         variant={variant}
         endIcon={endIcon}
         fullWidth={fullWidth}
+        className={className}
       >
         {title}
-      </Button>
+      </StyledButton>
     </view>
   );
-}
+};
 
 export default CustomButton;

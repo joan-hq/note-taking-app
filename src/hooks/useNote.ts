@@ -23,8 +23,6 @@ export interface useNoteProps {
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
   filteredNotes: Note[];
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSearchIconClick: () => void;
-  handleBlur: () => void;
   isSearchOpen: boolean;
   searchQuery: string;
 
@@ -152,14 +150,6 @@ export const useNote = (): useNoteProps => {
   const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Search query entered:", event.target.value);
     setSearchQuery(event.target.value);
-  };
-
-  const handleSearchIconClick = () => {
-    setIsSearchOpen(true);
-  };
-
-  const handleBlur = () => {
-    setIsSearchOpen(false);
   };
 
   const filteredNotes = useMemo(() => {
@@ -331,8 +321,6 @@ export const useNote = (): useNoteProps => {
     handleShowAllNote,
     handleShowArchivedNote,
     handleSearchOnChange,
-    handleSearchIconClick,
-    handleBlur,
     filteredNotes,
     isSearchOpen,
 

@@ -1,47 +1,54 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import InputBase from "@mui/material/InputBase";
-import { IconButton } from "@mui/material";
-import { useState } from "react";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import styled from "styled-components";
 
 interface SearchBarProps {
   searchQuery: string;
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isOpen: boolean;
-  handleSearchIconClick: () => void;
-  handleBlur: () => void;
+  className?: string;
 }
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  padding: theme.spacing(1, 1, 1, 0),
-  width: "100%",
-}));
+const StyledTextField = styled(TextField)({
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "15px",
+  },
+});
 
 const SearchBar = ({
   searchQuery,
   handleSearchOnChange,
-  isOpen,
-  handleSearchIconClick,
-  handleBlur,
+  className,
 }: SearchBarProps) => {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <IconButton onClick={handleSearchIconClick} size="large" color="primary">
-        <SearchIcon />
-      </IconButton>
-      {isOpen && (
-        <StyledInputBase
-          placeholder="Search..."
-          inputProps={{ "aria-label": "search" }}
-          value={searchQuery}
-          onChange={handleSearchOnChange}
-          onBlur={handleBlur}
-          autoFocus
-        />
-      )}
+    <Box>
+      <StyledTextField
+        fullWidth
+        variant="outlined"
+        placeholder="search..."
+        value={searchQuery}
+        onChange={handleSearchOnChange}
+        className={className}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton>
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "var(--color-brand-primary)",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: "var(--color-brand-primary)",
+            },
+        }}
+      />
     </Box>
   );
 };

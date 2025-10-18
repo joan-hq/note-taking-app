@@ -13,6 +13,13 @@ import { useCustomPopover } from "../../hooks/useCustomPopover";
 import type { CustomPopoverState } from "../../hooks/useCustomPopover";
 import { newTagValidation } from "../../helpers/noteHelpers";
 import { v4 as uuidv4 } from "uuid";
+import CustomButton from "../CustomButton";
+import styled from "styled-components";
+const StyledCustomButton = styled(CustomButton)`
+  && {
+    background-color: var(--color-brand-primary);
+  }
+`;
 
 interface TagsFieldProps {
   options: Tag[];
@@ -59,20 +66,23 @@ const TagsField = ({
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Chip variant="outlined" icon={<LocalOfferOutlinedIcon />} />
+        <Chip
+          variant="outlined"
+          icon={<LocalOfferOutlinedIcon className="!text-primary-color" />}
+          sx={{ border: "none" }}
+        />
         <TagSelector
           options={options}
           value={noteTags}
           onChange={onChange}
           onDelete={onDelete}
         />
-        <Chip
-          // label="add new tag"
+        <StyledCustomButton
           onClick={showDialog}
-          icon={<AddIcon />}
-          variant="outlined"
-          color="primary"
-        />
+          startIcon={<AddIcon className="!text-white" />}
+          className="!min-w-0"
+        ></StyledCustomButton>
+
         <AddNewTagDialog
           open={open}
           newTagInputValue={newTagInputValue}
@@ -80,7 +90,6 @@ const TagsField = ({
           handleNewTagSubmit={handleNewTagSubmit}
           hideDialog={hideDialog}
         />
-
         <CustomPopover
           open={popoverManager.open}
           message={popoverManager.message}
