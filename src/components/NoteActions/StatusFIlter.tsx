@@ -5,19 +5,12 @@ import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
 import type { FilterType } from "../../types/index";
-import styled from "styled-components";
 
 interface NoteStatusFilterProps {
   filterType: FilterType;
   handleShowAllNote: (event: React.MouseEvent<HTMLElement>) => void;
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
 }
-
-const StyledButton = styled(Button)`
-  // && {
-  //   background-color: var(--color-brand-primary);
-  // }
-`;
 
 const NoteStatusFilter = ({
   filterType,
@@ -26,7 +19,7 @@ const NoteStatusFilter = ({
 }: NoteStatusFilterProps) => {
   return (
     <Box className="flex flex-col space-y-2 w-48 justify-start">
-      <StyledButton
+      <Button
         title="All Notes"
         fullWidth
         startIcon={<HomeOutlinedIcon />}
@@ -34,11 +27,15 @@ const NoteStatusFilter = ({
         onClick={handleShowAllNote}
         variant={filterType === "all" ? "contained" : "text"}
         sx={{
+          justifyContent: "start",
           textTransform: "none",
           ...(filterType === "all" && {
             backgroundColor: "var(--color-brand-primary)",
             color: "white",
             "&:hover": {
+              backgroundColor: "var(--color-primary-hover)",
+            },
+            "&:focus": {
               backgroundColor: "var(--color-primary-hover)",
             },
           }),
@@ -49,8 +46,8 @@ const NoteStatusFilter = ({
         className="w-full justify-start"
       >
         All Notes
-      </StyledButton>
-      <StyledButton
+      </Button>
+      <Button
         title="Archived Notes"
         fullWidth
         startIcon={<ArchiveOutlinedIcon />}
@@ -58,12 +55,13 @@ const NoteStatusFilter = ({
         onClick={handleShowArchivedNote}
         variant={filterType === "archived" ? "contained" : "text"}
         sx={{
+          justifyContent: "start",
           textTransform: "none",
           ...(filterType === "archived" && {
             backgroundColor: "var(--color-brand-primary)",
             color: "white",
             "&:hover": {
-              backgroundColor: "var(--color-primary-hover)",
+              backgroundColor: "var(--color-brand-primary)",
             },
             "&:focus": {
               backgroundColor: "var(--color-primary-hover)",
@@ -76,7 +74,7 @@ const NoteStatusFilter = ({
         className="w-full justify-start"
       >
         Archived Notes
-      </StyledButton>
+      </Button>
     </Box>
   );
 };

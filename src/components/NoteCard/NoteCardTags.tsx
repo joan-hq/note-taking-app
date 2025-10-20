@@ -9,7 +9,9 @@ const NoteCardTags = ({ tags }: NoteCardTagsProps) => {
   return (
     <CardContent>
       {tags && tags.length > 0 ? (
-        tags.map((tag) => <Chip label={tag.label} key={tag.id} />)
+        tags.map((tag) => (
+          <Chip label={tag.label} key={tag.id} variant="outlined" />
+        ))
       ) : (
         <Chip label={"no tags......"} variant="outlined" />
       )}

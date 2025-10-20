@@ -3,7 +3,7 @@ import Popper from "@mui/material/Popper";
 import Paper from "@mui/material/Paper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import Chip from "@mui/material/Chip";
 
@@ -49,17 +49,27 @@ const TagsPopover = ({
                 icon={<LocalOfferOutlinedIcon className="!w-4 !h-4" />}
                 onClick={() => handleTagClick(tag.id)}
                 onDelete={() => handleDeleteTagDialog(tag.id)}
-                deleteIcon={<DeleteForeverIcon />}
+                deleteIcon={<ClearOutlinedIcon />}
                 variant={selectedTagId === tag.id ? "filled" : "outlined"}
-                // Tailwind styling for better Chip appearance
+                sx={{
+                  "& .MuiChip-deleteIcon": {
+                    visibility: "hidden",
+                    fontSize: "1.0rem !important",
+                  },
+                  "&:hover .MuiChip-deleteIcon": {
+                    visibility: "visible",
+                    color: "white",
+                  },
+                  "&:hover": { opacity: 0.9 },
+                }}
                 className={`
-                                    !text-sm !font-medium !rounded-full !m-0
-                                    ${
-                                      selectedTagId === tag.id
-                                        ? "!bg-indigo-600 !text-white hover:!bg-indigo-700"
-                                        : "!bg-gray-100 !text-gray-700 hover:!bg-gray-200 border-none"
-                                    }
-                                `}
+                            !text-sm !font-medium !rounded-full !m-0
+                            ${
+                              selectedTagId === tag.id
+                                ? "!bg-primary-color !text-white hover:!bg-primary-hover"
+                                : "!bg-gray-100 !text-gray-700 hover:!bg-gray-200 border-none"
+                            }
+                        `}
               />
             ))}
           </Box>

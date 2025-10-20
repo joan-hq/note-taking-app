@@ -13,4 +13,5 @@ body,
 :root {
   --color-brand-primary: theme("colors.primary-color");
   --color-primary-hover: theme("colors.primary-hover");
+  --color-warning-color: theme("colors.warning-color");
 }

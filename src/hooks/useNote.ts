@@ -23,6 +23,7 @@ export interface useNoteProps {
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
   filteredNotes: Note[];
   handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClearSearch: () => void;
   isSearchOpen: boolean;
   searchQuery: string;
 
@@ -61,6 +62,7 @@ export const useNote = (): useNoteProps => {
 
   const handleShowAllNote = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
       console.log("use note show all note");
       setFilterType("all");
     },
@@ -69,10 +71,13 @@ export const useNote = (): useNoteProps => {
 
   const handleShowArchivedNote = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
       console.log("**** use note show archived note");
-      setFilterType("archived");
+      if (filterType !== "archived") {
+        setFilterType("archived");
+      }
     },
-    []
+    [filterType]
   );
 
   const noteFilterTitle = useMemo(() => {
@@ -150,6 +155,10 @@ export const useNote = (): useNoteProps => {
   const handleSearchOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Search query entered:", event.target.value);
     setSearchQuery(event.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
   };
 
   const filteredNotes = useMemo(() => {
@@ -321,6 +330,8 @@ export const useNote = (): useNoteProps => {
     handleShowAllNote,
     handleShowArchivedNote,
     handleSearchOnChange,
+    handleClearSearch,
+    searchQuery,
     filteredNotes,
     isSearchOpen,
 

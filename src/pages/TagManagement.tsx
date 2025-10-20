@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useState, useRef } from "react";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Chip from "@mui/material/Chip";
 
 import Button from "@mui/material/Button";
@@ -89,7 +89,19 @@ const TagManagement = ({
       <Box>
         <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
         {selectedTagId && (
-          <Button onClick={handleClearTagFilter} size="small" sx={{ mb: 1 }}>
+          <Button
+            startIcon={<ClearOutlinedIcon />}
+            variant="contained"
+            onClick={handleClearTagFilter}
+            size="small"
+            sx={{
+              mb: 1,
+              backgroundColor: "var(--color-brand-primary)",
+              "&:hover": {
+                backgroundColor: "var(--color-primary-hover)",
+              },
+            }}
+          >
             Clear Filter
           </Button>
         )}
@@ -102,9 +114,16 @@ const TagManagement = ({
               icon={<LocalOfferOutlinedIcon className="!w-4 !h-4" />}
               onClick={() => handleTagClick(tag.id)}
               onDelete={() => handleDeleteTagDialog(tag.id)}
-              deleteIcon={<DeleteForeverIcon />}
+              deleteIcon={<ClearOutlinedIcon />}
               variant={selectedTagId === tag.id ? "filled" : "outlined"}
-              // Tailwind styling for better Chip appearance
+              sx={{
+                "& .MuiChip-deleteIcon": {
+                  visibility: "hidden",
+                  fontSize: "1.0rem !important",
+                },
+                "&:hover .MuiChip-deleteIcon": { visibility: "visible" },
+                "&:hover": { opacity: 0.9 },
+              }}
               className={`
                     !text-sm !font-medium !rounded-full !m-0
                     ${
@@ -146,11 +165,11 @@ const TagManagement = ({
           TransitionProps={{ onExited: handleDialogExited }}
         >
           <DialogTitle id="alert-dialog-title">
-            {`Do you want to delete Tag - "${tagToDelete?.label}"`}
+            {`Delete Tag - "${tagToDelete?.label}"`}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {`If this tag - "${tagToDelete?.label}" - deleted. All notes will be effect.`}
+              {`Deleting tag "${tagToDelete?.label}" will remove it from all associated notes. This action cannot be undone.`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -172,11 +191,17 @@ const TagManagement = ({
               }
               autoFocus
               sx={{
-                backgroundColor: "var(--color-brand-primary)",
+                backgroundColor: "var(--color-warning-color)",
                 color: "white",
+                "&:hover": {
+                  backgroundColor: "var(--color-warning-color)",
+                },
+                "&:focus": {
+                  backgroundColor: "var(--color-warning-color)",
+                },
               }}
             >
-              Yes
+              Confirm
             </Button>
           </DialogActions>
         </Dialog>

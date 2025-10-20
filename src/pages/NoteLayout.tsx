@@ -1,6 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import TagManagement from "./TagManagement";
-import NoteStatusFilter from "../components/NoteActions/StatusFIlter";
+import NoteStatusFilter from "../components/NoteActions/StatusFilter";
 import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
 
 import NoteDetail from "./NoteDetail";
@@ -10,8 +10,9 @@ import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
 import { useNote } from "../hooks/useNote";
-
-const NoteLayout = () => {
+import type { useNoteProps } from "../hooks/useNote";
+type NoteLayoutProps = useNoteProps;
+const NoteLayout = (props: NoteLayoutProps) => {
   //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
   const {
@@ -19,10 +20,8 @@ const NoteLayout = () => {
     handleShowAllNote,
     handleShowArchivedNote,
     handleSearchOnChange,
-    handleSearchIconClick,
-    handleBlur,
+    handleClearSearch,
     filteredNotes,
-    isSearchOpen,
     searchQuery,
 
     allTags,
@@ -89,6 +88,8 @@ const NoteLayout = () => {
 
             <Box>
               <SearchBar
+                key={filterType}
+                handleClearSearch={handleClearSearch}
                 searchQuery={searchQuery}
                 handleSearchOnChange={handleSearchOnChange}
                 className="!rounded-full"
