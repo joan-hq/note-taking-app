@@ -4,14 +4,12 @@ import { Routes, Route } from "react-router-dom";
 import NoteLayout from "./NoteLayout";
 import NoteLayoutMobile from "./Mobile/NoteLayoutMobile";
 import NoteDetailMobile from "./Mobile/NoteDetailMobile";
-import { useNote } from "../hooks/useNote";
 
 const NoteIndex = () => {
   const isDesktop = useMediaQuery("(min-width:900px)");
-  const noteContext = useNote();
 
   if (isDesktop) {
-    return <NoteLayout {...noteContext} />;
+    return <NoteLayout />;
   }
 
   return (

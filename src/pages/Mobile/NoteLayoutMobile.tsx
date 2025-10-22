@@ -1,6 +1,6 @@
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import NoteFilterResultsTitle from "../../components/NoteFilterResultsTitle";
+import ReuseTitle from "../../components/ReuseTitle";
 import NoteBrifeView from "../../components/NoteBrifeView/index";
 import { useNoteContext } from "../../contexts/NoteProvider";
 import NoteSideBarMobile from "./NoteSideBarMobile";
@@ -126,7 +126,7 @@ const NoteLayoutMobile = () => {
             >
               <MenuIcon />
             </IconButton>
-            <NoteFilterResultsTitle title={noteFilterTitle} />
+            <ReuseTitle title={noteFilterTitle} />
           </Toolbar>
         </AppBar>
       </Box>

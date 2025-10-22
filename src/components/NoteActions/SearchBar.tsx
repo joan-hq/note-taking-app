@@ -33,6 +33,10 @@ const SearchBar = ({
   const hasSearchQuery = safeQuery.trim().length > 0;
 
   const textFieldStyles = {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-input": {
+      padding: "10px 8px",
+    },
+
     "& .MuiOutlinedInput-root": {
       borderRadius: "15px",
     },

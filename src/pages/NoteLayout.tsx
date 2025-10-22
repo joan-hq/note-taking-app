@@ -1,7 +1,8 @@
 import { Box, Grid } from "@mui/material";
 import TagManagement from "./TagManagement";
 import NoteStatusFilter from "../components/NoteActions/StatusFilter";
-import NoteFilterResultsTitle from "../components/NoteFilterResultsTitle";
+// import LogoIcon from "../assets/TypoNoteLogo.svg?react";
+import ReuseTitle from "../components/ReuseTitle";
 
 import NoteDetail from "./NoteDetail";
 import ActionBar from "../components/NoteActions/ActionBar";
@@ -10,11 +11,8 @@ import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
 import { useNote } from "../hooks/useNote";
-import type { useNoteProps } from "../hooks/useNote";
-type NoteLayoutProps = useNoteProps;
-const NoteLayout = (props: NoteLayoutProps) => {
-  //   const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
+const NoteLayout = () => {
   const {
     noteFilterTitle,
     handleShowAllNote,
@@ -48,92 +46,79 @@ const NoteLayout = (props: NoteLayoutProps) => {
   } = useNote();
 
   return (
-    <Box className="flex-grow p-4 h-screen overflow-hidden">
-      <Grid container spacing={4} className="h-full">
-        <Grid item xs={12} sm={3} md={2} className="h-full">
-          <Box className="flex flex-col h-full">
-            <Box>
-              <NoteStatusFilter
-                filterType={filterType}
-                handleShowAllNote={handleShowAllNote}
-                handleShowArchivedNote={handleShowArchivedNote}
-              />
-            </Box>
-            <Box className="flex-grow overflow-y-auto min-h-0">
-              <TagManagement
-                allTags={allTags}
-                onTagDeleted={handleTagDelete}
-                selectedTagId={selectedTagId}
-                handleTagClick={handleTagClick}
-                handleClearTagFilter={handleClearTagFilter}
-              />
-            </Box>
-          </Box>
-        </Grid>
+    <Box className="grid h-screen grid-cols-[280px_340px_1fr] gap-4 p-4">
+      {/* Left */}
+      <Box className="flex flex-col h-full p-4 border-r bg-gray-50 border-gray-200">
+        <div className="flex flex-col gap-5">
+          <ReuseTitle
+            title="TypoNote"
+            className="flex items-center gap-2 text-brand-primary text-2xl font-semibold"
+          />
+          <NewNoteButton
+            handleNewNoteClick={handleNewNoteClick}
+            className="w-full"
+          />
+          <NoteStatusFilter
+            filterType={filterType}
+            handleShowAllNote={handleShowAllNote}
+            handleShowArchivedNote={handleShowArchivedNote}
+          />
+        </div>
+        <hr className="my-5 border-gray-200" />
+        <TagManagement
+          allTags={allTags}
+          onTagDeleted={handleTagDelete}
+          selectedTagId={selectedTagId}
+          handleTagClick={handleTagClick}
+          handleClearTagFilter={handleClearTagFilter}
+        />
+      </Box>
 
-        <Grid item xs={12} sm={9} md={3} className="h-full">
-          <Box className="flex flex-col h-full">
-            <Box className="flex justify-between items-center mb-4">
-              <NoteFilterResultsTitle
-                title={noteFilterTitle}
-                className="!text-4xl text-primary-color"
-              />
-              <Box className="flex items-center gap-2">
-                <NewNoteButton
-                  handleNewNoteClick={handleNewNoteClick}
-                  className="!min-w-0"
-                />
-              </Box>
-            </Box>
+      {/* Middle */}
+      <Box className="bg-white border-r border-gray-200 p-1">
+        <ReuseTitle
+          title={noteFilterTitle}
+          className="!text-4xl text-primary-color"
+        />
 
-            <Box>
-              <SearchBar
-                key={filterType}
-                handleClearSearch={handleClearSearch}
-                searchQuery={searchQuery}
-                handleSearchOnChange={handleSearchOnChange}
-                className="!rounded-full"
-              />
-            </Box>
+        <SearchBar
+          key={filterType}
+          handleClearSearch={handleClearSearch}
+          searchQuery={searchQuery}
+          handleSearchOnChange={handleSearchOnChange}
+          className="!rounded-full"
+        />
 
-            <Box className="flex-grow overflow-y-auto min-h-0">
-              <NoteBrifeView
-                selectedNoteId={selectedNoteId}
-                notes={filteredNotes}
-                handleNoteCardClick={handleNoteCardClick}
-                allTags={allTags}
-              />
-            </Box>
-          </Box>
-        </Grid>
+        <NoteBrifeView
+          selectedNoteId={selectedNoteId}
+          notes={filteredNotes}
+          handleNoteCardClick={handleNoteCardClick}
+          allTags={allTags}
+        />
+      </Box>
 
-        {/* right: note details and action button */}
-        <Grid item xs={12} md={7} className="relative flex flex-col h-full">
-          <Box className="flex-grow overflow-y-auto pt-16">
-            <NoteDetail
-              allNotes={allNotes}
-              allTags={allTags}
-              selectedNoteId={selectedNoteId}
-              handleTagsChangeFromNote={handleTagsChangeFromNote}
-              handleTagDeleteFromNote={handleTagDeleteFromNote}
-              handleTitleOnChange={handleTitleOnChange}
-              handleNewTagSave={handleNewTagSave}
-              handleContentOnChange={handleContentOnChange}
-            />
-          </Box>
+      {/* Right */}
+      <Box className="bg-white border-r border-gray-200 p-1">
+        <NoteDetail
+          allNotes={allNotes}
+          allTags={allTags}
+          selectedNoteId={selectedNoteId}
+          handleTagsChangeFromNote={handleTagsChangeFromNote}
+          handleTagDeleteFromNote={handleTagDeleteFromNote}
+          handleTitleOnChange={handleTitleOnChange}
+          handleNewTagSave={handleNewTagSave}
+          handleContentOnChange={handleContentOnChange}
+        />
 
-          <Box className="absolute top-2 right-2 z-10 p-5">
-            <ActionBar
-              allNotes={allNotes}
-              filterType={filterType}
-              selectedNoteId={selectedNoteId}
-              handleArchiveNote={handleArchiveNote}
-              handleUnrchiveNote={handleUnrchiveNote}
-              handleDeleteNote={handleDeleteNote}
-            />
-          </Box>
-        </Grid>
-      </Grid>
+        <ActionBar
+          allNotes={allNotes}
+          filterType={filterType}
+          selectedNoteId={selectedNoteId}
+          handleArchiveNote={handleArchiveNote}
+          handleUnrchiveNote={handleUnrchiveNote}
+          handleDeleteNote={handleDeleteNote}
+        />
+      </Box>
     </Box>
   );
 };

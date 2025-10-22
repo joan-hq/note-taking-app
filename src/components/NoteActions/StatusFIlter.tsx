@@ -1,10 +1,9 @@
 import { Box } from "@mui/material";
 
 import Button from "@mui/material/Button";
-import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRightOutlined";
+import FolderZipOutlinedIcon from "@mui/icons-material/FolderZipOutlined";
 import type { FilterType } from "../../types/index";
+import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 
 interface NoteStatusFilterProps {
   filterType: FilterType;
@@ -17,64 +16,42 @@ const NoteStatusFilter = ({
   handleShowAllNote,
   handleShowArchivedNote,
 }: NoteStatusFilterProps) => {
+  const itemBaseStyle = "flex items-center gap-3 p-2 rounded-lg cursor-pointer";
+  const activeStyle = "bg-blue-100 text-blue-800 font-medium";
+  const inactiveStyle = "text-gray-700 hover:bg-gray-100";
+
   return (
-    <Box className="flex flex-col space-y-2 w-48 justify-start">
-      <Button
-        title="All Notes"
-        fullWidth
-        startIcon={<HomeOutlinedIcon />}
-        endIcon={<KeyboardArrowRightOutlinedIcon />}
+    <Box className="flex flex-col gap-2 w-full">
+      <Box
         onClick={handleShowAllNote}
-        variant={filterType === "all" ? "contained" : "text"}
-        sx={{
-          justifyContent: "start",
-          textTransform: "none",
-          ...(filterType === "all" && {
-            backgroundColor: "var(--color-brand-primary)",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "var(--color-primary-hover)",
-            },
-            "&:focus": {
-              backgroundColor: "var(--color-primary-hover)",
-            },
-          }),
-          ...(filterType !== "all" && {
-            color: "var(--color-brand-primary)",
-          }),
-        }}
-        className="w-full justify-start"
+        className={`
+          ${itemBaseStyle}
+          ${filterType === "all" ? activeStyle : inactiveStyle}
+        `}
       >
-        All Notes
-      </Button>
-      <Button
-        title="Archived Notes"
-        fullWidth
-        startIcon={<ArchiveOutlinedIcon />}
-        endIcon={<KeyboardArrowRightOutlinedIcon />}
+        <FolderCopyOutlinedIcon
+          className={`
+            !text-xl 
+            ${filterType === "all" ? "text-blue-600" : "text-gray-500"}
+          `}
+        />
+        <span className="text-sm">All Notes</span>
+      </Box>
+      <Box
         onClick={handleShowArchivedNote}
-        variant={filterType === "archived" ? "contained" : "text"}
-        sx={{
-          justifyContent: "start",
-          textTransform: "none",
-          ...(filterType === "archived" && {
-            backgroundColor: "var(--color-brand-primary)",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "var(--color-brand-primary)",
-            },
-            "&:focus": {
-              backgroundColor: "var(--color-primary-hover)",
-            },
-          }),
-          ...(filterType !== "archived" && {
-            color: "var(--color-brand-primary)",
-          }),
-        }}
-        className="w-full justify-start"
+        className={`
+          ${itemBaseStyle}
+          ${filterType === "archived" ? activeStyle : inactiveStyle}
+        `}
       >
-        Archived Notes
-      </Button>
+        <FolderZipOutlinedIcon
+          className={`
+            !text-xl
+            ${filterType === "archived" ? "text-blue-600" : "text-gray-500"}
+          `}
+        />
+        <span className="text-sm">Archived Notes</span>
+      </Box>
     </Box>
   );
 };
