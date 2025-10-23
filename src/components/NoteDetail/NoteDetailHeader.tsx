@@ -42,7 +42,6 @@ NoteDetailHeaderProps) => {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       <TextField
         variant="standard"
-        placeholder="Enter your  title here..."
         fullWidth
         multiline={false}
         value={title}
@@ -50,7 +49,7 @@ NoteDetailHeaderProps) => {
         InputProps={{
           disableUnderline: true,
           sx: {
-            fontSize: "32px",
+            fontSize: "28px",
           },
         }}
       />

@@ -94,13 +94,14 @@ const NoteLayout = () => {
           handleSearchOnChange={handleSearchOnChange}
           className="!rounded-full"
         />
-
-        <NoteBrifeView
-          selectedNoteId={selectedNoteId}
-          notes={filteredNotes}
-          handleNoteCardClick={handleNoteCardClick}
-          allTags={allTags}
-        />
+        <Box className={`overflow-y-scroll h-[calc(100vh-8rem)]`}>
+          <NoteBrifeView
+            selectedNoteId={selectedNoteId}
+            notes={filteredNotes}
+            handleNoteCardClick={handleNoteCardClick}
+            allTags={allTags}
+          />
+        </Box>
       </Box>
 
       {/* Right */}
