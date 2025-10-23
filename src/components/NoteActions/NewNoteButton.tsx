@@ -1,5 +1,4 @@
 import AddIcon from "@mui/icons-material/Add";
-import CustomButton from "../CustomButton";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 
@@ -20,9 +19,7 @@ const StyledButton = styled(Button)`
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
     &:hover {
-      background-color: var(
-        --color-primary-hover
-      ); /* A slightly lighter dark color for hover */
+      background-color: var(--color-primary-hover);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
   }

@@ -16,8 +16,9 @@ const NoteStatusFilter = ({
   handleShowAllNote,
   handleShowArchivedNote,
 }: NoteStatusFilterProps) => {
-  const itemBaseStyle = "flex items-center gap-3 p-2 rounded-lg cursor-pointer";
-  const activeStyle = "bg-blue-100 text-blue-800 font-medium";
+  const itemBaseStyle = "flex items-center gap-3 p-2 cursor-pointer";
+  const activeStyle =
+    "border-l-4 border-s-primary-color text-primary-color font-semibold";
   const inactiveStyle = "text-gray-700 hover:bg-gray-100";
 
   return (
@@ -32,7 +33,7 @@ const NoteStatusFilter = ({
         <FolderCopyOutlinedIcon
           className={`
             !text-xl 
-            ${filterType === "all" ? "text-blue-600" : "text-gray-500"}
+            ${filterType === "all" ? "text-primary-color" : "text-gray-500"}
           `}
         />
         <span className="text-sm">All Notes</span>
@@ -47,7 +48,9 @@ const NoteStatusFilter = ({
         <FolderZipOutlinedIcon
           className={`
             !text-xl
-            ${filterType === "archived" ? "text-blue-600" : "text-gray-500"}
+            ${
+              filterType === "archived" ? "text-primary-color" : "text-gray-500"
+            }
           `}
         />
         <span className="text-sm">Archived Notes</span>

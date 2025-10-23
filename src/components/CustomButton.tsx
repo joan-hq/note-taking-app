@@ -20,6 +20,9 @@ const StyledButton = styled(Button)`
       margin: 0 !important;
     }
     border-radius: 50% !important;
+    &:hover {
+      background-color: var(--color-primary-hover);
+    }
   }
 `;
 

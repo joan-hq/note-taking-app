@@ -1,8 +1,9 @@
 import { Box, Grid } from "@mui/material";
 import TagManagement from "./TagManagement";
 import NoteStatusFilter from "../components/NoteActions/StatusFilter";
-// import LogoIcon from "../assets/TypoNoteLogo.svg?react";
 import ReuseTitle from "../components/ReuseTitle";
+
+import TypoNoteIcon from "../icons/TypoNoteLogo";
 
 import NoteDetail from "./NoteDetail";
 import ActionBar from "../components/NoteActions/ActionBar";
@@ -50,10 +51,15 @@ const NoteLayout = () => {
       {/* Left */}
       <Box className="flex flex-col h-full p-4 border-r bg-gray-50 border-gray-200">
         <div className="flex flex-col gap-5">
-          <ReuseTitle
-            title="TypoNote"
-            className="flex items-center gap-2 text-brand-primary text-2xl font-semibold"
-          />
+          <div className="flex justify-center">
+            <ReuseTitle
+              title="TypoNote"
+              icon={
+                <TypoNoteIcon className="w-11 h-11 text-primary-color stroke-[4]" />
+              }
+              className="flex items-center gap-2 text-primary-color text-3xl font-semibold"
+            />
+          </div>
           <NewNoteButton
             handleNewNoteClick={handleNewNoteClick}
             className="w-full"
@@ -78,7 +84,7 @@ const NoteLayout = () => {
       <Box className="bg-white border-r border-gray-200 p-1">
         <ReuseTitle
           title={noteFilterTitle}
-          className="!text-4xl text-primary-color"
+          className="!text-2xl text-primary-color font-semibold"
         />
 
         <SearchBar
@@ -117,6 +123,7 @@ const NoteLayout = () => {
           handleArchiveNote={handleArchiveNote}
           handleUnrchiveNote={handleUnrchiveNote}
           handleDeleteNote={handleDeleteNote}
+          className="absolute top-2 right-2"
         />
       </Box>
     </Box>
