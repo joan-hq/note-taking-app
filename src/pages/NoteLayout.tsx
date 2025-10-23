@@ -123,7 +123,7 @@ const NoteLayout = () => {
           handleArchiveNote={handleArchiveNote}
           handleUnrchiveNote={handleUnrchiveNote}
           handleDeleteNote={handleDeleteNote}
-          className="absolute top-2 right-2"
+          className="absolute top-2 right-2 mx-11"
         />
       </Box>
     </Box>

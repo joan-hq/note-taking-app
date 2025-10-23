@@ -1,5 +1,5 @@
-import DriveFileMoveRtlOutlinedIcon from "@mui/icons-material/DriveFileMoveRtlOutlined";
-import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
+import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
+import UnarchiveOutlinedIcon from "@mui/icons-material/UnarchiveOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import type { FilterType } from "../../types/index";
 import CustomPopover from "../CustomePopover";
@@ -8,6 +8,7 @@ import { handleAsyncAction, findNoteById } from "../../helpers/noteHelpers";
 import { ACTION_MESSAGES } from "../../constants/messages";
 import type { Note } from "../../types/index";
 import Button from "@mui/material/Button";
+import styled from "styled-components";
 
 interface ActionBarProps {
   allNotes: Note[];
@@ -18,6 +19,12 @@ interface ActionBarProps {
   handleDeleteNote: (noteId: string) => Promise<boolean>;
   className?: string;
 }
+
+const StyledButton = styled(Button)`
+  && {
+    color: #4b5563;
+  }
+`;
 const ActionBar = ({
   allNotes,
   selectedNoteId,
@@ -27,6 +34,7 @@ const ActionBar = ({
   handleUnrchiveNote,
   className,
 }: ActionBarProps) => {
+  const iconStyle = "text-gray-700";
   const popoverManager = useCustomPopover();
   const selectedNote = selectedNoteId
     ? findNoteById(selectedNoteId, allNotes)
@@ -35,8 +43,8 @@ const ActionBar = ({
   return (
     <div className={className}>
       {filterType === "archived" || selectedNote?.isArchive === true ? (
-        <Button
-          startIcon={<DriveFileMoveRtlOutlinedIcon />}
+        <StyledButton
+          startIcon={<UnarchiveOutlinedIcon className={iconStyle} />}
           onClick={(event) =>
             handleAsyncAction(
               handleUnrchiveNote,
@@ -46,13 +54,13 @@ const ActionBar = ({
               ACTION_MESSAGES.UNARCHIVE
             )
           }
-          sx={{ textTransform: "none" }}
+          sx={{ textTransform: "none", color: "grey-700" }}
         >
           Unarchive
-        </Button>
+        </StyledButton>
       ) : (
-        <Button
-          startIcon={<DriveFileMoveOutlinedIcon />}
+        <StyledButton
+          startIcon={<ArchiveOutlinedIcon className={iconStyle} />}
           onClick={(event) =>
             handleAsyncAction(
               handleArchiveNote,
@@ -65,10 +73,10 @@ const ActionBar = ({
           sx={{ textTransform: "none" }}
         >
           Archive
-        </Button>
+        </StyledButton>
       )}
-      <Button
-        startIcon={<DeleteForeverOutlinedIcon />}
+      <StyledButton
+        startIcon={<DeleteForeverOutlinedIcon className={iconStyle} />}
         onClick={(event) =>
           handleAsyncAction(
             handleDeleteNote,
@@ -81,7 +89,7 @@ const ActionBar = ({
         sx={{ textTransform: "none" }}
       >
         Delete
-      </Button>
+      </StyledButton>
       <CustomPopover
         open={popoverManager.open}
         message={popoverManager.message}
