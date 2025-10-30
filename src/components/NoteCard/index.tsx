@@ -36,18 +36,24 @@ const NoteCard = ({
   return (
     <>
       <Card
-        sx={{
-          border: isSelected ? "2px solid" : "1px solid",
-          borderColor: isSelected ? "var(--color-brand-primary)" : "divider",
-          boxShadow: isSelected ? 4 : 1,
-          transition: "all 0.2s ease-in-out",
-          borderRadius: "15px",
-        }}
-        className="border-b shadow-non"
+        className={`p-4 mb-2 rounded-lg shadow-sm transition-all duration-200 
+        ease-in-out border cursor-pointer ${
+          isSelected
+            ? "border-primary-color bg-cyan-50"
+            : "border-gray-200 bg-white"
+        }
+        hover:shadow-md hover:scale-[1.01]
+        ${!isSelected && "hover: bg-cyan-50"}
+        
+        `}
       >
         <CardActionArea {...actionProps}>
           <div>
-            <NoteCardHeader title={title} noteStatus={noteStatus} />
+            <NoteCardHeader
+              title={title}
+              noteStatus={noteStatus}
+              isSelected={isSelected}
+            />
             <NoteCardContent tags={tags} lastedit={lastedit} />
           </div>
         </CardActionArea>

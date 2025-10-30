@@ -3,33 +3,25 @@ import Box from "@mui/material/Box";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import { useNote } from "../../hooks/useNote";
+import { useNoteContext } from "../../contexts/NoteProvider";
 
 interface SearchBarProps {
-  searchQuery: string;
-  handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
-  handleClearSearch: () => void;
 }
 
-const SearchBar = ({
-  searchQuery,
-  handleSearchOnChange,
-  handleClearSearch,
-  className,
-}: SearchBarProps) => {
-  const { filterType } = useNote();
+const SearchBar = ({ className }: SearchBarProps) => {
+  const { search, filters } = useNoteContext();
 
   let searchBarPlaceHolder;
-  if (filterType === "all") {
+  if (filters.filterType === "all") {
     searchBarPlaceHolder = `Search in all notes...`;
-  } else if (filterType === "archived") {
+  } else if (filters.filterType === "archived") {
     searchBarPlaceHolder = `Search in archived notes...`;
   }
 
-  console.log("filterType", filterType);
+  console.log("filterType", filters.filterType);
 
-  const safeQuery = searchQuery || "";
+  const safeQuery = search.searchQuery || "";
   const hasSearchQuery = safeQuery.trim().length > 0;
 
   const textFieldStyles = {
@@ -51,12 +43,12 @@ const SearchBar = ({
   return (
     <Box>
       <TextField
-        key={filterType}
+        key={filters.filterType}
         fullWidth
         variant="outlined"
         placeholder={searchBarPlaceHolder}
-        value={searchQuery}
-        onChange={handleSearchOnChange}
+        value={search.searchQuery}
+        onChange={search.handleSearchOnChange}
         className={className}
         InputProps={{
           startAdornment: (
@@ -70,7 +62,7 @@ const SearchBar = ({
             <InputAdornment position="end">
               <IconButton
                 size="small"
-                onClick={handleClearSearch}
+                onClick={search.handleClearSearch}
                 aria-label="Clear search"
               >
                 <CloseIcon fontSize="small" color="action" />

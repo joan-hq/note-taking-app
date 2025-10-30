@@ -1,132 +1,63 @@
-import { Box, Grid } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  useMediaQuery,
+  useTheme,
+  Drawer,
+  IconButton,
+} from "@mui/material";
+
 import TagManagement from "./TagManagement";
 import NoteStatusFilter from "../components/NoteActions/StatusFilter";
 import ReuseTitle from "../components/ReuseTitle";
-
-import TypoNoteIcon from "../icons/TypoNoteLogo";
-
+import NoteLogo from "./NoteLogo";
 import NoteDetail from "./NoteDetail";
 import ActionBar from "../components/NoteActions/ActionBar";
-
 import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
-import { useNote } from "../hooks/useNote";
+import { useNoteContext } from "../contexts/NoteProvider";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import LeftSide from "./LeftSide";
+import DesktopView from "./DesktopView";
+import MobileView from "./MobileView";
 
 const NoteLayout = () => {
-  const {
-    noteFilterTitle,
-    handleShowAllNote,
-    handleShowArchivedNote,
-    handleSearchOnChange,
-    handleClearSearch,
-    filteredNotes,
-    searchQuery,
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
-    allTags,
-    handleTagDelete,
-    selectedTagId,
-    handleTagClick,
-    handleClearTagFilter,
-
-    allNotes,
-    filterType,
-    handleNewNoteClick,
-    handleNoteCardClick,
-
-    selectedNoteId,
-    handleArchiveNote,
-    handleUnrchiveNote,
-    handleDeleteNote,
-
-    handleTitleOnChange,
-    handleNewTagSave,
-    handleTagsChangeFromNote,
-    handleTagDeleteFromNote,
-    handleContentOnChange,
-  } = useNote();
+  const handleShowSideBar = () => {
+    setMobileOpen(true);
+  };
+  const handleHideSideBar = () => {
+    setMobileOpen(false);
+  };
 
   return (
-    <Box className="grid h-screen grid-cols-[280px_340px_1fr] gap-4 p-4">
-      {/* Left */}
-      <Box className="flex flex-col h-full p-4 border-r bg-gray-50 border-gray-200">
-        <div className="flex flex-col gap-5">
-          <div className="flex justify-center">
-            <ReuseTitle
-              title="TypoNote"
-              icon={
-                <TypoNoteIcon className="w-11 h-11 text-primary-color stroke-[4]" />
-              }
-              className="flex items-center gap-2 text-primary-color text-3xl font-semibold"
-            />
-          </div>
-          <NewNoteButton
-            handleNewNoteClick={handleNewNoteClick}
-            className="w-full"
-          />
-          <NoteStatusFilter
-            filterType={filterType}
-            handleShowAllNote={handleShowAllNote}
-            handleShowArchivedNote={handleShowArchivedNote}
-          />
-        </div>
-        <hr className="my-5 border-gray-200" />
-        <TagManagement
-          allTags={allTags}
-          onTagDeleted={handleTagDelete}
-          selectedTagId={selectedTagId}
-          handleTagClick={handleTagClick}
-          handleClearTagFilter={handleClearTagFilter}
-        />
-      </Box>
+    <Box className="h-screen p-4">
+      {isDesktop ? (
+        <DesktopView />
+      ) : (
+        <MobileView onShowSideBar={handleShowSideBar} />
+      )}
 
-      {/* Middle */}
-      <Box className="bg-white border-r border-gray-200 p-1">
-        <ReuseTitle
-          title={noteFilterTitle}
-          className="!text-2xl text-primary-color font-semibold"
-        />
-
-        <SearchBar
-          key={filterType}
-          handleClearSearch={handleClearSearch}
-          searchQuery={searchQuery}
-          handleSearchOnChange={handleSearchOnChange}
-          className="!rounded-full"
-        />
-        <Box className={`overflow-y-scroll h-[calc(100vh-8rem)]`}>
-          <NoteBrifeView
-            selectedNoteId={selectedNoteId}
-            notes={filteredNotes}
-            handleNoteCardClick={handleNoteCardClick}
-            allTags={allTags}
-          />
-        </Box>
-      </Box>
-
-      {/* Right */}
-      <Box className="bg-white border-r border-gray-200 p-1">
-        <NoteDetail
-          allNotes={allNotes}
-          allTags={allTags}
-          selectedNoteId={selectedNoteId}
-          handleTagsChangeFromNote={handleTagsChangeFromNote}
-          handleTagDeleteFromNote={handleTagDeleteFromNote}
-          handleTitleOnChange={handleTitleOnChange}
-          handleNewTagSave={handleNewTagSave}
-          handleContentOnChange={handleContentOnChange}
-        />
-
-        <ActionBar
-          allNotes={allNotes}
-          filterType={filterType}
-          selectedNoteId={selectedNoteId}
-          handleArchiveNote={handleArchiveNote}
-          handleUnrchiveNote={handleUnrchiveNote}
-          handleDeleteNote={handleDeleteNote}
-          className="absolute top-2 right-2 mx-11"
-        />
-      </Box>
+      {!isDesktop && (
+        <Drawer
+          anchor="left"
+          open={mobileOpen}
+          onClose={handleHideSideBar}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: 280 },
+          }}
+        >
+          <LeftSide />
+        </Drawer>
+      )}
     </Box>
   );
 };

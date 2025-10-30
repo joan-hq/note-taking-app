@@ -1,11 +1,25 @@
 import AddIcon from "@mui/icons-material/Add";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import { useNoteContext } from "../../contexts/NoteProvider";
 
 interface NewNoteButtonProps {
-  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
   className?: string;
+  isFab?: boolean;
 }
+
+const StyledFab = styled(Fab)`
+  && {
+    background-color: var(--color-brand-primary);
+    color: white;
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+  }
+`;
 
 const StyledButton = styled(Button)`
   && {
@@ -25,15 +39,25 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const NewNoteButton = ({
-  className,
-  handleNewNoteClick,
-}: NewNoteButtonProps) => {
+const NewNoteButton = ({ className, isFab }: NewNoteButtonProps) => {
+  const { notes } = useNoteContext();
+
+  if (isFab) {
+    return (
+      <StyledFab
+        aria-label="add"
+        className={className}
+        onClick={notes.handleNewNoteClick}
+      >
+        <AddIcon />
+      </StyledFab>
+    );
+  }
   return (
     <>
       <StyledButton
         startIcon={<AddIcon className="text-white !text-xl" />}
-        onClick={handleNewNoteClick}
+        onClick={notes.handleNewNoteClick}
         className={className}
         sx={{ textTransform: "none" }}
         fullWidth

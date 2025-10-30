@@ -18,23 +18,13 @@ import CustomPopover from "../components/CustomePopover";
 import { useCustomPopover } from "../hooks/useCustomPopover";
 import { TAG_ACTION_MESSAGE } from "../constants/messages";
 import TagsPopover from "../components/TagsPopover";
+import { useNoteContext } from "../contexts/NoteProvider";
 
-interface TagManagementProps {
-  allTags: Tag[];
-  onTagDeleted: (tagId: string) => void;
-  selectedTagId: string | null;
-  handleTagClick: (tagId: string) => void;
-  handleClearTagFilter: () => void;
-}
 const MAX_VISIBLE_TAGS = 6;
 
-const TagManagement = ({
-  allTags,
-  onTagDeleted,
-  selectedTagId,
-  handleTagClick,
-  handleClearTagFilter,
-}: TagManagementProps) => {
+const TagManagement = () => {
+  const { tags } = useNoteContext();
+
   const { open, showDialog, hideDialog } = useDialog();
   const popoverManage = useCustomPopover();
   const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
@@ -50,7 +40,7 @@ const TagManagement = ({
   };
 
   const handleDeleteTagDialog = (tagId: string) => {
-    const foundTag = findTagById(tagId, allTags);
+    const foundTag = findTagById(tagId, tags.allTags);
     if (foundTag) {
       setTagToDelete(foundTag);
     }
@@ -58,7 +48,7 @@ const TagManagement = ({
   };
 
   const handleDeleteConfirm = async (tagId: string): Promise<boolean> => {
-    onTagDeleted(tagId);
+    tags.handleTagDelete(tagId);
     hideDialog();
     return true;
   };
@@ -67,17 +57,22 @@ const TagManagement = ({
     setTagToDelete(null);
   };
 
-  const visibleTags = allTags.slice(0, MAX_VISIBLE_TAGS);
-  const hiddenTags = allTags.slice(MAX_VISIBLE_TAGS);
+  const visibleTags = tags.allTags.slice(0, MAX_VISIBLE_TAGS);
+  const hiddenTags = tags.allTags.slice(MAX_VISIBLE_TAGS);
   const moreCount = hiddenTags.length;
   let finalVisibleTags = [...visibleTags];
 
-  if (selectedTagId && !visibleTags.some((tag) => tag.id === selectedTagId)) {
-    const selectedTag = allTags.find((tag) => tag.id === selectedTagId);
+  if (
+    tags.selectedTagId &&
+    !visibleTags.some((tag) => tag.id === tags.selectedTagId)
+  ) {
+    const selectedTag = tags.allTags.find(
+      (tag) => tag.id === tags.selectedTagId
+    );
     if (selectedTag) {
       finalVisibleTags = [
         selectedTag,
-        ...visibleTags.filter((tag) => tag.id !== selectedTagId),
+        ...visibleTags.filter((tag) => tag.id !== tags.selectedTagId),
       ];
 
       finalVisibleTags = finalVisibleTags.slice(0, MAX_VISIBLE_TAGS);
@@ -88,11 +83,11 @@ const TagManagement = ({
     <>
       <Box>
         <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
-        {selectedTagId && (
+        {tags.selectedTagId && (
           <Button
             startIcon={<ClearOutlinedIcon />}
             variant="contained"
-            onClick={handleClearTagFilter}
+            onClick={tags.handleClearTagFilter}
             size="small"
             sx={{
               mb: 1,
@@ -112,10 +107,10 @@ const TagManagement = ({
               key={tag.id}
               label={tag.label}
               icon={<LocalOfferOutlinedIcon className="!w-4 !h-4" />}
-              onClick={() => handleTagClick(tag.id)}
+              onClick={() => tags.handleTagClick(tag.id)}
               onDelete={() => handleDeleteTagDialog(tag.id)}
               deleteIcon={<ClearOutlinedIcon />}
-              variant={selectedTagId === tag.id ? "filled" : "outlined"}
+              variant={tags.selectedTagId === tag.id ? "filled" : "outlined"}
               sx={{
                 "& .MuiChip-deleteIcon": {
                   visibility: "hidden",
@@ -127,7 +122,7 @@ const TagManagement = ({
               className={`
                     !text-sm !font-medium !rounded-full !m-0
                     ${
-                      selectedTagId === tag.id
+                      tags.selectedTagId === tag.id
                         ? "!bg-primary-color !text-white hover:!bg-primary-hover"
                         : "!bg-gray-100 !text-gray-700 hover:!bg-gray-200 border-none"
                     }
@@ -148,9 +143,9 @@ const TagManagement = ({
         </Box>
 
         <TagsPopover
-          allTags={allTags}
-          selectedTagId={selectedTagId}
-          handleTagClick={handleTagClick}
+          allTags={tags.allTags}
+          selectedTagId={tags.selectedTagId}
+          handleTagClick={tags.handleTagClick}
           handleDeleteTagDialog={handleDeleteTagDialog}
           onClose={handleCloseTagsPopover}
           anchorEl={moreButtonRef.current}

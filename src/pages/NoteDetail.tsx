@@ -10,54 +10,19 @@ import {
   findNoteById,
   createNewNote,
 } from "../helpers/noteHelpers";
+import { useNoteContext } from "../contexts/NoteProvider";
 
-interface NoteDetailProps {
-  selectedNoteId: string | null;
-  allNotes: Note[];
-  allTags: Tag[];
-
-  //**Header Params */
-  handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-
-  handleTagsChangeFromNote: (
-    event: React.ChangeEvent<HTMLElement>,
-    newTags: Tag[]
-  ) => void;
-  handleNewTagSave: (newTag: Tag) => void;
-
-  //**Content Params*/
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleTagDeleteFromNote: (tagId: string) => void;
-}
-
-const NoteDetail = ({
-  selectedNoteId,
-  allNotes,
-  allTags,
-
-  //**Header Params */
-  handleTitleOnChange,
-  handleTagsChangeFromNote,
-  handleTagDeleteFromNote,
-  handleNewTagSave,
-
-  //**Content Params*/
-  handleContentOnChange,
-}: NoteDetailProps) => {
-  let noteToDisplay: Note | null = null;
-  console.log("NoteDetail-selectedNoteId", selectedNoteId);
-
-  if (selectedNoteId) {
-    noteToDisplay = findNoteById(selectedNoteId, allNotes) ?? null;
-  } else {
-    noteToDisplay = createNewNote({});
-  }
+const NoteDetail = () => {
+  const { notes, tags, editors } = useNoteContext();
+  const noteToDisplay = notes.selectedNoteId
+    ? findNoteById(notes.selectedNoteId, notes.allNotes) ?? null
+    : null;
 
   if (!noteToDisplay) {
     return <Box sx={{ p: 4, textAlign: "center" }}>Note not found.</Box>;
   }
 
-  const noteTags = findTagsByIds(noteToDisplay.tags, allTags);
+  const noteTags = findTagsByIds(noteToDisplay.tags, tags.allTags);
   console.log("NoteDetail-noteToDisplay-title", noteToDisplay.title);
   console.log("NoteDetail-noteToDisplay-noteTags", noteTags);
 
@@ -66,18 +31,18 @@ const NoteDetail = ({
       <NoteDetailHeader
         key={noteToDisplay.id}
         title={noteToDisplay.title}
-        handleTitleOnChange={handleTitleOnChange}
-        options={allTags}
+        handleTitleOnChange={editors.handleTitleOnChange}
+        options={tags.allTags}
         noteTags={noteTags}
-        handleTagsChangeFromNote={handleTagsChangeFromNote}
-        handleTagDeleteFromNote={handleTagDeleteFromNote}
-        handleNewTagSave={handleNewTagSave}
+        handleTagsChangeFromNote={editors.handleTagsChangeFromNote}
+        handleTagDeleteFromNote={editors.handleTagDeleteFromNote}
+        handleNewTagSave={editors.handleNewTagSave}
         time={noteToDisplay.lastEdit}
       />
 
       <NoteDetailContent
         noteValue={noteToDisplay.content}
-        handleContentOnChange={handleContentOnChange}
+        handleContentOnChange={editors.handleContentOnChange}
       />
     </Box>
   );

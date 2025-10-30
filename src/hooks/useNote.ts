@@ -51,6 +51,9 @@ export interface useNoteProps {
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
   handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+  /**handle Mobile function */
+  handleShowSideBar: () => void;
 }
 
 export const useNote = (): useNoteProps => {
@@ -120,9 +123,7 @@ export const useNote = (): useNoteProps => {
       const newNote = createNewNote({});
       setAllNotes((prevNotes) => [newNote, ...prevNotes]);
       setSelectedNoteId(newNote.id);
-      //setSearchQuery("");
       setSelectedTagId(null);
-      // setFilterType("all");
     },
     []
   );
@@ -325,6 +326,10 @@ export const useNote = (): useNoteProps => {
   };
   /* END EXIST NOTE DETAILS EDIT PROCESSING */
 
+  const handleShowSideBar = () => {
+    console.log("show side bar");
+  };
+
   return {
     noteFilterTitle,
     handleShowAllNote,
@@ -356,5 +361,8 @@ export const useNote = (): useNoteProps => {
     handleTagsChangeFromNote,
     handleTagDeleteFromNote,
     handleContentOnChange,
+
+    /**Mobile function */
+    handleShowSideBar,
   };
 };

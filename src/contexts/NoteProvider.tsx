@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-
 import {
   findAndModifyNote,
   removeTagById,
@@ -16,42 +15,63 @@ import {
   createNewNote,
   isEmptyNote,
   timeFormat,
+  filterNotesByQuery,
 } from "../helpers/noteHelpers";
+import type { Note, Tag, FilterType } from "../types/index";
 import {
   notes as initialNotesData,
   tags as initialTagsData,
 } from "../data/note";
-import type { Note, Tag, FilterType } from "../types/index";
 
-interface NoteContextValue {
+interface NoteFilterProps {
   noteFilterTitle: string;
+  filterType: FilterType;
   handleShowAllNote: (event: React.MouseEvent<HTMLElement>) => void;
   handleShowArchivedNote: (event: React.MouseEvent<HTMLElement>) => void;
+}
 
+interface TagManagementProps {
   allTags: Tag[];
-  handleTagDelete: (tagId: string) => void;
   selectedTagId: string | null;
   handleTagClick: (tagId: string) => void;
+  handleTagDelete: (tagId: string) => void;
   handleClearTagFilter: () => void;
+}
 
+interface NoteManagerProps {
   allNotes: Note[];
-  filterType: FilterType;
-  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
-  handleNoteCardClick: (noteId: string) => void;
-
   selectedNoteId: string | null;
+  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
+  handleNoteCardClick: (noteId: string | null) => void;
   handleArchiveNote: (noteId: string) => Promise<boolean>;
   handleUnrchiveNote: (noteId: string) => Promise<boolean>;
   handleDeleteNote: (noteId: string) => Promise<boolean>;
+}
 
+interface NoteEditorsProps {
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleNewTagSave: (newTag: Tag) => void;
   handleTagsChangeFromNote: (
     event: React.ChangeEvent<HTMLElement>,
     newTags: Tag[]
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface NoteSearchProps {
+  searchQuery: string;
+  filteredNotes: Note[];
+  handleSearchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClearSearch: () => void;
+}
+
+interface NoteContextValue {
+  filters: NoteFilterProps;
+  tags: TagManagementProps;
+  notes: NoteManagerProps;
+  editors: NoteEditorsProps;
+  search: NoteSearchProps;
 }
 
 const NoteContext = createContext<NoteContextValue | null>(null);
@@ -61,84 +81,12 @@ interface NoteProviderProps {
 }
 
 export const NoteProvider = ({ children }: NoteProviderProps) => {
-  console.log("***************used Note Provide*****************");
   const [allTags, setAllTags] = useState<Tag[]>(initialTagsData);
   const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
   const [allNotes, setAllNotes] = useState<Note[]>(initialNotesData);
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  useEffect(() => {
-    console.log("The value of the filterType:", filterType);
-  }, [filterType]);
-
-  const noteFilterTitle = useMemo(() => {
-    console.log(
-      "Note Provider - USEMEMO RE-RUNNING. Current filterType:",
-      filterType
-    );
-
-    if (filterType === "all") {
-      return "All Notes";
-    } else if (filterType === "archived") {
-      return "Archived Note";
-    }
-    return "";
-  }, [filterType]);
-
-  const handleShowAllNote = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      setFilterType("all");
-    },
-    []
-  );
-
-  const handleShowArchivedNote = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      setFilterType("archived");
-    },
-    []
-  );
-
-  console.log("useNote - noteFilterTitlenoteFilterTitle + ", noteFilterTitle);
-
-  const handleTagClick = useCallback((tagId: string) => {
-    console.log("tagId", tagId);
-    setSelectedTagId((prevId) => (prevId === tagId ? null : tagId));
-  }, []);
-
-  const handleClearTagFilter = useCallback(() => {
-    setSelectedTagId(null);
-  }, []);
-
-  /**
-   * For Tag management
-   * @param tagId a tag need to be deleted
-   */
-  const handleTagDelete = useCallback(
-    (tagId: string) => {
-      setAllTags(removeTagById(tagId, allTags));
-      setAllNotes(removeTagFromNotesByTagId(tagId, allNotes));
-    },
-    [allTags, allNotes]
-  );
-
-  const handleNewNoteClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      const newNote = createNewNote({});
-      setAllNotes((prevNotes) => [newNote, ...prevNotes]);
-      setSelectedNoteId(newNote.id);
-      //setSearchQuery("");
-      setSelectedTagId(null);
-      // setFilterType("all");
-    },
-    []
-  );
-
-  const handleNoteCardClick = useCallback((noteId: string) => {
-    console.log("handleNoteCardClick-noteId", noteId);
-    setSelectedNoteId(noteId);
-    setSelectedTagId(null);
-  }, []);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     if (selectedNoteId) {
@@ -151,7 +99,65 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     }
   }, [selectedNoteId, allNotes]);
 
-  /* START ACTION BAR PROCESSING */
+  /**handle filters */
+  const noteFilterTitle = useMemo(() => {
+    if (filterType === "all") {
+      return "All Notes";
+    } else if (filterType === "archived") {
+      return "Archived Note";
+    }
+    return "";
+  }, [filterType]);
+
+  const handleShowAllNote = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      setFilterType("all");
+    },
+    []
+  );
+
+  const handleShowArchivedNote = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      if (filterType !== "archived") {
+        setFilterType("archived");
+      }
+    },
+    [filterType]
+  );
+
+  /**handle tags */
+
+  const handleTagClick = useCallback((tagId: string) => {
+    console.log("tagId", tagId);
+    setSelectedTagId((prevId) => (prevId === tagId ? null : tagId));
+  }, []);
+
+  const handleClearTagFilter = useCallback(() => {
+    setSelectedTagId(null);
+  }, []);
+
+  const handleTagDelete = useCallback((tagId: string) => {
+    setAllTags(removeTagById(tagId, allTags));
+    setAllNotes(removeTagFromNotesByTagId(tagId, allNotes));
+  }, []);
+
+  /**handle notes */
+  const handleNewNoteClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      const newNote = createNewNote({});
+      setAllNotes((prevNotes) => [newNote, ...prevNotes]);
+      setSelectedNoteId(newNote.id);
+      setSelectedTagId(null);
+    },
+    []
+  );
+
+  const handleNoteCardClick = useCallback((noteId: string | null) => {
+    setSelectedNoteId(noteId);
+    setSelectedTagId(null);
+  }, []);
 
   const handleArchiveNote = useCallback(
     async (noteId: string): Promise<boolean> => {
@@ -190,7 +196,6 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
 
   const handleDeleteNote = useCallback(
     async (noteId: string): Promise<boolean> => {
-      console.log("****to Delete Note Function*******");
       try {
         console.log("noteId", noteId);
         if (!noteId) return false;
@@ -208,9 +213,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes]
   );
 
-  /* END ACTION BAR PROCESSING */
-
-  /* START EXIST NOTE DETAILS EDIT PROCESSING */
+  /**handle editors */
   const handleTitleOnChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newTitle = event.target.value;
@@ -226,10 +229,19 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes, selectedNoteId]
   );
 
-  /**
-   * For add a new tag to the note
-   * @param newTag
-   */
+  const handleContentOnChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newContent = event.target.value;
+      const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
+        allNotes,
+        selectedNoteId,
+        { content: newContent, lastEdit: timeFormat() }
+      );
+      setAllNotes(updatedNotes);
+      setSelectedNoteId(newSelectedNoteId);
+    },
+    [allNotes, selectedNoteId]
+  );
 
   const handleNewTagSave = useCallback(
     (newTag: Tag) => {
@@ -288,65 +300,105 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes, selectedNoteId]
   );
 
-  const handleContentOnChange = useCallback(
+  /**handle search */
+  const handleSearchOnChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newContent = event.target.value;
-      const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
-        allNotes,
-        selectedNoteId,
-        { content: newContent, lastEdit: timeFormat() }
-      );
-      setAllNotes(updatedNotes);
-      setSelectedNoteId(newSelectedNoteId);
+      setSearchQuery(event.target.value);
     },
-    [allNotes, selectedNoteId]
+    []
   );
-  /* END EXIST NOTE DETAILS EDIT PROCESSING */
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+  }, []);
+
+  const filteredNotes = useMemo(() => {
+    const filteredNoteByType = allNotes.filter((note) => {
+      if (filterType === "archived") {
+        return note.isArchive;
+      }
+      return true;
+    });
+
+    console.log("Current searchQuery:", searchQuery);
+    console.log("Notes before search filter:", filteredNoteByType);
+
+    const filteredBySearch = searchQuery
+      ? filterNotesByQuery(searchQuery, filteredNoteByType, allTags)
+      : filteredNoteByType;
+
+    const filteredByTag = selectedTagId
+      ? filteredBySearch.filter((note) => note.tags.includes(selectedTagId))
+      : filteredBySearch;
+
+    return filteredByTag;
+  }, [searchQuery, filterType, allNotes, selectedTagId, allTags]);
 
   const value: NoteContextValue = useMemo(
     () => ({
-      noteFilterTitle,
-      handleShowAllNote,
-      handleShowArchivedNote,
-      allTags,
-      handleTagDelete,
-      selectedTagId,
-      handleTagClick,
-      handleClearTagFilter,
-
-      allNotes,
-      filterType,
-      handleNewNoteClick,
-      handleNoteCardClick,
-
-      selectedNoteId,
-      handleArchiveNote,
-      handleUnrchiveNote,
-      handleDeleteNote,
-
-      handleTitleOnChange,
-      handleNewTagSave,
-      handleTagsChangeFromNote,
-      handleTagDeleteFromNote,
-      handleContentOnChange,
+      filters: {
+        noteFilterTitle,
+        filterType,
+        handleShowAllNote,
+        handleShowArchivedNote,
+      },
+      tags: {
+        allTags,
+        selectedTagId,
+        handleTagClick,
+        handleTagDelete,
+        handleClearTagFilter,
+      },
+      notes: {
+        allNotes,
+        selectedNoteId,
+        handleNewNoteClick,
+        handleNoteCardClick,
+        handleArchiveNote,
+        handleUnrchiveNote,
+        handleDeleteNote,
+      },
+      editors: {
+        handleTitleOnChange,
+        handleContentOnChange,
+        handleNewTagSave,
+        handleTagsChangeFromNote,
+        handleTagDeleteFromNote,
+      },
+      search: {
+        searchQuery,
+        filteredNotes,
+        handleSearchOnChange,
+        handleClearSearch,
+      },
     }),
     [
       noteFilterTitle,
+      filterType,
       allTags,
       selectedTagId,
       allNotes,
-      filterType,
       selectedNoteId,
+      searchQuery,
+      filteredNotes,
 
+      handleShowAllNote,
+      handleShowArchivedNote,
+      handleTagClick,
       handleTagDelete,
+      handleClearTagFilter,
+      handleNewNoteClick,
+      handleNoteCardClick,
       handleArchiveNote,
       handleUnrchiveNote,
       handleDeleteNote,
       handleTitleOnChange,
+      handleContentOnChange,
       handleNewTagSave,
       handleTagsChangeFromNote,
       handleTagDeleteFromNote,
-      handleContentOnChange,
+      handleSearchOnChange,
+      handleClearSearch,
     ]
   );
 
@@ -358,5 +410,6 @@ export const useNoteContext = () => {
   if (context === null) {
     throw new Error("useNote must be used within a NoteProvider");
   }
+
   return context;
 };
