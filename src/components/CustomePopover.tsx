@@ -1,77 +1,64 @@
-import Popover from "@mui/material/Popover";
-import Typography from "@mui/material/Typography";
-import type { PopoverType } from "../types/index";
+import React from "react";
+import { Snackbar, Alert, AlertTitle } from "@mui/material";
+
+type AlertType = "success" | "error" | "warning" | "info";
 
 interface CustomPopoverProps {
   open: boolean;
-  type: PopoverType;
+  type: AlertType | string;
   message: string;
-  anchorEl: HTMLElement | null;
   onClose: () => void;
+  anchorEl?: any;
 }
 
-const getBackgroundColor = (type: PopoverType): string => {
+const getSeverity = (type: string): AlertType => {
+  if (["success", "error", "warning", "info"].includes(type)) {
+    return type as AlertType;
+  }
+  return "success";
+};
+
+const getTitle = (type: AlertType): string => {
   switch (type) {
     case "success":
-      return "#4caf50";
+      return "Success";
     case "error":
-      return "#f44336";
+      return "Error";
     case "warning":
-      return "#ff9800";
+      return "Warning";
     case "info":
-      return "#2196f3";
+      return "Info";
     default:
-      return "#fafafa";
+      return "Notification";
   }
 };
 
-const getTextColor = (type: PopoverType): string => {
-  switch (type) {
-    case "success":
-      return "#000000";
-    case "error":
-      return "#000000";
-    case "warning":
-      return "#000000";
-    case "info":
-      return "#000000";
-    default:
-      return "#000000";
-  }
-};
-
-const CustomPopover = ({
+const CustomPopover: React.FC<CustomPopoverProps> = ({
   open,
   type,
   message,
-  anchorEl,
   onClose,
-}: CustomPopoverProps) => {
+}) => {
+  const severity = getSeverity(type);
+  const title = getTitle(severity);
+
   return (
-    <Popover
+    <Snackbar
       open={open}
-      anchorEl={anchorEl}
+      autoHideDuration={4000}
       onClose={onClose}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
     >
-      <div
-        style={{
-          backgroundColor: getBackgroundColor(type),
-          color: getTextColor(type),
-          padding: "10px 15px",
-          borderRadius: "4px",
-        }}
+      <Alert
+        onClose={onClose}
+        severity={severity}
+        variant="filled"
+        sx={{ width: "100%", boxShadow: 6 }}
       >
-        <Typography sx={{ p: 1, color: "white" }}>{message}</Typography>
-      </div>
-    </Popover>
+        <AlertTitle sx={{ fontWeight: 600 }}>{title}</AlertTitle>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 };
 

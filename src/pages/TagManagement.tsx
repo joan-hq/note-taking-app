@@ -1,42 +1,44 @@
-import { Box } from "@mui/material";
-import { useState, useRef } from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Collapse,
+  Divider,
+} from "@mui/material";
+import { useState } from "react";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import Chip from "@mui/material/Chip";
-
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useDialog } from "../hooks/useDialog";
-
 import type { Tag } from "../types/index";
 import { findTagById, handleAsyncAction } from "../helpers/noteHelpers";
 import CustomPopover from "../components/CustomePopover";
 import { useCustomPopover } from "../hooks/useCustomPopover";
 import { TAG_ACTION_MESSAGE } from "../constants/messages";
-import TagsPopover from "../components/TagsPopover";
 import { useNoteContext } from "../contexts/NoteProvider";
-
-const MAX_VISIBLE_TAGS = 6;
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 
 const TagManagement = () => {
   const { tags } = useNoteContext();
-
   const { open, showDialog, hideDialog } = useDialog();
   const popoverManage = useCustomPopover();
   const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
 
-  const [isTagsPopoverOpen, setIsTagsPopoverOpen] = useState(false);
-  const moreButtonRef = useRef<HTMLButtonElement>(null);
-  const handleToggleTagsPopover = () => {
-    setIsTagsPopoverOpen((prev) => !prev);
-  };
+  const [isTagsExpanded, setIsTagsExpanded] = useState(true);
 
-  const handleCloseTagsPopover = () => {
-    setIsTagsPopoverOpen(false);
+  const toggleTagsExpanded = () => {
+    setIsTagsExpanded((prev) => !prev);
   };
 
   const handleDeleteTagDialog = (tagId: string) => {
@@ -46,43 +48,35 @@ const TagManagement = () => {
     }
     showDialog();
   };
-
   const handleDeleteConfirm = async (tagId: string): Promise<boolean> => {
     tags.handleTagDelete(tagId);
     hideDialog();
     return true;
   };
-
   const handleDialogExited = () => {
     setTagToDelete(null);
   };
 
-  const visibleTags = tags.allTags.slice(0, MAX_VISIBLE_TAGS);
-  const hiddenTags = tags.allTags.slice(MAX_VISIBLE_TAGS);
-  const moreCount = hiddenTags.length;
-  let finalVisibleTags = [...visibleTags];
-
-  if (
-    tags.selectedTagId &&
-    !visibleTags.some((tag) => tag.id === tags.selectedTagId)
-  ) {
-    const selectedTag = tags.allTags.find(
-      (tag) => tag.id === tags.selectedTagId
-    );
-    if (selectedTag) {
-      finalVisibleTags = [
-        selectedTag,
-        ...visibleTags.filter((tag) => tag.id !== tags.selectedTagId),
-      ];
-
-      finalVisibleTags = finalVisibleTags.slice(0, MAX_VISIBLE_TAGS);
-    }
-  }
-
   return (
     <>
-      <Box>
-        <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+          onClick={toggleTagsExpanded}
+        >
+          <p style={{ fontWeight: "bold", marginBottom: "8px" }}>Tags</p>
+          <IconButton size="small">
+            {isTagsExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
+        </Box>
+
         {tags.selectedTagId && (
           <Button
             startIcon={<ClearOutlinedIcon />}
@@ -101,114 +95,129 @@ const TagManagement = () => {
           </Button>
         )}
 
-        <Box className="flex flex-wrap gap-1 border-b border-gray-200 pb-2 mb-2">
-          {finalVisibleTags.map((tag) => (
-            <Chip
-              key={tag.id}
-              label={tag.label}
-              icon={<LocalOfferOutlinedIcon className="!w-4 !h-4" />}
-              onClick={() => tags.handleTagClick(tag.id)}
-              onDelete={() => handleDeleteTagDialog(tag.id)}
-              deleteIcon={<ClearOutlinedIcon />}
-              variant={tags.selectedTagId === tag.id ? "filled" : "outlined"}
-              sx={{
-                "& .MuiChip-deleteIcon": {
-                  visibility: "hidden",
-                  fontSize: "1.0rem !important",
-                },
-                "&:hover .MuiChip-deleteIcon": { visibility: "visible" },
-                "&:hover": { opacity: 0.9 },
-              }}
-              className={`
-                    !text-sm !font-medium !rounded-full !m-0
-                    ${
-                      tags.selectedTagId === tag.id
-                        ? "!bg-primary-color !text-white hover:!bg-primary-hover"
-                        : "!bg-gray-100 !text-gray-700 hover:!bg-gray-200 border-none"
-                    }
-                `}
-            />
-          ))}
-
-          {moreCount > 0 && (
-            <Button
-              ref={moreButtonRef}
-              onClick={handleToggleTagsPopover}
-              size="small"
-              className="!mt-1 !text-sm !font-semibold !text-gray-500 hover:!text-gray-700 !p-1"
-            >
-              + {moreCount} More Tags
-            </Button>
-          )}
-        </Box>
-
-        <TagsPopover
-          allTags={tags.allTags}
-          selectedTagId={tags.selectedTagId}
-          handleTagClick={tags.handleTagClick}
-          handleDeleteTagDialog={handleDeleteTagDialog}
-          onClose={handleCloseTagsPopover}
-          anchorEl={moreButtonRef.current}
-          open={isTagsPopoverOpen}
-        />
-
-        <Dialog
-          open={open}
-          onClose={hideDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          TransitionProps={{ onExited: handleDialogExited }}
-        >
-          <DialogTitle id="alert-dialog-title">
-            {`Delete Tag - "${tagToDelete?.label}"`}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {`Deleting tag "${tagToDelete?.label}" will remove it from all associated notes. This action cannot be undone.`}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={hideDialog}
-              sx={{ color: "var(--color-brand-primary)" }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={(event) =>
-                handleAsyncAction(
-                  handleDeleteConfirm,
-                  tagToDelete?.id || "",
-                  event,
-                  popoverManage,
-                  TAG_ACTION_MESSAGE.DELETE
-                )
-              }
-              autoFocus
-              sx={{
-                backgroundColor: "var(--color-warning-color)",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "var(--color-warning-color)",
-                },
-                "&:focus": {
-                  backgroundColor: "var(--color-warning-color)",
-                },
-              }}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <CustomPopover
-          open={popoverManage.open}
-          type={popoverManage.type}
-          message={popoverManage.message}
-          anchorEl={popoverManage.anchorEl}
-          onClose={popoverManage.hidePopover}
-        />
+        <Collapse in={isTagsExpanded} timeout="auto" unmountOnExit>
+          <List
+            dense
+            sx={{
+              width: "100%",
+              flex: 1,
+              overflowY: "auto",
+              maxHeight: "250px",
+              pr: 1,
+            }}
+          >
+            {tags.allTags.map((tag) => (
+              <ListItem
+                key={tag.id}
+                disablePadding
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDeleteTagDialog(tag.id)}
+                  >
+                    <ClearOutlinedIcon
+                      fontSize="small"
+                      sx={{ color: "grey.500" }}
+                    />
+                  </IconButton>
+                }
+              >
+                <ListItemButton
+                  selected={tag.id === tags.selectedTagId}
+                  onClick={() => tags.handleTagClick(tag.id)}
+                  sx={{ borderRadius: 2, pr: 5 }}
+                >
+                  <ListItemIcon>
+                    <LocalOfferOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={tag.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
       </Box>
+
+      <Dialog
+        open={open}
+        onClose={hideDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        TransitionProps={{ onExited: handleDialogExited }}
+        PaperProps={{ sx: { borderRadius: 4, p: 1, minWidth: "400px" } }}
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ p: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <WarningAmberOutlinedIcon
+              color="error"
+              sx={{ fontSize: "2.5rem" }}
+            />
+            <Box sx={{ fontSize: "1.25rem", fontWeight: 600 }}>
+              {`Delete Tag - "${tagToDelete?.label}"`}
+            </Box>
+          </Box>
+        </DialogTitle>
+
+        <DialogContent sx={{ p: 2, pt: 1 }}>
+          <DialogContentText
+            id="alert-dialog-description"
+            color="text.secondary"
+          >
+            {`Deleting tag "${tagToDelete?.label}" will remove it from all associated notes.`}
+
+            <Box
+              component="span"
+              sx={{
+                fontWeight: 600,
+                color: "text.primary",
+                mt: 1,
+                display: "block",
+              }}
+            >
+              This action cannot be undone.
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+
+        <Divider sx={{ mx: 2 }} />
+
+        <DialogActions sx={{ p: 2, justifyContent: "flex-end" }}>
+          <Button
+            onClick={hideDialog}
+            variant="text"
+            color="inherit"
+            sx={{ color: "text.secondary" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={(event) =>
+              handleAsyncAction(
+                handleDeleteConfirm,
+                tagToDelete?.id || "",
+                event,
+                popoverManage,
+                TAG_ACTION_MESSAGE.DELETE
+              )
+            }
+            autoFocus
+            variant="contained"
+            color="error"
+            sx={{ minWidth: "100px" }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <CustomPopover
+        open={popoverManage.open}
+        type={popoverManage.type}
+        message={popoverManage.message}
+        anchorEl={popoverManage.anchorEl}
+        onClose={popoverManage.hidePopover}
+      />
     </>
   );
 };

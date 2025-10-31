@@ -23,11 +23,7 @@ const NoteCardHeader = ({
       }}
       action={
         noteStatus ? (
-          <ArchiveIcon
-            color="disabled"
-            fontSize="small"
-            sx={{ mr: 1, mt: 1 }}
-          />
+          <ArchiveIcon color="action" fontSize="small" sx={{ mr: 1, mt: 1 }} />
         ) : null
       }
     />

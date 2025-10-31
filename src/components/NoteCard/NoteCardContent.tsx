@@ -3,6 +3,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import NoteCardTags from "./NoteCardTags";
 import type { Tag } from "../../types/index";
 import { useNoteContext } from "../../contexts/NoteProvider";
+import { formatNoteDate } from "../../utils/formateDate";
 
 interface NoteCardContentProp {
   lastedit: string;
@@ -11,6 +12,7 @@ interface NoteCardContentProp {
 
 const NoteCardContent = ({ lastedit, tags }: NoteCardContentProp) => {
   const { tags: tagManager } = useNoteContext();
+  const displayDate = formatNoteDate(lastedit);
   return (
     <>
       <NoteCardTags tags={tags} activeTagId={tagManager.selectedTagId} />
@@ -24,7 +26,7 @@ const NoteCardContent = ({ lastedit, tags }: NoteCardContentProp) => {
         }}
       >
         <AccessTimeIcon sx={{ fontSize: "1rem", mr: 0.5 }} />{" "}
-        <Typography variant="body2">{lastedit}</Typography>
+        <Typography variant="body2">{displayDate}</Typography>
       </Box>
     </>
   );
