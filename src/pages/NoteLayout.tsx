@@ -1,24 +1,6 @@
 import { useState } from "react";
-import {
-  Box,
-  useMediaQuery,
-  useTheme,
-  Drawer,
-  IconButton,
-} from "@mui/material";
+import { Box, useMediaQuery, useTheme, Drawer } from "@mui/material";
 
-import TagManagement from "./TagManagement";
-import NoteStatusFilter from "../components/NoteActions/StatusFilter";
-import ReuseTitle from "../components/ReuseTitle";
-import NoteLogo from "./NoteLogo";
-import NoteDetail from "./NoteDetail";
-import ActionBar from "../components/NoteActions/ActionBar";
-import NewNoteButton from "../components/NoteActions/NewNoteButton";
-import SearchBar from "../components/NoteActions/SearchBar";
-import NoteBrifeView from "../components/NoteBrifeView/index";
-import { useNoteContext } from "../contexts/NoteProvider";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import LeftSide from "./LeftSide";
 import DesktopView from "./DesktopView";
 import MobileView from "./MobileView";

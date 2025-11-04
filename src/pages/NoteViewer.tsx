@@ -1,35 +1,48 @@
-import { Box, Grid } from "@mui/material";
-
+import { Box } from "@mui/material";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import NoteDetailHeader from "../components/NoteDetail/NoteDetailHeader";
 import NoteDetailContent from "../components/NoteDetail/NoteDetailContent";
-import NoteDetailAction from "../components/NoteDetail/NoteDetailAction";
-import type { Tag, Note } from "../types/index";
-import { tags } from "../data/note";
-import {
-  findTagsByIds,
-  findNoteById,
-  createNewNote,
-} from "../helpers/noteHelpers";
+import { findTagsByIds, findNoteById } from "../helpers/noteHelpers";
 import { useNoteContext } from "../contexts/NoteProvider";
 
-const NoteDetail = () => {
+const NoteViewer = () => {
   const { notes, tags, editors } = useNoteContext();
-  const noteToDisplay = notes.selectedNoteId
-    ? findNoteById(notes.selectedNoteId, notes.allNotes) ?? null
+
+  const { noteId: noteIdFromParams } = useParams<{ noteId: string }>();
+
+  const noteIdFromContext = notes.selectedNoteId;
+
+  const displayNoteId = noteIdFromParams ?? noteIdFromContext;
+
+  const noteToDisplay = displayNoteId
+    ? findNoteById(displayNoteId, notes.allNotes)
     : null;
 
+  useEffect(() => {
+    if (noteIdFromParams && noteIdFromParams !== notes.selectedNoteId) {
+      notes.handleNoteCardClick(noteIdFromParams);
+    }
+  }, [noteIdFromParams, notes.selectedNoteId, notes.handleNoteCardClick]);
+
   if (!noteToDisplay) {
+    if (!noteIdFromParams) {
+      return (
+        <Box sx={{ p: 4, textAlign: "center", color: "text.secondary" }}>
+          Select a note to view, or create a new one.
+        </Box>
+      );
+    }
+
     return <Box sx={{ p: 4, textAlign: "center" }}>Note not found.</Box>;
   }
 
   const noteTags = findTagsByIds(noteToDisplay.tags, tags.allTags);
-  console.log("NoteDetail-noteToDisplay-title", noteToDisplay.title);
-  console.log("NoteDetail-noteToDisplay-noteTags", noteTags);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
       <NoteDetailHeader
-        key={noteToDisplay.id}
+        key={`${noteToDisplay.id}-header`}
         title={noteToDisplay.title}
         handleTitleOnChange={editors.handleTitleOnChange}
         options={tags.allTags}
@@ -41,6 +54,7 @@ const NoteDetail = () => {
       />
 
       <NoteDetailContent
+        key={`${noteToDisplay.id}-content`}
         noteValue={noteToDisplay.content}
         handleContentOnChange={editors.handleContentOnChange}
       />
@@ -48,4 +62,4 @@ const NoteDetail = () => {
   );
 };
 
-export default NoteDetail;
+export default NoteViewer;

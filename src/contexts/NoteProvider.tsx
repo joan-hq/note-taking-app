@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import {
   findAndModifyNote,
@@ -50,7 +51,8 @@ interface NoteManagerProps {
 
 interface NoteEditorsProps {
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  // handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleContentOnChange: (value: string) => void;
   handleNewTagSave: (newTag: Tag) => void;
   handleTagsChangeFromNote: (
     event: React.ChangeEvent<HTMLElement>,
@@ -80,6 +82,14 @@ interface NoteProviderProps {
   children: React.ReactNode;
 }
 
+const usePrevious = <T,>(value: T) => {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
 export const NoteProvider = ({ children }: NoteProviderProps) => {
   const [allTags, setAllTags] = useState<Tag[]>(initialTagsData);
   const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
@@ -87,17 +97,21 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const prevSelectedNoteId = usePrevious(selectedNoteId);
 
   useEffect(() => {
-    if (selectedNoteId) {
-      const prevNote = allNotes.find((note) => note.id !== selectedNoteId);
+    // Only run if the selected ID has changed *and* we have a previous ID
+    if (prevSelectedNoteId && prevSelectedNoteId !== selectedNoteId) {
+      const prevNote = allNotes.find((note) => note.id === prevSelectedNoteId);
+
       if (prevNote && isEmptyNote(prevNote)) {
+        console.log("Cleaning up empty note:", prevSelectedNoteId);
         setAllNotes((prevNotes) =>
-          prevNotes.filter((note) => note.id !== prevNote.id)
+          prevNotes.filter((note) => note.id !== prevSelectedNoteId)
         );
       }
     }
-  }, [selectedNoteId, allNotes]);
+  }, [selectedNoteId, allNotes, prevSelectedNoteId]);
 
   /**handle filters */
   const noteFilterTitle = useMemo(() => {
@@ -166,6 +180,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const updatedNotes = findAndModifyNote(noteId, allNotes, {
           isArchive: true,
+          lastEdit: timeFormat(),
         });
         setAllNotes(updatedNotes);
         return true;
@@ -183,6 +198,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const updatedNotes = findAndModifyNote(noteId, allNotes, {
           isArchive: false,
+          lastEdit: timeFormat(),
         });
         setAllNotes(updatedNotes);
         return true;
@@ -229,9 +245,21 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes, selectedNoteId]
   );
 
+  // const handleContentOnChange = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const newContent = event.target.value;
+  //     const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
+  //       allNotes,
+  //       selectedNoteId,
+  //       { content: newContent, lastEdit: timeFormat() }
+  //     );
+  //     setAllNotes(updatedNotes);
+  //     setSelectedNoteId(newSelectedNoteId);
+  //   },
+  //   [allNotes, selectedNoteId]
+  // );
   const handleContentOnChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newContent = event.target.value;
+    (newContent: string, delta: any, source: string, editor: any) => {
       const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
         allNotes,
         selectedNoteId,
@@ -240,7 +268,8 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       setAllNotes(updatedNotes);
       setSelectedNoteId(newSelectedNoteId);
     },
-    [allNotes, selectedNoteId]
+
+    [allNotes, selectedNoteId, handleNoteStateChanges]
   );
 
   const handleNewTagSave = useCallback(
@@ -259,7 +288,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
         allNotes,
         selectedNoteId,
-        { tags: selectedNoteTags }
+        { tags: selectedNoteTags, lastEdit: timeFormat() }
       );
 
       setAllNotes(updatedNotes);
@@ -291,7 +320,11 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       if (!selectedNote) return;
 
       const newTags = selectedNote.tags.filter((id) => id !== tagId);
-      const updatedNote = { ...selectedNote, tags: newTags };
+      const updatedNote = {
+        ...selectedNote,
+        tags: newTags,
+        lastEdit: timeFormat(),
+      };
       const newAllNotes = allNotes.map((note) =>
         note.id === updatedNote.id ? updatedNote : note
       );

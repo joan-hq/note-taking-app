@@ -1,16 +1,14 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import Chip from "@mui/material/Chip";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import TagsField from "../Tag/index";
 import type { Tag } from "../../types/index";
 
 interface NoteDetailHeaderProps {
-  // title:
   title: string;
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  // tag:
+
   options: Tag[];
   noteTags?: Tag[];
   handleTagsChangeFromNote: (
@@ -18,10 +16,8 @@ interface NoteDetailHeaderProps {
     newTags: Tag[]
   ) => void;
   handleTagDeleteFromNote: (tagId: string) => void;
-
   handleNewTagSave: (newTag: Tag) => void;
 
-  // time:
   time: string;
 }
 const NoteDetailHeader = ({
@@ -33,8 +29,7 @@ const NoteDetailHeader = ({
   handleTagDeleteFromNote,
   handleNewTagSave,
   time,
-}: //time,
-NoteDetailHeaderProps) => {
+}: NoteDetailHeaderProps) => {
   console.log("NoteDetailHeader-title", title);
   console.log("NoteDetailHeader-options", options);
   console.log("NoteDetailHeader-noteTags", noteTags);
@@ -53,18 +48,21 @@ NoteDetailHeaderProps) => {
           },
         }}
       />
-      <Box>
-        <Chip
-          variant="outlined"
-          icon={<AccessTimeIcon className="!text-primary-color" />}
-          sx={{ border: "none" }}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          color: "text.secondary",
+        }}
+      >
+        <AccessTimeIcon
+          className="!text-primary-color"
+          sx={{ fontSize: "1.2rem" }}
         />
-        &nbsp;&nbsp;
-        <TextField
-          variant="standard"
-          value={time}
-          InputProps={{ disableUnderline: true }}
-        />
+        <Typography variant="body1" component="span" sx={{ mt: "3px" }}>
+          {time}
+        </Typography>
       </Box>
       <Box>
         <TagsField

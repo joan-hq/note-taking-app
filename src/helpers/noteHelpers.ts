@@ -96,12 +96,8 @@ export const filterNotesByQuery = (
   });
 };
 
-export const timeFormat = () => {
-  const timeString = new Date().toISOString();
-  const datePart = timeString.split("T")[0];
-  const timePart = timeString.split("T")[1].slice(0, 8);
-  const editTime = `${datePart} ${timePart}`;
-  return editTime;
+export const timeFormat = (): string => {
+  return new Date().toISOString();
 };
 
 /**

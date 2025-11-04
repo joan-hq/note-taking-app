@@ -2,7 +2,7 @@ import { Box, IconButton } from "@mui/material";
 import ReuseTitle from "../components/ReuseTitle";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
-import NoteDetail from "./NoteDetail";
+import NoteViewer from "./NoteViewer";
 import ActionBar from "../components/NoteActions/ActionBar";
 import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import { useNoteContext } from "../contexts/NoteProvider";
@@ -28,7 +28,7 @@ const MobileView = ({ onShowSideBar }: MobileViewProps) => {
             </IconButton>
             <ActionBar className="!absolute top2 right-2 z-10" />
           </Box>
-          <NoteDetail />
+          <NoteViewer />
         </Box>
       ) : (
         <Box className="p-2 rounded-lg flex flex-col h-full relative">

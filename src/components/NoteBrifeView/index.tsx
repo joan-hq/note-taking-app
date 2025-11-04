@@ -9,7 +9,7 @@ const NoteBrifeView = () => {
 
   const onNoteCardClick = (noteId: string) => {
     notes.handleNoteCardClick(noteId);
-    navigate(`/note/${noteId}`);
+    // navigate(`/note/${noteId}`);
   };
   const sortedNote = [...search.filteredNotes].sort((a, b) => {
     return new Date(b.lastEdit).getTime() - new Date(a.lastEdit).getTime();

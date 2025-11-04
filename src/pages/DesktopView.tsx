@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
-import LeftSide from "./LeftSide"; // <-- Import our new component
 import ReuseTitle from "../components/ReuseTitle";
 import SearchBar from "../components/NoteActions/SearchBar";
 import NoteBrifeView from "../components/NoteBrifeView/index";
-import NoteDetail from "./NoteDetail";
+import NoteViewer from "./NoteViewer";
 import ActionBar from "../components/NoteActions/ActionBar";
 import NoteLogo from "./NoteLogo";
 import NewNoteButton from "../components/NoteActions/NewNoteButton";
@@ -40,8 +39,9 @@ const DesktopView = () => {
           <NoteBrifeView />
         </Box>
       </Box>
+
       <Box className="bg-white border-r border-gray-200 p-1">
-        <NoteDetail />
+        <NoteViewer />
         <ActionBar className="absolute top-2 right-2 mx-11" />
       </Box>
     </Box>
