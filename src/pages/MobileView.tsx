@@ -8,6 +8,7 @@ import NewNoteButton from "../components/NoteActions/NewNoteButton";
 import { useNoteContext } from "../contexts/NoteProvider";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useNavigate } from "react-router-dom";
 
 interface MobileViewProps {
   onShowSideBar: () => void;
@@ -15,23 +16,25 @@ interface MobileViewProps {
 
 const MobileView = ({ onShowSideBar }: MobileViewProps) => {
   const { filters, notes } = useNoteContext();
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate("/");
+  };
   return (
     <Box className="p-2 rounded-lg flex flex-col h-full relative">
       {notes.selectedNoteId ? (
-        <Box className="bg-white p-2 rounded-lg h-full relative">
+        <Box className="bg-white p-2 rounded-lg h-full relative flex flex-col">
           <Box className="flex items-center justify-between">
-            <IconButton
-              onClick={() => notes.handleNoteCardClick(null)}
-              className="absolute top-2 left-2 z-10"
-            >
+            <IconButton onClick={handleGoBack}>
               <ArrowBackIosNewIcon />
             </IconButton>
-            <ActionBar className="!absolute top2 right-2 z-10" />
+            <ActionBar />
           </Box>
-          <NoteViewer />
+          <NoteViewer key={notes.selectedNoteId} />
         </Box>
       ) : (
-        <Box className="p-2 rounded-lg flex flex-col h-full relative">
+        <Box className="bg-white p-2 rounded-lg h-full relative flex flex-col">
           <Box className="flex items-center justify-between">
             <IconButton onClick={onShowSideBar}>
               <MoreHorizIcon />

@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import "quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import "./NoteDetailContent.css";
+import { useEffect, useRef } from "react";
 
 interface NoteDetailContentProps {
   noteValue: string;
@@ -22,12 +23,29 @@ const NoteDetailContent = ({
     ],
   };
 
+  const isInitializing = useRef(true);
+  useEffect(() => {
+    isInitializing.current = true;
+    const timer = setTimeout(() => {
+      isInitializing.current = false;
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [noteValue]);
+
+  const handleQuillChange = (value: string) => {
+    if (isInitializing.current) {
+      return;
+    }
+    handleContentOnChange(value);
+  };
+
   return (
     <Box>
       <ReactQuill
         theme="snow"
         value={noteValue}
-        onChange={handleContentOnChange}
+        onChange={handleQuillChange}
         modules={modules}
         placeholder="Enter your rich note content here..."
         style={{ minHeight: "250px", marginBottom: "1rem" }}

@@ -37,7 +37,7 @@ const CustomButton = ({
   className,
 }: CustomButtonProps) => {
   return (
-    <view>
+    <div>
       <StyledButton
         title={title}
         onClick={onClick}
@@ -50,7 +50,7 @@ const CustomButton = ({
       >
         {title}
       </StyledButton>
-    </view>
+    </div>
   );
 };
 

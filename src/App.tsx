@@ -8,6 +8,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/*" element={<NoteLayout />} />
+          <Route path="/note/:noteId" element={<NoteLayout />} />
         </Routes>
       </Router>
     </NoteProvider>

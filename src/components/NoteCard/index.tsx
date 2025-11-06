@@ -13,7 +13,6 @@ interface NoteCardProps {
   lastedit: string;
   tags: Tag[];
   noteStatus: boolean;
-  onNoteCardClick: (noteId: string) => void;
   isSelected: boolean;
 }
 
@@ -23,15 +22,11 @@ const NoteCard = ({
   tags,
   lastedit,
   noteStatus,
-  onNoteCardClick,
   isSelected,
 }: NoteCardProps) => {
-  const isDesktop = useMediaQuery("(min-width:900px)");
   const noteLink = `/note/${id}`;
 
-  const actionProps = isDesktop
-    ? { onClick: () => onNoteCardClick(id) }
-    : { component: Link, to: noteLink };
+  const actionProps = { component: Link, to: noteLink };
 
   return (
     <>

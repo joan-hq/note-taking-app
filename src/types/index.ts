@@ -7,9 +7,9 @@ export interface Note {
   id: string;
   title: string;
   tags: string[];
-  lastEdit: string; // <-- Standardized to 'lastEdit' (uppercase 'E')
+  lastEdit: string;
   content: string;
-  isArchive: boolean; // Assuming it's always present, not optional, based on usage
+  isArchive: boolean;
 }
 
 export type FilterType = "all" | "archived";

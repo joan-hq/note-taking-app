@@ -229,10 +229,18 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes]
   );
 
-  /**handle editors */
   const handleTitleOnChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newTitle = event.target.value;
+
+      const currentNote = selectedNoteId
+        ? allNotes.find((note) => note.id === selectedNoteId)
+        : null;
+
+      if (!currentNote || currentNote.title === newTitle) {
+        return;
+      }
+
       console.log("handleTitleOnChange", newTitle);
       const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
         allNotes,
@@ -245,21 +253,16 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     [allNotes, selectedNoteId]
   );
 
-  // const handleContentOnChange = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const newContent = event.target.value;
-  //     const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
-  //       allNotes,
-  //       selectedNoteId,
-  //       { content: newContent, lastEdit: timeFormat() }
-  //     );
-  //     setAllNotes(updatedNotes);
-  //     setSelectedNoteId(newSelectedNoteId);
-  //   },
-  //   [allNotes, selectedNoteId]
-  // );
   const handleContentOnChange = useCallback(
-    (newContent: string, delta: any, source: string, editor: any) => {
+    (newContent: string) => {
+      const currentNote = selectedNoteId
+        ? allNotes.find((note) => note.id === selectedNoteId)
+        : null;
+
+      if (!currentNote || currentNote.content === newContent) {
+        return;
+      }
+
       const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
         allNotes,
         selectedNoteId,
@@ -269,7 +272,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       setSelectedNoteId(newSelectedNoteId);
     },
 
-    [allNotes, selectedNoteId, handleNoteStateChanges]
+    [allNotes, selectedNoteId]
   );
 
   const handleNewTagSave = useCallback(
