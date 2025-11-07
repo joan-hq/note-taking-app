@@ -41,8 +41,13 @@ const DesktopView = () => {
       </Box>
 
       <Box className="bg-white border-r border-gray-200 p-1">
+        <Box
+          className="flex justify-end flex-shrink-0"
+          sx={{ color: "text.secondary" }}
+        >
+          <ActionBar />
+        </Box>
         <NoteViewer />
-        <ActionBar className="absolute top-2 right-2 mx-11" />
       </Box>
     </Box>
   );

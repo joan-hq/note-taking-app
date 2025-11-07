@@ -4,7 +4,6 @@ import Card from "@mui/material/Card";
 import NoteCardHeader from "./NoteCardHeader";
 import NoteCardContent from "./NoteCardContent";
 import type { Tag } from "../../types/index";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 
 interface NoteCardProps {

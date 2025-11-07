@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
 import TagsField from "../Tag/index";
 import type { Tag } from "../../types/index";
 
@@ -30,30 +29,36 @@ const NoteDetailHeader = ({
   handleNewTagSave,
   time,
 }: NoteDetailHeaderProps) => {
-  console.log("NoteDetailHeader-title", title);
-  console.log("NoteDetailHeader-options", options);
-  console.log("NoteDetailHeader-noteTags", noteTags);
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      <TextField
-        variant="standard"
-        fullWidth
-        multiline={false}
-        value={title}
-        onChange={handleTitleOnChange}
-        InputProps={{
-          disableUnderline: true,
-          sx: {
-            fontSize: "28px",
-          },
-        }}
-      />
+    <Box>
+      <Box sx={{ mb: 2 }}>
+        <TextField
+          variant="standard"
+          multiline={false}
+          value={title}
+          onChange={handleTitleOnChange}
+          InputProps={{
+            disableUnderline: true,
+            sx: {
+              fontSize: "1.8rem",
+              fontWeight: "bold",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            },
+          }}
+          className="flex-grow mr-4"
+        />
+      </Box>
+
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           gap: 1,
           color: "text.secondary",
+          flexShrink: 0,
+          mr: 2,
         }}
       >
         <AccessTimeIcon
@@ -64,7 +69,7 @@ const NoteDetailHeader = ({
           {time}
         </Typography>
       </Box>
-      <Box>
+      <Box sx={{ flexGrow: 1, minWidth: 0 }}>
         <TagsField
           options={options}
           noteTags={noteTags}

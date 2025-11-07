@@ -18,7 +18,7 @@ export const notes: Note[] = [
     id: "1",
     title: "React Context API Bug",
     tags: ["project-note-app", "react", "typescript", "urgent"],
-    lastEdit: "2025-11-06T14:30:00.000Z", // (最近的日期)
+    lastEdit: "2025-11-06T14:30:00.000Z",
     content:
       "The <strong>NoteProvider</strong> isn't updating the view on mobile when the URL changes. The `useEffect` hook in `NoteLayout.tsx` isn't firing correctly. Need to check dependencies.",
     isArchive: false,
@@ -69,7 +69,7 @@ export const notes: Note[] = [
   },
   {
     id: "7",
-    title: "",
+    title: "Empty Note",
     tags: [],
     lastEdit: "2025-11-06T13:00:00.000Z",
     content: "",

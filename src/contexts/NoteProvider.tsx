@@ -45,13 +45,12 @@ interface NoteManagerProps {
   handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
   handleNoteCardClick: (noteId: string | null) => void;
   handleArchiveNote: (noteId: string) => Promise<boolean>;
-  handleUnrchiveNote: (noteId: string) => Promise<boolean>;
+  handleUnarchiveNote: (noteId: string) => Promise<boolean>;
   handleDeleteNote: (noteId: string) => Promise<boolean>;
 }
 
 interface NoteEditorsProps {
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  // handleContentOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleContentOnChange: (value: string) => void;
   handleNewTagSave: (newTag: Tag) => void;
   handleTagsChangeFromNote: (
@@ -100,7 +99,6 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
   const prevSelectedNoteId = usePrevious(selectedNoteId);
 
   useEffect(() => {
-    // Only run if the selected ID has changed *and* we have a previous ID
     if (prevSelectedNoteId && prevSelectedNoteId !== selectedNoteId) {
       const prevNote = allNotes.find((note) => note.id === prevSelectedNoteId);
 
@@ -191,7 +189,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
     },
     [allNotes]
   );
-  const handleUnrchiveNote = useCallback(
+  const handleUnarchiveNote = useCallback(
     async (noteId: string): Promise<boolean> => {
       try {
         if (!noteId) return false;
@@ -391,7 +389,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
         handleNewNoteClick,
         handleNoteCardClick,
         handleArchiveNote,
-        handleUnrchiveNote,
+        handleUnarchiveNote,
         handleDeleteNote,
       },
       editors: {
@@ -426,7 +424,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       handleNewNoteClick,
       handleNoteCardClick,
       handleArchiveNote,
-      handleUnrchiveNote,
+      handleUnarchiveNote,
       handleDeleteNote,
       handleTitleOnChange,
       handleContentOnChange,

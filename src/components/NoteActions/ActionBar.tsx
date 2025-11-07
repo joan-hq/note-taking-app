@@ -1,93 +1,117 @@
-import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
-import UnarchiveOutlinedIcon from "@mui/icons-material/UnarchiveOutlined";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import CustomPopover from "../CustomePopover";
-import { useCustomPopover } from "../../hooks/useCustomPopover";
-import { handleAsyncAction, findNoteById } from "../../helpers/noteHelpers";
-import { ACTION_MESSAGES } from "../../constants/messages";
-import Button from "@mui/material/Button";
-import styled from "styled-components";
+import React, { useState } from "react";
 import { useNoteContext } from "../../contexts/NoteProvider";
+import { findNoteById } from "../../helpers/noteHelpers";
+import {
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import {
+  ArchiveOutlined as ArchiveIcon,
+  DeleteOutlined as DeleteIcon,
+  UnarchiveOutlined as UnarchiveIcon,
+  MoreVert as MoreVertIcon, // "..." 菜单图标
+} from "@mui/icons-material";
 
 interface ActionBarProps {
   className?: string;
 }
 
-const StyledButton = styled(Button)`
-  && {
-    color: #4b5563;
-    font-size: 0.9rem;
-  }
-`;
 const ActionBar = ({ className }: ActionBarProps) => {
-  const { filters, notes } = useNoteContext();
-  const iconStyle = "text-gray-700";
-  const popoverManager = useCustomPopover();
-  const selectedNote = notes.selectedNoteId
-    ? findNoteById(notes.selectedNoteId, notes.allNotes)
-    : null;
+  const { notes, tags } = useNoteContext();
+  const {
+    allNotes,
+    selectedNoteId,
+    handleArchiveNote,
+    handleDeleteNote,
+    handleUnarchiveNote,
+  } = notes;
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  if (!selectedNoteId) return null;
+
+  const selectedNote = findNoteById(selectedNoteId, allNotes);
+  if (!selectedNote) return null;
+
+  const { isArchive } = selectedNote;
+
+  const onArchive = () => {
+    handleArchiveNote(selectedNoteId);
+    handleMenuClose();
+  };
+
+  const onUnarchive = () => {
+    handleUnarchiveNote(selectedNoteId);
+    handleMenuClose();
+  };
+
+  const onDelete = () => {
+    handleDeleteNote(selectedNoteId);
+    handleMenuClose();
+  };
+
+  if (isMobile) {
+    return (
+      <Box className={className}>
+        <IconButton onClick={handleMenuClick}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+          {isArchive ? (
+            <MenuItem onClick={onUnarchive}>
+              <UnarchiveIcon sx={{ mr: 1 }} />
+              Unarchive
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={onArchive}>
+              <ArchiveIcon sx={{ mr: 1 }} />
+              Archive
+            </MenuItem>
+          )}
+          <MenuItem onClick={onDelete}>
+            <DeleteIcon sx={{ mr: 1 }} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </Box>
+    );
+  }
 
   return (
-    <div className={className}>
-      {filters.filterType === "archived" || selectedNote?.isArchive === true ? (
-        <StyledButton
-          size="medium"
-          startIcon={<UnarchiveOutlinedIcon className={iconStyle} />}
-          onClick={(event) =>
-            handleAsyncAction(
-              notes.handleUnrchiveNote,
-              notes.selectedNoteId as string,
-              event,
-              popoverManager,
-              ACTION_MESSAGES.UNARCHIVE
-            )
-          }
-          sx={{ textTransform: "none", color: "grey-700" }}
+    <Box sx={{ display: "flex", gap: 1 }}>
+      {isArchive ? (
+        <Button
+          startIcon={<UnarchiveIcon />}
+          onClick={onUnarchive}
+          color="inherit"
         >
           Unarchive
-        </StyledButton>
+        </Button>
       ) : (
-        <StyledButton
-          size="medium"
-          startIcon={<ArchiveOutlinedIcon className={iconStyle} />}
-          onClick={(event) =>
-            handleAsyncAction(
-              notes.handleArchiveNote,
-              notes.selectedNoteId as string,
-              event,
-              popoverManager,
-              ACTION_MESSAGES.ARCHIVE
-            )
-          }
-          sx={{ textTransform: "none" }}
-        >
+        <Button startIcon={<ArchiveIcon />} onClick={onArchive} color="inherit">
           Archive
-        </StyledButton>
+        </Button>
       )}
-      <StyledButton
-        size="medium"
-        startIcon={<DeleteForeverOutlinedIcon className={iconStyle} />}
-        onClick={(event) =>
-          handleAsyncAction(
-            notes.handleDeleteNote,
-            notes.selectedNoteId as string,
-            event,
-            popoverManager,
-            ACTION_MESSAGES.DELETE
-          )
-        }
-        sx={{ textTransform: "none" }}
-      >
+      <Button startIcon={<DeleteIcon />} onClick={onDelete} color="inherit">
         Delete
-      </StyledButton>
-      <CustomPopover
-        open={popoverManager.open}
-        message={popoverManager.message}
-        type={popoverManager.type}
-        anchorEl={popoverManager.anchorEl}
-        onClose={popoverManager.hidePopover}
-      />
-    </div>
+      </Button>
+    </Box>
   );
 };
+
 export default ActionBar;

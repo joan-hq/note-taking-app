@@ -40,7 +40,7 @@ export interface useNoteProps {
 
   selectedNoteId: string | null;
   handleArchiveNote: (noteId: string) => Promise<boolean>;
-  handleUnrchiveNote: (noteId: string) => Promise<boolean>;
+  handleUnarchiveNote: (noteId: string) => Promise<boolean>;
   handleDeleteNote: (noteId: string) => Promise<boolean>;
 
   handleTitleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -204,7 +204,7 @@ export const useNote = (): useNoteProps => {
     },
     [allNotes]
   );
-  const handleUnrchiveNote = useCallback(
+  const handleUnarchiveNote = useCallback(
     async (noteId: string): Promise<boolean> => {
       try {
         if (!noteId) return false;
@@ -353,7 +353,7 @@ export const useNote = (): useNoteProps => {
 
     selectedNoteId,
     handleArchiveNote,
-    handleUnrchiveNote,
+    handleUnarchiveNote,
     handleDeleteNote,
 
     handleTitleOnChange,

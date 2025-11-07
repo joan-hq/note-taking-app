@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import FolderZipOutlinedIcon from "@mui/icons-material/FolderZipOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 import { useNoteContext } from "../../contexts/NoteProvider";
