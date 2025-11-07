@@ -347,7 +347,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
   );
 
   const handleTagsChangeFromNote = useCallback(
-    (event: React.ChangeEvent<HTMLElement>, newTags: Tag[]) => {
+    (_event: React.ChangeEvent<HTMLElement>, newTags: Tag[]) => {
       const newTagIds = newTags.map((newTag) => newTag.id);
       const { updatedNotes, newSelectedNoteId } = handleNoteStateChanges(
         allNotes,

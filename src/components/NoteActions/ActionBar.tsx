@@ -14,7 +14,7 @@ import {
   ArchiveOutlined as ArchiveIcon,
   DeleteOutlined as DeleteIcon,
   UnarchiveOutlined as UnarchiveIcon,
-  MoreVert as MoreVertIcon, 
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
 interface ActionBarProps {
@@ -22,7 +22,7 @@ interface ActionBarProps {
 }
 
 const ActionBar = ({ className }: ActionBarProps) => {
-  const { notes, tags } = useNoteContext();
+  const { notes } = useNoteContext();
   const {
     allNotes,
     selectedNoteId,
