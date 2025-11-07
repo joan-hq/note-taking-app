@@ -5,6 +5,7 @@ import NoteDetailHeader from "../components/NoteDetail/NoteDetailHeader";
 import NoteDetailContent from "../components/NoteDetail/NoteDetailContent";
 import { findTagsByIds, findNoteById } from "../helpers/noteHelpers";
 import { useNoteContext } from "../contexts/NoteProvider";
+import { formatNoteDate } from "../utils/formateDate";
 
 const NoteViewer = () => {
   const { notes, tags, editors } = useNoteContext();
@@ -38,6 +39,7 @@ const NoteViewer = () => {
   }
 
   const noteTags = findTagsByIds(noteToDisplay.tags, tags.allTags);
+  const formattedTime = formatNoteDate(noteToDisplay.lastEdit);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -50,7 +52,7 @@ const NoteViewer = () => {
         handleTagsChangeFromNote={editors.handleTagsChangeFromNote}
         handleTagDeleteFromNote={editors.handleTagDeleteFromNote}
         handleNewTagSave={editors.handleNewTagSave}
-        time={noteToDisplay.lastEdit}
+        time={formattedTime}
       />
 
       <NoteDetailContent

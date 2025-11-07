@@ -19,7 +19,6 @@ const NoteBrifeView = () => {
             lastedit={note.lastEdit}
             tags={findTagsByIds(note.tags, tags.allTags)}
             noteStatus={note.isArchive}
-            //onNoteCardClick={() => onNoteCardClick(note.id)}
             isSelected={note.id === notes.selectedNoteId}
           />
         );
