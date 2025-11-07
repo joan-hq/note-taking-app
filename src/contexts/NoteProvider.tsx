@@ -23,6 +23,9 @@ import {
   notes as initialNotesData,
   tags as initialTagsData,
 } from "../data/note";
+//***localStroage */
+const NOTES_STORAGE_KEY = "typo-notes-app-notes";
+const TAGS_STORAGE_KEY = "typo-notes-app-tags";
 
 interface NoteFilterProps {
   noteFilterTitle: string;
@@ -42,7 +45,9 @@ interface TagManagementProps {
 interface NoteManagerProps {
   allNotes: Note[];
   selectedNoteId: string | null;
-  handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
+  // handleNewNoteClick: (event: React.MouseEvent<HTMLElement>) => void;
+  handleNewNoteClick: () => string;
+
   handleNoteCardClick: (noteId: string | null) => void;
   handleArchiveNote: (noteId: string) => Promise<boolean>;
   handleUnarchiveNote: (noteId: string) => Promise<boolean>;
@@ -90,13 +95,53 @@ const usePrevious = <T,>(value: T) => {
 };
 
 export const NoteProvider = ({ children }: NoteProviderProps) => {
-  const [allTags, setAllTags] = useState<Tag[]>(initialTagsData);
+  // const [allTags, setAllTags] = useState<Tag[]>(initialTagsData);
+  // const [allNotes, setAllNotes] = useState<Note[]>(initialNotesData);
+
+  //*** use local stroage */
+  const [allTags, setAllTags] = useState<Tag[]>(() => {
+    try {
+      const savedTags = localStorage.getItem(TAGS_STORAGE_KEY);
+      return savedTags ? (JSON.parse(savedTags) as Tag[]) : initialTagsData;
+    } catch (error) {
+      console.error("Failed to load tags from localStorage", error);
+      return initialTagsData;
+    }
+  });
+
+  const [allNotes, setAllNotes] = useState<Note[]>(() => {
+    try {
+      const savedNotes = localStorage.getItem(NOTES_STORAGE_KEY);
+      return savedNotes ? (JSON.parse(savedNotes) as Note[]) : initialNotesData;
+    } catch (error) {
+      console.error("Failed to load notes from localStorage", error);
+      return initialNotesData;
+    }
+  });
+  //*** use local stroage */
+
   const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
-  const [allNotes, setAllNotes] = useState<Note[]>(initialNotesData);
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const prevSelectedNoteId = usePrevious(selectedNoteId);
+
+  //*** use local stroage */
+  useEffect(() => {
+    try {
+      localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(allNotes));
+    } catch (error) {
+      console.error("Failed to save notes to localStorage", error);
+    }
+  }, [allNotes]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(allTags));
+    } catch (error) {
+      console.error("Failed to save tags to localStorage", error);
+    }
+  }, [allTags]);
 
   useEffect(() => {
     if (prevSelectedNoteId && prevSelectedNoteId !== selectedNoteId) {
@@ -110,6 +155,7 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
       }
     }
   }, [selectedNoteId, allNotes, prevSelectedNoteId]);
+  //*** use local stroage */
 
   /**handle filters */
   const noteFilterTitle = useMemo(() => {
@@ -156,15 +202,17 @@ export const NoteProvider = ({ children }: NoteProviderProps) => {
   }, []);
 
   /**handle notes */
-  const handleNewNoteClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      const newNote = createNewNote({});
-      setAllNotes((prevNotes) => [newNote, ...prevNotes]);
-      setSelectedNoteId(newNote.id);
-      setSelectedTagId(null);
-    },
-    []
-  );
+  const handleNewNoteClick = useCallback((): string => {
+    const newNote = createNewNote({});
+    setAllNotes((prevNotes) => [newNote, ...prevNotes]);
+
+    // REMOVE these lines:
+    // setSelectedNoteId(newNote.id);
+    // setSelectedTagId(null);
+
+    // ADD this line:
+    return newNote.id;
+  }, []);
 
   const handleNoteCardClick = useCallback((noteId: string | null) => {
     setSelectedNoteId(noteId);

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import { useNoteContext } from "../../contexts/NoteProvider";
+import { useNavigate } from "react-router-dom";
 
 interface NewNoteButtonProps {
   className?: string;
@@ -41,13 +42,20 @@ const StyledButton = styled(Button)`
 
 const NewNoteButton = ({ className, isFab }: NewNoteButtonProps) => {
   const { notes } = useNoteContext();
+  const navigate = useNavigate();
+
+  const handleCreateAndNavigate = () => {
+    const newNoteId = notes.handleNewNoteClick();
+    navigate(`/note/${newNoteId}`);
+  };
 
   if (isFab) {
     return (
       <StyledFab
         aria-label="add"
         className={className}
-        onClick={notes.handleNewNoteClick}
+        // onClick={notes.handleNewNoteClick}
+        onClick={handleCreateAndNavigate}
       >
         <AddIcon />
       </StyledFab>
@@ -57,7 +65,8 @@ const NewNoteButton = ({ className, isFab }: NewNoteButtonProps) => {
     <>
       <StyledButton
         startIcon={<AddIcon className="text-white !text-xl" />}
-        onClick={notes.handleNewNoteClick}
+        // onClick={notes.handleNewNoteClick}
+        onClick={handleCreateAndNavigate}
         className={className}
         sx={{ textTransform: "none" }}
         fullWidth
