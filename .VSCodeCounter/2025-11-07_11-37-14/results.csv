@@ -1,0 +1,86 @@
+"filename", "language", "TypeScript JSX", "TypeScript", "PostCSS", "XML", "JavaScript", "JSON with Comments", "JSON", "Markdown", "HTML", "comment", "blank", "total"
+"/Users/joan/Project/note-taking-app-new/README.md", "Markdown", 0, 0, 0, 0, 0, 0, 0, 79, 0, 0, 20, 99
+"/Users/joan/Project/note-taking-app-new/eslint.config.js", "JavaScript", 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 6, 33
+"/Users/joan/Project/note-taking-app-new/index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 1, 14
+"/Users/joan/Project/note-taking-app-new/package-lock.json", "JSON", 0, 0, 0, 0, 0, 0, 6985, 0, 0, 0, 1, 6986
+"/Users/joan/Project/note-taking-app-new/package.json", "JSON", 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 1, 52
+"/Users/joan/Project/note-taking-app-new/postcss.config.cjs", "JavaScript", 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 7
+"/Users/joan/Project/note-taking-app-new/public/vite.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/App.css", "PostCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/Users/joan/Project/note-taking-app-new/src/App.tsx", "TypeScript JSX", 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 19
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-archive.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-arrow-left.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-checkmark.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-chevron-right.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-clock.svg", "XML", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-cross.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-delete.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-monospace.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-sans-serif.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-serif.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-font.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-google.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-hide-password.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-home.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-info.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-lock.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-logout.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-menu.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-moon.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-plus.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-restore.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-search.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-settings.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-show-password.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-status.svg", "XML", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-sun.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-system-theme.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/icon-tag.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/assets/images/logo.svg", "XML", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1
+"/Users/joan/Project/note-taking-app-new/src/components/CustomButton.tsx", "TypeScript JSX", 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 58
+"/Users/joan/Project/note-taking-app-new/src/components/CustomDialog.tsx", "TypeScript JSX", 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 91
+"/Users/joan/Project/note-taking-app-new/src/components/CustomePopover.tsx", "TypeScript JSX", 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 66
+"/Users/joan/Project/note-taking-app-new/src/components/NoteActions/ActionBar.tsx", "TypeScript JSX", 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 118
+"/Users/joan/Project/note-taking-app-new/src/components/NoteActions/NewNoteButton.tsx", "TypeScript JSX", 71, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8, 81
+"/Users/joan/Project/note-taking-app-new/src/components/NoteActions/SearchBar.tsx", "TypeScript JSX", 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 79
+"/Users/joan/Project/note-taking-app-new/src/components/NoteActions/StatusFilter.tsx", "TypeScript JSX", 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 44
+"/Users/joan/Project/note-taking-app-new/src/components/NoteBrifeView/index.tsx", "TypeScript JSX", 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 30
+"/Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardContent.tsx", "TypeScript JSX", 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 36
+"/Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardHeader.tsx", "TypeScript JSX", 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 33
+"/Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardTags.tsx", "TypeScript JSX", 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 60
+"/Users/joan/Project/note-taking-app-new/src/components/NoteCard/index.tsx", "TypeScript JSX", 57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 63
+"/Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailContent.css", "PostCSS", 0, 0, 93, 0, 0, 0, 0, 0, 0, 1, 19, 113
+"/Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailContent.tsx", "TypeScript JSX", 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 57
+"/Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailHeader.tsx", "TypeScript JSX", 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 85
+"/Users/joan/Project/note-taking-app-new/src/components/ReuseTitle.tsx", "TypeScript JSX", 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 19
+"/Users/joan/Project/note-taking-app-new/src/components/Tag/AddNewTagDialog.tsx", "TypeScript JSX", 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 39
+"/Users/joan/Project/note-taking-app-new/src/components/Tag/TagSelector.tsx", "TypeScript JSX", 53, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 63
+"/Users/joan/Project/note-taking-app-new/src/components/Tag/index.tsx", "TypeScript JSX", 97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 106
+"/Users/joan/Project/note-taking-app-new/src/components/TagsPopover.tsx", "TypeScript JSX", 77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 83
+"/Users/joan/Project/note-taking-app-new/src/constants/messages.ts", "TypeScript", 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 4, 36
+"/Users/joan/Project/note-taking-app-new/src/contexts/NoteProvider.tsx", "TypeScript JSX", 420, 0, 0, 0, 0, 0, 0, 0, 0, 16, 62, 498
+"/Users/joan/Project/note-taking-app-new/src/data/note.ts", "TypeScript", 0, 76, 0, 0, 0, 0, 0, 0, 0, 0, 3, 79
+"/Users/joan/Project/note-taking-app-new/src/helpers/noteHelpers.ts", "TypeScript", 0, 213, 0, 0, 0, 0, 0, 0, 0, 41, 39, 293
+"/Users/joan/Project/note-taking-app-new/src/hooks/useCustomPopover.ts", "TypeScript", 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 6, 37
+"/Users/joan/Project/note-taking-app-new/src/hooks/useDialog.ts", "TypeScript", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 5, 16
+"/Users/joan/Project/note-taking-app-new/src/icons/TypoNoteLogo.tsx", "TypeScript JSX", 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 29
+"/Users/joan/Project/note-taking-app-new/src/index.css", "PostCSS", 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"/Users/joan/Project/note-taking-app-new/src/main.tsx", "TypeScript JSX", 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 11
+"/Users/joan/Project/note-taking-app-new/src/pages/DesktopView.tsx", "TypeScript JSX", 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 57
+"/Users/joan/Project/note-taking-app-new/src/pages/LeftSide.tsx", "TypeScript JSX", 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 24
+"/Users/joan/Project/note-taking-app-new/src/pages/MobileView.tsx", "TypeScript JSX", 57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 62
+"/Users/joan/Project/note-taking-app-new/src/pages/NoteLayout.tsx", "TypeScript JSX", 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 63
+"/Users/joan/Project/note-taking-app-new/src/pages/NoteLogo.tsx", "TypeScript JSX", 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 21
+"/Users/joan/Project/note-taking-app-new/src/pages/NoteViewer.tsx", "TypeScript JSX", 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 68
+"/Users/joan/Project/note-taking-app-new/src/pages/TagManagement.tsx", "TypeScript JSX", 211, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 226
+"/Users/joan/Project/note-taking-app-new/src/styles/quill-custom.css", "PostCSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1, 8
+"/Users/joan/Project/note-taking-app-new/src/types/index.ts", "TypeScript", 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 4, 18
+"/Users/joan/Project/note-taking-app-new/src/utils/errors.ts", "TypeScript", 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 5, 11
+"/Users/joan/Project/note-taking-app-new/src/utils/formateDate.ts", "TypeScript", 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 9, 48
+"/Users/joan/Project/note-taking-app-new/src/vite-env.d.ts", "TypeScript", 0, 7, 0, 0, 0, 0, 0, 0, 0, 1, 2, 10
+"/Users/joan/Project/note-taking-app-new/tailwind.config.js", "JavaScript", 0, 0, 0, 0, 17, 0, 0, 0, 0, 1, 1, 19
+"/Users/joan/Project/note-taking-app-new/tsconfig.app.json", "JSON", 0, 0, 0, 0, 0, 0, 23, 0, 0, 4, 9, 36
+"/Users/joan/Project/note-taking-app-new/tsconfig.json", "JSON with Comments", 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 1, 8
+"/Users/joan/Project/note-taking-app-new/tsconfig.node.json", "JSON", 0, 0, 0, 0, 0, 0, 20, 0, 0, 2, 7, 29
+"/Users/joan/Project/note-taking-app-new/vite.config.ts", "TypeScript", 0, 19, 0, 0, 0, 0, 0, 0, 0, 4, 3, 26
+"Total", "-", 2020, 448, 108, 36, 50, 7, 7079, 79, 13, 83, 401, 10324

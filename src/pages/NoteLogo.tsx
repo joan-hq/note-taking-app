@@ -8,7 +8,7 @@ interface NoteLogo {
 const NoteLogo = ({ className }: NoteLogo) => {
   return (
     <ReuseTitle
-      title="TypoNote"
+      title="DashNote"
       icon={
         <TypoNoteIcon className="w-11 h-11 text-primary-color stroke-[4]" />
       }

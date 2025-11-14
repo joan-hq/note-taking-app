@@ -1,0 +1,139 @@
+Date : 2025-11-07 11:37:14
+Directory : /Users/joan/Project/note-taking-app-new
+Total : 84 files,  9840 codes, 83 comments, 401 blanks, all 10324 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          4 |      7,079 |          6 |         18 |      7,103 |
+| TypeScript JSX     |         30 |      2,020 |         22 |        247 |      2,289 |
+| TypeScript         |         10 |        448 |         46 |         80 |        574 |
+| PostCSS            |          4 |        108 |          8 |         24 |        140 |
+| Markdown           |          1 |         79 |          0 |         20 |         99 |
+| JavaScript         |          3 |         50 |          1 |          8 |         59 |
+| XML                |         30 |         36 |          0 |          2 |         38 |
+| HTML               |          1 |         13 |          0 |          1 |         14 |
+| JSON with Comments |          1 |          7 |          0 |          1 |          8 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                    | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                       |         84 |      9,840 |         83 |        401 |     10,324 |
+| . (Files)                                                                               |         11 |      7,247 |         11 |         51 |      7,309 |
+| public                                                                                  |          1 |          1 |          0 |          0 |          1 |
+| src                                                                                     |         72 |      2,592 |         72 |        350 |      3,014 |
+| src (Files)                                                                             |          5 |         47 |          1 |         11 |         59 |
+| src/assets                                                                              |         29 |         35 |          0 |          2 |         37 |
+| src/assets/images                                                                       |         29 |         35 |          0 |          2 |         37 |
+| src/components                                                                          |         20 |      1,178 |          7 |        139 |      1,324 |
+| src/components (Files)                                                                  |          5 |        286 |          0 |         31 |        317 |
+| src/components/NoteActions                                                              |          4 |        283 |          2 |         37 |        322 |
+| src/components/NoteBrifeView                                                            |          1 |         27 |          0 |          3 |         30 |
+| src/components/NoteCard                                                                 |          4 |        175 |          0 |         17 |        192 |
+| src/components/NoteDetail                                                               |          3 |        223 |          1 |         31 |        255 |
+| src/components/Tag                                                                      |          3 |        184 |          4 |         20 |        208 |
+| src/constants                                                                           |          1 |         32 |          0 |          4 |         36 |
+| src/contexts                                                                            |          1 |        420 |         16 |         62 |        498 |
+| src/data                                                                                |          1 |         76 |          0 |          3 |         79 |
+| src/helpers                                                                             |          1 |        213 |         41 |         39 |        293 |
+| src/hooks                                                                               |          2 |         42 |          0 |         11 |         53 |
+| src/icons                                                                               |          1 |         25 |          0 |          4 |         29 |
+| src/pages                                                                               |          7 |        465 |          0 |         56 |        521 |
+| src/styles                                                                              |          1 |          0 |          7 |          1 |          8 |
+| src/types                                                                               |          1 |         14 |          0 |          4 |         18 |
+| src/utils                                                                               |          2 |         45 |          0 |         14 |         59 |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                | language           | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /Users/joan/Project/note-taking-app-new/README.md                                       | Markdown           |         79 |          0 |         20 |         99 |
+| /Users/joan/Project/note-taking-app-new/eslint.config.js                                | JavaScript         |         27 |          0 |          6 |         33 |
+| /Users/joan/Project/note-taking-app-new/index.html                                      | HTML               |         13 |          0 |          1 |         14 |
+| /Users/joan/Project/note-taking-app-new/package-lock.json                               | JSON               |      6,985 |          0 |          1 |      6,986 |
+| /Users/joan/Project/note-taking-app-new/package.json                                    | JSON               |         51 |          0 |          1 |         52 |
+| /Users/joan/Project/note-taking-app-new/postcss.config.cjs                              | JavaScript         |          6 |          0 |          1 |          7 |
+| /Users/joan/Project/note-taking-app-new/public/vite.svg                                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/App.css                                     | PostCSS            |          0 |          0 |          1 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/App.tsx                                     | TypeScript JSX     |         16 |          0 |          3 |         19 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-archive.svg              | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-arrow-left.svg           | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-checkmark.svg            | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-chevron-right.svg        | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-clock.svg                | XML                |          4 |          0 |          1 |          5 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-cross.svg                | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-delete.svg               | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-monospace.svg       | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-sans-serif.svg      | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-font-serif.svg           | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-font.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-google.svg               | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-hide-password.svg        | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-home.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-info.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-lock.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-logout.svg               | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-menu.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-moon.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-plus.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-restore.svg              | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-search.svg               | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-settings.svg             | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-show-password.svg        | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-status.svg               | XML                |          4 |          0 |          1 |          5 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-sun.svg                  | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-system-theme.svg         | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/icon-tag.svg                  | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/assets/images/logo.svg                      | XML                |          1 |          0 |          0 |          1 |
+| /Users/joan/Project/note-taking-app-new/src/components/CustomButton.tsx                 | TypeScript JSX     |         53 |          0 |          5 |         58 |
+| /Users/joan/Project/note-taking-app-new/src/components/CustomDialog.tsx                 | TypeScript JSX     |         83 |          0 |          8 |         91 |
+| /Users/joan/Project/note-taking-app-new/src/components/CustomePopover.tsx               | TypeScript JSX     |         58 |          0 |          8 |         66 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteActions/ActionBar.tsx        | TypeScript JSX     |        104 |          0 |         14 |        118 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteActions/NewNoteButton.tsx    | TypeScript JSX     |         71 |          2 |          8 |         81 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteActions/SearchBar.tsx        | TypeScript JSX     |         69 |          0 |         10 |         79 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteActions/StatusFilter.tsx     | TypeScript JSX     |         39 |          0 |          5 |         44 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteBrifeView/index.tsx          | TypeScript JSX     |         27 |          0 |          3 |         30 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardContent.tsx     | TypeScript JSX     |         32 |          0 |          4 |         36 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardHeader.tsx      | TypeScript JSX     |         30 |          0 |          3 |         33 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteCard/NoteCardTags.tsx        | TypeScript JSX     |         56 |          0 |          4 |         60 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteCard/index.tsx               | TypeScript JSX     |         57 |          0 |          6 |         63 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailContent.css | PostCSS            |         93 |          1 |         19 |        113 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailContent.tsx | TypeScript JSX     |         50 |          0 |          7 |         57 |
+| /Users/joan/Project/note-taking-app-new/src/components/NoteDetail/NoteDetailHeader.tsx  | TypeScript JSX     |         80 |          0 |          5 |         85 |
+| /Users/joan/Project/note-taking-app-new/src/components/ReuseTitle.tsx                   | TypeScript JSX     |         15 |          0 |          4 |         19 |
+| /Users/joan/Project/note-taking-app-new/src/components/Tag/AddNewTagDialog.tsx          | TypeScript JSX     |         34 |          0 |          5 |         39 |
+| /Users/joan/Project/note-taking-app-new/src/components/Tag/TagSelector.tsx              | TypeScript JSX     |         53 |          4 |          6 |         63 |
+| /Users/joan/Project/note-taking-app-new/src/components/Tag/index.tsx                    | TypeScript JSX     |         97 |          0 |          9 |        106 |
+| /Users/joan/Project/note-taking-app-new/src/components/TagsPopover.tsx                  | TypeScript JSX     |         77 |          0 |          6 |         83 |
+| /Users/joan/Project/note-taking-app-new/src/constants/messages.ts                       | TypeScript         |         32 |          0 |          4 |         36 |
+| /Users/joan/Project/note-taking-app-new/src/contexts/NoteProvider.tsx                   | TypeScript JSX     |        420 |         16 |         62 |        498 |
+| /Users/joan/Project/note-taking-app-new/src/data/note.ts                                | TypeScript         |         76 |          0 |          3 |         79 |
+| /Users/joan/Project/note-taking-app-new/src/helpers/noteHelpers.ts                      | TypeScript         |        213 |         41 |         39 |        293 |
+| /Users/joan/Project/note-taking-app-new/src/hooks/useCustomPopover.ts                   | TypeScript         |         31 |          0 |          6 |         37 |
+| /Users/joan/Project/note-taking-app-new/src/hooks/useDialog.ts                          | TypeScript         |         11 |          0 |          5 |         16 |
+| /Users/joan/Project/note-taking-app-new/src/icons/TypoNoteLogo.tsx                      | TypeScript JSX     |         25 |          0 |          4 |         29 |
+| /Users/joan/Project/note-taking-app-new/src/index.css                                   | PostCSS            |         15 |          0 |          3 |         18 |
+| /Users/joan/Project/note-taking-app-new/src/main.tsx                                    | TypeScript JSX     |          9 |          0 |          2 |         11 |
+| /Users/joan/Project/note-taking-app-new/src/pages/DesktopView.tsx                       | TypeScript JSX     |         51 |          0 |          6 |         57 |
+| /Users/joan/Project/note-taking-app-new/src/pages/LeftSide.tsx                          | TypeScript JSX     |         21 |          0 |          3 |         24 |
+| /Users/joan/Project/note-taking-app-new/src/pages/MobileView.tsx                        | TypeScript JSX     |         57 |          0 |          5 |         62 |
+| /Users/joan/Project/note-taking-app-new/src/pages/NoteLayout.tsx                        | TypeScript JSX     |         53 |          0 |         10 |         63 |
+| /Users/joan/Project/note-taking-app-new/src/pages/NoteLogo.tsx                          | TypeScript JSX     |         17 |          0 |          4 |         21 |
+| /Users/joan/Project/note-taking-app-new/src/pages/NoteViewer.tsx                        | TypeScript JSX     |         55 |          0 |         13 |         68 |
+| /Users/joan/Project/note-taking-app-new/src/pages/TagManagement.tsx                     | TypeScript JSX     |        211 |          0 |         15 |        226 |
+| /Users/joan/Project/note-taking-app-new/src/styles/quill-custom.css                     | PostCSS            |          0 |          7 |          1 |          8 |
+| /Users/joan/Project/note-taking-app-new/src/types/index.ts                              | TypeScript         |         14 |          0 |          4 |         18 |
+| /Users/joan/Project/note-taking-app-new/src/utils/errors.ts                             | TypeScript         |          6 |          0 |          5 |         11 |
+| /Users/joan/Project/note-taking-app-new/src/utils/formateDate.ts                        | TypeScript         |         39 |          0 |          9 |         48 |
+| /Users/joan/Project/note-taking-app-new/src/vite-env.d.ts                               | TypeScript         |          7 |          1 |          2 |         10 |
+| /Users/joan/Project/note-taking-app-new/tailwind.config.js                              | JavaScript         |         17 |          1 |          1 |         19 |
+| /Users/joan/Project/note-taking-app-new/tsconfig.app.json                               | JSON               |         23 |          4 |          9 |         36 |
+| /Users/joan/Project/note-taking-app-new/tsconfig.json                                   | JSON with Comments |          7 |          0 |          1 |          8 |
+| /Users/joan/Project/note-taking-app-new/tsconfig.node.json                              | JSON               |         20 |          2 |          7 |         29 |
+| /Users/joan/Project/note-taking-app-new/vite.config.ts                                  | TypeScript         |         19 |          4 |          3 |         26 |
+| Total                                                                                   |                    |      9,840 |         83 |        401 |     10,324 |
++-----------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
