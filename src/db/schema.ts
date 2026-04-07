@@ -1,0 +1,33 @@
+import { pgTable, uuid, text, timestamp, primaryKey,pgEnum } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const noteStatusEnum = pgEnum("note_status", ["active", "archived", "trashed"]);
+
+export const notes = pgTable("notes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull().default(''),
+  content: text("content").notNull().default(''),
+  status: noteStatusEnum("status").default("active").notNull(),
+  createdAt: timestamp("create_at").defaultNow().notNull(),
+  lastEdit: timestamp("last_edit").defaultNow().notNull(),
+ 
+});
+
+export const tags = pgTable("tags", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  label: text("label").notNull().unique(), // 标签名通常是唯一的
+  color: text("color").default("#cbd5e1"),
+});
+
+export const noteTags = pgTable("note_tags", {
+  noteId: uuid("note_id")
+    .notNull()
+    .references(() => notes.id, { onDelete: "cascade" }), // 笔记删了，关联也删掉
+  tagId: uuid("tag_id")
+    .notNull()
+    .references(() => tags.id, { onDelete: "cascade" }), // 标签删了，关联也删掉
+}, (table) => [
+  // 复合主键：保证同一个笔记不会重复绑定同一个标签
+  primaryKey({ columns: [table.noteId, table.tagId] }),
+]);
+
