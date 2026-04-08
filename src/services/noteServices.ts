@@ -1,5 +1,6 @@
-import {Note,Tag,FilterType} from '@/types/index';
+import {Note,Tag,FilterType, NoteStatus} from '@/types/index';
 import { v4 as uuidv4 } from 'uuid';
+import {NoteDb} from '@/db/noteDb'
 
 import {
     removeById,
@@ -14,91 +15,131 @@ export const NoteService = {
         return isEmptyString(note.title) && isEmptyString(note.content);
     },
 
-
-    create: (): Note=>({
+//create new note and insert to DB
+    create: async (): Promise<Note>=>{
+       const newNote:Note = { 
         id: uuidv4(),
         title: "",
         content: "",
+        status: 'active' as NoteStatus,
         tags: [],
         createdAt: new Date().toISOString(),
-        lastEdit: new Date().toDateString(),
-        status: 'active'
+        lastEdit: new Date().toISOString(),
+       
+    };
 
-    }),
+        try{
+            await NoteDb.insert(newNote);
+            return newNote;
 
-    update: (id:string, allNotes:Note[], changes: Partial<Note>):Note[] => {
-        
-        const updatedFields = {
-            ...changes,
-            lastEdit: new Date().toISOString(),
-        };
-        
-        return updateById(allNotes,id,updatedFields);
+        }catch(error){
+            console.log("Failed to create new note:",error);
+            throw error;
+        }
     },
 
-
-    archive: (id: string, allNotes: Note[]): Note[] => {
-        return NoteService.update(id,allNotes, {
-            status: 'archived',           
-        })
-    },
-
-    unarchive: (id: string, allNotes: Note[]): Note[] => {
-        return  NoteService.update( id,allNotes, {
-            status: 'active',
-        })
-    },
-
-    delete: (id: string, allNotes: Note[]): Note[] => {
-        return NoteService.update( id, allNotes,{
-            status: 'trashed',
-            lastEdit: new Date().toISOString(), 
-        })
-    },
-
-    deletePermanently: (id: string, allNotes: Note[]): Note[] => {
-        return removeById(allNotes,id);
-    },
-
-    restore: (id: string, allNotes: Note[]): Note[] => {
-        return updateById(allNotes, id, {
-            status: 'active',
-            lastEdit: new Date().toDateString(), 
-        })
-    },
-
-
-    filterNoteByStatus: (notes: Note[], status: string): Note[] => {
-        if(status === 'all') {
-            return notes;
+    update: async (id:string, changes: Partial<Note>):Promise<void> => {
+        if(!id){
+            console.log("Error: Attempted toi update note without ID");
+            return;
         }
 
-        return notes.filter(note => note.status === status)
+        try{
+            await NoteDb.update(id, changes);
+        }catch(error){
+            console.log("Failed to update note to DB:", error)
+            throw error;
+        }
+    },
+
+    /** update status */
+   restore: (id: string,): Promise<void> => {
+        return NoteService.update(id,{status: 'active'});
+    },
+
+    archive: (id: string,): Promise<void> => {
+        return NoteService.update(id,{status: 'archived'});
+    },
+
+    delete: (id: string, ): Promise<void> => {
+        return NoteService.update(id,{status:'trashed'});
+    },
+
+    deletePermanently: (id: string,) => {
+        return NoteDb.permanentlyDelete(id);
+    },
+    
+    /**update name */
+    rename: (id:string, newTitle: string,) => {
+        if(newTitle.length > 50) throw Error("Title too long");
+        return NoteService.update(id, {title: newTitle});
+    },
+
+    /**update tags */
+    updateTags: async (noteId: string, newTagIds: string[]): Promise<void> => {
+            try {
+                // 1. get all Tags
+                const currentNotes = await NoteDb.getAll(); // 实际项目中建议写个 getById
+                const currentNote = currentNotes.find(n => n.id === noteId);
+                const oldTagIds = currentNote?.tags || [];
+
+                // 2. find add / remove 
+                const toAdd = newTagIds.filter(id => !oldTagIds.includes(id));
+                const toRemove = oldTagIds.filter(id => !newTagIds.includes(id));
+
+                // 3. start action
+                const promises = [
+                    ...toAdd.map(tagId => NoteDb.bindTag(noteId, tagId)),
+                    ...toRemove.map(tagId => NoteDb.unbindTag(noteId, tagId))
+                ];
+                
+                    await Promise.all(promises);
+                } catch (error) {
+                    console.error("Failed to sync tags:", error);
+                    throw error;
+            }
     },
 
 
-    getFilteredNote: (
-        notes: Note[],
+
+    filterNoteByStatus: async (status: FilterType): Promise<Note[]> => {
+        try{
+
+            if(status === 'all') {
+            return await NoteDb.getAll();
+        }
+
+            return await NoteDb.getByStatus(status as NoteStatus);
+        }catch(error){
+            console.log("Failed to filter notes by status",error);
+            throw error;
+        }
+
+    },
+
+
+    getFilteredNote: async(
         allTags: Tag[],
         options: {
             status?: FilterType;
             selectedTagIds?: string[];
             searchQuery?: string;
         }
-    ): Note[] => {
+    ): Promise<Note[]> => {
 
         const {
             status="active", 
             selectedTagIds=[],
-            searchQuery=""} = options;
+            searchQuery=""
+            } = options;
 
         const query = searchQuery.toLowerCase().trim();
 
-        let filteredNote  = NoteService.filterNoteByStatus(notes, status);
+        let filteredNote  = await NoteService.filterNoteByStatus(status);
 
         if(selectedTagIds.length > 0){
             filteredNote = filteredNote.filter( 
-                note =>selectedTagIds.every(id => note.tags.includes(id))
+                (note: Note) =>selectedTagIds.every(id => note.tags.includes(id))
             )
         }
 
@@ -108,7 +149,7 @@ export const NoteService = {
             ).map( tag => tag.id)
 
             filteredNote = filteredNote.filter(
-                note => {
+                (note:Note) => {
                    const contentMatch =  note.content.toLowerCase().includes(query);
                    const titleMatch = note.title.toLowerCase().includes(query); 
                    const tagsMatch = note.tags.some(id => getMachedTagIdsFromQuery.includes(id))
@@ -143,17 +184,35 @@ export const NoteService = {
     },
 
 
-    toggleTag: (note:Note,tagId: string) => {
-        const {tags} = note;
+    // toggleTag: (note:Note,tagId: string) => {
+    //     const {tags} = note;
 
-        const hasTag = tags.includes(tagId);
+    //     const hasTag = tags.includes(tagId);
 
-        if(hasTag){
-            return tags.filter(id => id !== tagId)
-        } else {
-            return [...tags,tagId]
+    //     if(hasTag){
+    //         return tags.filter(id => id !== tagId)
+    //     } else {
+    //         return [...tags,tagId]
+    //     }
+    // },
+
+ 
+
+    syncTagToggle: async (note: Note, tagId: string): Promise<void> => {
+        const { id: noteId, tags } = note;
+        const isAdding = !tags.includes(tagId); 
+
+        try {
+            if (isAdding) {
+                await NoteDb.bindTag(noteId, tagId);
+            } else {
+                await NoteDb.unbindTag(noteId, tagId);
+            }
+        } catch (error) {
+            console.error("Failed to sync tag toggle:", error);
+            throw error;
         }
-    },
+    }
 }
 
 

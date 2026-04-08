@@ -1,10 +1,28 @@
 import { db } from './index';
-import { notes } from './schema';
-import { eq } from 'drizzle-orm';
-import { Note } from '@/types';
+import { notes, noteTags } from './schema';
+import { eq, and} from 'drizzle-orm';
+import { Note, NoteStatus } from '@/types';
+
+const mapNoteRows = (noteRows: any[], relation:any[]):Note[] => {
+    return noteRows.map(note => ({
+        ...note,
+        createdAt: note.createdAt.toISOString(),
+        lastEdit:note.lastEdit.toISOString(),
+        tags: relation.filter(rel => rel.noteId === note.id)
+        .map(rel => rel.tagId)
+    }) )
+};
 
 
 export const NoteDb = {
+    getAll: async(): Promise<Note[]> => {
+            const allNotes = await db.select().from(notes);
+            const allRelatedTags = await db.select().from(noteTags);
+
+            return mapNoteRows(allNotes,allRelatedTags);
+    },
+
+
     insert: async (newNote: Note) => {
         return await db.insert(notes).values({
             id: newNote.id,
@@ -17,12 +35,13 @@ export const NoteDb = {
     },
 
     update: async(id: string, data: Partial<Note>)=> {
-        const{createdAt,...validChanges} = data;
-        const updatedData: any = {...validChanges}
+        const{createdAt,id: _id, tags, ...validChanges} = data;
+        const updatedData: Partial<typeof notes.$inferInsert> = {
+            ...validChanges,
+            lastEdit: new Date(),
+        }
 
-        updatedData.lastEdit = new Date();
-
-        return await db
+        await db
                     .update(notes)
                     .set(updatedData)
                     .where(eq(notes.id,id));
@@ -30,5 +49,25 @@ export const NoteDb = {
 
     permanentlyDelete: async(id: string) => {
         return await db.delete(notes).where(eq(notes.id,id));
-    }
+    },
+
+    getByStatus: async (status: NoteStatus): Promise<Note[]> => {
+        const result = await db.select().from(notes).where(eq(notes.status,status));
+        const rels = await db.select().from(noteTags);
+        return mapNoteRows(result,rels);
+    },
+
+    bindTag: async(noteId: string, tagId:string) => {
+        return await db.insert(noteTags).values({noteId:noteId, tagId:tagId});
+    },
+    
+    unbindTag: async (noteId: string, tagId: string) => {
+        return await db.delete(noteTags)
+            .where(
+                and(
+                    eq(noteTags.noteId, noteId), 
+                    eq(noteTags.tagId, tagId)
+                )
+            );
+    },
 };

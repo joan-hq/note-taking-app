@@ -15,19 +15,19 @@ export const notes = pgTable("notes", {
 
 export const tags = pgTable("tags", {
   id: uuid("id").primaryKey().defaultRandom(),
-  label: text("label").notNull().unique(), // 标签名通常是唯一的
+  label: text("label").notNull().unique(), 
   color: text("color").default("#cbd5e1"),
 });
 
-export const noteTags = pgTable("note_tags", {
+export const noteTags = pgTable("noteTags", {
   noteId: uuid("note_id")
     .notNull()
-    .references(() => notes.id, { onDelete: "cascade" }), // 笔记删了，关联也删掉
+    .references(() => notes.id, { onDelete: "cascade" }), 
   tagId: uuid("tag_id")
     .notNull()
-    .references(() => tags.id, { onDelete: "cascade" }), // 标签删了，关联也删掉
+    .references(() => tags.id, { onDelete: "cascade" }), 
 }, (table) => [
-  // 复合主键：保证同一个笔记不会重复绑定同一个标签
+  // combined primarykey
   primaryKey({ columns: [table.noteId, table.tagId] }),
 ]);
 
