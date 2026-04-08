@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
-import {Note,Tag} from '../types';
+import { useEffect, useState, useMemo } from "react";
+import {Note,Tag, FilterType} from '../types';
 import { NoteService } from "@/services/noteServices";
 
 /**
- * 1. need read all note
- * 2. need update note
- *  2.1 update content
- *  2.2 update related tags
- * 3. need delete note
- * 4. self save note
+ * 1. load all note
+ * 2. actions
+ *  2.1 create new notes
+ *  2.2 update title, content, tags, status
+ *  2.3 delete
+ *  2.4 sort by edit, or name
+ *  2.5 filter by searchquery or tag
+ * 
  * 
  */
 
 export const useNotes = () => {
-    const [title, setTitle] = useState("");
+
 };

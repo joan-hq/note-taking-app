@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/aws-lambda": "^8.10.161",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

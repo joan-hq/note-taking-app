@@ -1,7 +1,8 @@
+
 export interface Tag {
   readonly id: string;
   label: string;
-  color?: string
+  color?: string | null
 }
 
 export type NoteStatus = 'active' | 'archived' | 'trashed';

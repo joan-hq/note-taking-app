@@ -6,9 +6,20 @@ import {
 } from '@/utils/array';
 import { isEmptyString } from '@/utils/string';
 import { TAG_VALIDATION_MESSAGES } from '@/constants/messages';
+import { TagDb } from '@/db/tagDb';
 
 
 export const TagService = {
+
+    getAll: async() : Promise<Tag[]>=> {
+        try{
+            return await TagDb.getAll()
+        }catch(error){
+            console.log("Failed to fetch tags:", error)
+            throw error;
+        }
+    },
+
     validation: (
         label: string,
         allTags: Tag[],
@@ -48,43 +59,84 @@ export const TagService = {
     },
     
 
-    exists: (label:string, allTags: Tag[]):boolean => {
+    exists: (label:string, allTags: Tag[],excludeId?: string):boolean => {
         const searchlabel = label.toLowerCase().trim();
-        return allTags.some(tag => tag.label.toLowerCase() === searchlabel);
+        return allTags.some(tag => 
+            tag.id !== excludeId && 
+            tag.label.toLowerCase() === searchlabel);
     },
 
-    create: (label: string, color: string = "#3b82f6"):Tag => ({
-        id: uuidv4(),
-        label: label.trim(),
-        color: color
-    }),
-
-    update: (tagId: string, allTags: Tag[], changes: Partial<Tag>): Tag[] => {
-        return updateById(allTags, tagId, changes);
-    },
-
-
-    delete: (
-        tagId: string,
+    create: async (
+        label: string, 
         allTags: Tag[],
-        allNotes: Note[],
-        updateNote: (newNotes: Note[]) => void
+        color: string = "#3b82f6"
+        ):Promise<Tag> => {
+        
+        const result = TagService.validation(label, allTags);
 
-    ): Tag[] => {
-        const newTags = removeById( allTags, tagId);
-
-        const cleanNotes = allNotes.map(note => {
-            if (!note.tags.includes(tagId)) return note; 
-            
-            return {
-                ...note,
-                tags: note.tags.filter(id => id !== tagId)
-            };
-        })
-
-        updateNote(cleanNotes);
-        return newTags;
+        if(!result.isValid){throw new Error(result.error)}
+        if(TagService.exists(label, allTags)){
+            throw new Error(TAG_VALIDATION_MESSAGES.DUPLICATE)
+        };
+                
+        const newTag = { 
+            id: uuidv4(),
+            label: label.trim(),
+            color: color,
+            }
+            await TagDb.insert(newTag);
+            return newTag;
     },
+
+    update: async (
+        tagId: string, 
+        allTags: Tag[],
+        changes: Partial<Tag>
+        ): Promise<void> => {
+            if(changes.label !== undefined){
+                const result = TagService.validation(changes.label, allTags, tagId);
+                if(!result.isValid){throw new Error(result.error)}
+
+               if (TagService.exists(changes.label, allTags, tagId)) {
+                    throw new Error(TAG_VALIDATION_MESSAGES.DUPLICATE);
+                }
+            }
+            
+            try {
+                await TagDb.update(tagId, changes);
+                } catch (error) {
+                console.error("数据库更新标签失败:", error);
+                throw error;
+                }
+
+    },
+
+
+    // delete: (
+    //     tagId: string,
+    //     allTags: Tag[],
+    //     allNotes: Note[],
+    //     updateNote: (newNotes: Note[]) => void
+
+    // ): Tag[] => {
+    //     const newTags = removeById( allTags, tagId);
+
+    //     const cleanNotes = allNotes.map(note => {
+    //         if (!note.tags.includes(tagId)) return note; 
+            
+    //         return {
+    //             ...note,
+    //             tags: note.tags.filter(id => id !== tagId)
+    //         };
+    //     })
+
+    //     updateNote(cleanNotes);
+    //     return newTags;
+    // },
+
+    delete: async(tagId:string):Promise<void> => {
+        await TagDb.delete(tagId);
+    }
 
 };
 
