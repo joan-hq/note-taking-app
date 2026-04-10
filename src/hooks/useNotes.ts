@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import {Note,Tag, FilterType} from '../types';
+import {Note,Tag, FilterType} from '@/types';
 import { NoteService } from "@/services/noteServices";
 
 /**
@@ -15,5 +15,6 @@ import { NoteService } from "@/services/noteServices";
  */
 
 export const useNotes = () => {
+   const [] = useState();
 
 };
