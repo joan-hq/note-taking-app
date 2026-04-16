@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from "react";
-import {Note,Tag, FilterType} from '@/types';
+import { useEffect, useState, useMemo, useCallback } from "react";
+import {Note} from '@/types';
 import { NoteService } from "@/services/noteServices";
 
 /**
@@ -15,6 +15,117 @@ import { NoteService } from "@/services/noteServices";
  */
 
 export const useNotes = () => {
-   const [] = useState();
+   const [notes, setNotes] = useState<Note[]>([]);
+   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+   const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'idle'>('idle');
+
+   const [searchQuery,setSearchQuery] = useState("");
+   const [filterTagId, setFilterTagId] = useState<string | null>(null);
+   const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
+
+   const fetchNotes = useCallback(async () => {
+      setStatus('loading');
+
+      try {
+         const data = await NoteService.getAll();
+         setNotes(data);
+         setStatus('success')
+      } catch (error) {
+         setStatus('error');
+            const message = error instanceof Error ? error.message : 'Fail to fetch tags';
+            setErrorMessage(message);
+      };
+   }, [])
+
+   useEffect(() => {
+
+      let isMounted = true;
+
+      const loadData = async () => {
+         await fetchNotes();
+         if(!isMounted) return;
+      };
+     loadData();
+
+      return () => {
+         isMounted = false; 
+      }
+
+   }, [fetchNotes]);
+
+
+   const createNote = useCallback(async ()=>{
+      try{
+         const newNote = await NoteService.create();
+         setNotes((prev => [newNote, ...prev]))
+      }catch(error){
+         const message = error instanceof Error ? error.message : "Create failed";
+         setErrorMessage(message);
+      };
+   }, []);
+
+   const updateNote = useCallback(async (id: string, changes: Partial<Note>) : Promise<void> => {
+      const previousNotes = [...notes];
+      setNotes(prev => prev.map(note => note.id === id ? {...note, ...changes} :  note));
+
+      try{
+         await NoteService.update(id,changes);
+      }catch(error){
+         setNotes(previousNotes);
+         const message = error instanceof Error ? error.message : "Update failed";
+         setErrorMessage(message)
+      };
+   }, [notes]);
+
+   const deleteNote = useCallback(async (id: string) => {
+      const previousNotes = [...notes];
+      setNotes(prev => prev.filter(n => n.id !== id));
+      
+      try {
+         await NoteService.delete(id);
+      } catch (error) {
+         setNotes(previousNotes);
+         const message = error instanceof Error ? error.message : "Delete failed";
+         setErrorMessage(message)
+  
+      }
+   }, [notes]);
+
+   const filteredAndSortedNotes = useMemo(()=>{
+      let result = [...notes];
+
+      if(searchQuery){
+         result = result.filter( note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) 
+         || note.content.toLowerCase().includes(searchQuery.toLowerCase()) );
+      }
+
+      if(filterTagId){
+         result = result.filter( note => note.tags.includes(filterTagId));
+      };
+
+      return result.sort((a,b) => {
+         if(sortBy === 'name') return a.title.localeCompare(b.title);
+         const dateA = new Date(a.lastEdit).getTime();
+         const dateB = new Date(b.lastEdit).getTime();
+         return dateB - dateA;
+      })
+     
+   },[notes, searchQuery,filterTagId,sortBy]);
+
+
+
+   return {
+      notes: filteredAndSortedNotes,
+      isLoading: status === 'loading',
+      error: errorMessage,
+      setSearchQuery,
+      setFilterTagId,
+      setSortBy,
+      createNote,
+      updateNote,
+      deleteNote,
+      refresh: fetchNotes,
+   }
 
 };
+

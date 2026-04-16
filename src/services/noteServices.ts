@@ -11,6 +11,12 @@ import { isEmptyString } from '@/utils/string';
 
 export const NoteService = {
 
+    getAll: async() => {
+        const notes = await NoteDb.getAll();
+
+        return notes.map(note => ({...note, title: note.title || 'no title'}));
+    },
+
     checkNoteEmpty: (note: Note):boolean => {
         return isEmptyString(note.title) && isEmptyString(note.content);
     },

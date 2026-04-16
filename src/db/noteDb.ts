@@ -1,6 +1,6 @@
 import { db } from './index';
 import { notes, noteTags } from './schema';
-import { eq, and} from 'drizzle-orm';
+import { eq, and, desc} from 'drizzle-orm';
 import { Note, NoteStatus } from '@/types';
 
 const mapNoteRows = (noteRows: any[], relation:any[]):Note[] => {
@@ -16,7 +16,7 @@ const mapNoteRows = (noteRows: any[], relation:any[]):Note[] => {
 
 export const NoteDb = {
     getAll: async(): Promise<Note[]> => {
-            const allNotes = await db.select().from(notes);
+            const allNotes = await db.select().from(notes).orderBy(desc(notes.lastEdit));
             const allRelatedTags = await db.select().from(noteTags);
 
             return mapNoteRows(allNotes,allRelatedTags);
