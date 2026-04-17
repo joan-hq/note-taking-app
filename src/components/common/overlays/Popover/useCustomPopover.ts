@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { PopoverType } from "../types/index";
+import type { PopoverType } from "../../../../types/index";
 
 export interface CustomPopoverState {
   message: string;

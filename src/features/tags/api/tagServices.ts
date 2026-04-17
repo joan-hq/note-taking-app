@@ -1,9 +1,6 @@
-import {Tag,Note} from '@/types/index';
+
+import {Tag} from '@/features/tags/types/tagType';
 import { v4 as uuidv4 } from 'uuid';
-import {
-    removeById,
-    updateById
-} from '@/utils/array';
 import { isEmptyString } from '@/utils/string';
 import { TAG_VALIDATION_MESSAGES } from '@/constants/messages';
 import { TagDb } from '@/db/tagDb';

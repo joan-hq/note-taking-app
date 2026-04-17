@@ -8,9 +8,9 @@ const theme = createTheme({
       default: 'var(--color-cream)'
     },
 
-    text: {
-      primary: 'var(--color-dark)',
-    },
+    // text: {
+    //   primary: 'var(--color-dark)',
+    // },
   }
 })
 

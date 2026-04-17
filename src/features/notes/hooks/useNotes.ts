@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import {Note} from '@/types';
-import { NoteService } from "@/services/noteServices";
+import {Note} from '@/features/notes/types/noteType';
+import { NoteService } from "@/features/notes/api/noteServices";
 
 /**
  * 1. load all note

@@ -1,5 +1,5 @@
 import { createContext,ReactNode,useContext } from "react";
-import { useTags } from "@/hooks/useTags";
+import { useTags } from "@/features/tags/hooks/useTags";
 
 type TagContextType = ReturnType<typeof useTags>;
 

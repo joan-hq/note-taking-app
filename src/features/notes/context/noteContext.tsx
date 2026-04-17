@@ -1,5 +1,5 @@
 import { createContext,ReactNode,useContext } from "react";
-import { useNotes } from "@/hooks/useNotes";
+import { useNotes } from "@/features/notes/hooks/useNotes";
 
 type NoteContextType = ReturnType<typeof useNotes>;
 //create NoteContext

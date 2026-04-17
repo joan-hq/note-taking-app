@@ -1,0 +1,1 @@
+export type PopoverType = "error" | "success" | "warning" | "info";

@@ -1,11 +1,8 @@
-import {Note,Tag,FilterType, NoteStatus} from '@/types/index';
+import {Note,FilterType, NoteStatus} from '@/features/notes/types/noteType';
+import {Tag} from '@/features/tags/types/tagType';
 import { v4 as uuidv4 } from 'uuid';
 import {NoteDb} from '@/db/noteDb'
 
-import {
-    removeById,
-    updateById
-} from '@/utils/array';
 
 import { isEmptyString } from '@/utils/string';
 

@@ -3,13 +3,25 @@
 import { Box, Typography, Container } from '@mui/material';
 // import { useNoteContext } from '@/contexts/NoteProvider';
 // import LeftSide from "@/components/LeftSide";
+import {JButton} from '@/components/common/buttons/button/Button'
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, IconButton, ButtonProps } from '@mui/material';
 
 
 export default function HomePage() {
  // const { notes } = useNoteContext();
 
+ const handleClick = () => {
+  console.log("handleclick");
+  alert('clicked this button');
+ };
+
+ const purple = "#6200ea";
+ const white = 'green';
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+              
       {/* 这里以后放你的 Sidebar */}
       <Box sx={{ width: 240, borderRight: '1px solid #eee', p: 2 }}>
         <Typography variant="h6">我的笔记
@@ -25,6 +37,10 @@ export default function HomePage() {
           {/* 目前有 {notes.allNotes.length} 条笔记从 LocalStorage 加载。 */}
           目前有
         </Typography>
+        {/* <Button onClick={() => alert("原生按钮测试成功")}>hhh</Button> */}
+        <JButton title="new btn" shape='pill' variant='contained' onClick={handleClick}></JButton>
+        <JButton title="yes" shape='circle' variant='outlined' color='success'> <DeleteIcon /></JButton>
+        <JButton shape='circle' sx={{ backgroundColor: `${purple}`, color: `${white}` }}><DeleteIcon /></JButton>
       </Container>
     </Box>
   );

@@ -1,6 +1,6 @@
 import { useMemo, useCallback,useEffect, useState } from "react";
-import {Note,Tag, FilterType} from '@/types';
-import { TagService } from "@/services/tagServices";
+import {Tag} from '@/features/tags/types/tagType';
+import { TagService } from "@/features/tags/api/tagServices";
 
 /**
  * 1. load all tags
