@@ -3,21 +3,38 @@
 import { Box, Typography, Container } from '@mui/material';
 // import { useNoteContext } from '@/contexts/NoteProvider';
 // import LeftSide from "@/components/LeftSide";
-import {JButton} from '@/components/common/buttons/button/Button'
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, IconButton, ButtonProps } from '@mui/material';
-
+import { AddNewTagDialog } from '@/features/tags/views/AddNewTagDialog'; 
+import { DeleteTagDialog } from '@/features/tags/views/DeleteTagDialog'; 
+import { useState } from 'react';
+import { DeleteableTagUnit } from '@/features/tags/views/DeleteableTagUnit';
+import { UnlinkableTagUnit } from '@/features/tags/views/UnlinkableTagUnit';
+import { TagManagement } from '@/features/tags/views/TagManagement';
+import {tags} from '@/data/note'
+import {NoteTagDisplay} from '@/features/notes/views/NoteTagDisplay';
 
 export default function HomePage() {
  // const { notes } = useNoteContext();
 
- const handleClick = () => {
+ const handleConfirm = (tagName: string) => {
+  alert(tagName);
+ };
+
+
+ const handleUnlinkTag = (tagName: string) => {
+  alert("handleUnselected" + tagName);
+ };
+  const handleConfirm1 = () => {
   console.log("handleclick");
   alert('clicked this button');
  };
-
+ 
+ const handleListItemBtnClick = () => {
+  alert('clicked list btn');
+ };
  const purple = "#6200ea";
  const white = 'green';
+ const yellow = 'yellow'
+ const [tagName, setTagName] = useState("tag");
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -38,9 +55,11 @@ export default function HomePage() {
           目前有
         </Typography>
         {/* <Button onClick={() => alert("原生按钮测试成功")}>hhh</Button> */}
-        <JButton title="new btn" shape='pill' variant='contained' onClick={handleClick}></JButton>
-        <JButton title="yes" shape='circle' variant='outlined' color='success'> <DeleteIcon /></JButton>
-        <JButton shape='circle' sx={{ backgroundColor: `${purple}`, color: `${white}` }}><DeleteIcon /></JButton>
+        <AddNewTagDialog handleConfirm={handleConfirm}/>
+        <DeleteableTagUnit handleConfirm={handleConfirm1} tagName='gagag'></DeleteableTagUnit>
+        <UnlinkableTagUnit tagName='5566' onUnlink={handleUnlinkTag}/>
+        <TagManagement tags={tags}/>
+        <NoteTagDisplay tags={tags} handleConfirm={handleConfirm}/>
       </Container>
     </Box>
   );
