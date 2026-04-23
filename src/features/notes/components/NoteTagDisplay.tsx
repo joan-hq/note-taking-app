@@ -1,30 +1,31 @@
 import { UnlinkableTagUnit } from "@/features/tags/views/UnlinkableTagUnit";
-import { AddNewTagDialog } from "@/features/tags/views/AddNewTagDialog";
+import { AddNewTagDialog } from "@/features/tags/components/AddNewTagDialog";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 
 import {Tag} from '@/features/tags/types/tagType'
 
 interface NoteTagDisplayProps {
-    tags: Tag[];
-    handleConfirm: (tagName: string)=>void;
+    allTags: Tag[],
+    linkedTags: Tag[],
+    handleConfirm: (value: string)=>void,
+    handleLinkedTag: (value:Tag[]) =>void,
 };
 
-export const NoteTagDisplay = ({tags,handleConfirm}:NoteTagDisplayProps ) => {
+export const NoteTagDisplay = ({allTags,linkedTags,handleConfirm,handleLinkedTag}:NoteTagDisplayProps ) => {
     return(<>
-   
-       {/* {tags?.map((tag)=> (<UnlinkableTagUnit key={tag.id} tagName={tag.label} onUnlink={() => {
-            console.log('connect to data base')
-        }}/>))} */}
-
+        <LocalOfferOutlinedIcon/>
         <Stack>
             <Autocomplete 
             multiple
             fullWidth
-            options = {tags}
-            getOptionLabel = {(option) => option.label}
+            options = {allTags}
+            getOptionLabel = {(option) => typeof option === 'string' ? option : option.label || ""}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            value={linkedTags}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -37,10 +38,12 @@ export const NoteTagDisplay = ({tags,handleConfirm}:NoteTagDisplayProps ) => {
                     }}
                 />
             )}
+            onChange={(event,changedValue)=>{handleLinkedTag(changedValue)}}
             />
         </Stack>
-
         <AddNewTagDialog handleConfirm={handleConfirm}/>
+
+
 
     </>);
 };

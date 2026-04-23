@@ -1,4 +1,4 @@
-import { DeleteableTagUnit } from "./DeleteableTagUnit"; 
+import { DeleteableTagUnit } from "../components/DeleteableTagUnit"; 
 import {Tag} from '@/features/tags/types/tagType'
 import { List } from "@mui/material";
 
@@ -17,6 +17,7 @@ export const TagManagement = ({tags}:TagManagementProps) => {
                 tagName={tag.label}
                 handleConfirm={() => {
                     console.log('deleting',tag.id)
+                    //Parent need handle this function
                 }}
                 />
                 ))}

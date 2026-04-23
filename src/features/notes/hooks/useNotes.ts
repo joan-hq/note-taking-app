@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import {Note} from '@/features/notes/types/noteType';
 import { NoteService } from "@/features/notes/api/noteServices";
+import { filter } from "lodash";
 
 /**
  * 1. load all note
@@ -21,6 +22,7 @@ export const useNotes = () => {
 
    const [searchQuery,setSearchQuery] = useState("");
    const [filterTagId, setFilterTagId] = useState<string | null>(null);
+   const [filterStatus, setFilterStatus] = useState<'all' | 'archived' | 'trashed'>('all')
    const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
 
    const fetchNotes = useCallback(async () => {
@@ -92,7 +94,11 @@ export const useNotes = () => {
    }, [notes]);
 
    const filteredAndSortedNotes = useMemo(()=>{
-      let result = [...notes];
+   
+      let result = notes.filter(note => {
+         if(filterStatus === 'all') return note.status === 'active';
+         return note.status === filterStatus
+      })
 
       if(searchQuery){
          result = result.filter( note => note.title.toLowerCase().includes(searchQuery.toLowerCase()) 
@@ -105,13 +111,20 @@ export const useNotes = () => {
 
       return result.sort((a,b) => {
          if(sortBy === 'name') return a.title.localeCompare(b.title);
-         const dateA = new Date(a.lastEdit).getTime();
-         const dateB = new Date(b.lastEdit).getTime();
+         const dateA = a.lastEdit ? new Date(a.lastEdit).getTime() : 0;
+         const dateB = b.lastEdit ? new Date(b.lastEdit).getTime() : 0;
          return dateB - dateA;
       })
      
-   },[notes, searchQuery,filterTagId,sortBy]);
-
+   },[notes, searchQuery,filterTagId,sortBy,filterStatus]);
+   
+   const countsNote = useMemo(() => {
+      return {
+         all: notes.filter(note=> note.status === 'active').length,
+         archived: notes.filter(note=> note.status === 'archived').length,
+         trashed: notes.filter(note=> note.status === 'trashed').length,
+      }
+   }, [notes])
 
 
    return {
@@ -120,6 +133,9 @@ export const useNotes = () => {
       error: errorMessage,
       setSearchQuery,
       setFilterTagId,
+      filterStatus,
+      setFilterStatus,
+      countsNote,
       setSortBy,
       createNote,
       updateNote,

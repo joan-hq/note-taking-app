@@ -23,17 +23,22 @@ export const AddNewTagDialog = ({handleConfirm}: AddNewTagDialogProps) => {
     return(<>
         <IconButton onClick={showDialog}><AddOutlinedIcon/></IconButton>
         <JDialog 
-        open={open} 
-        title='Create a new tag'
-        confirmText='save'
-        confirmBtnColor='primary'
-        onCancel={() => {
-            setInputValue('');
-            hideDialog();
-        }}
-        onConfirm={onInternalConfirm}>
+            open={open} 
+            title='Create a new tag'
+            confirmText='save'
+            confirmBtnColor='primary'
+            onCancel={() => {
+                setInputValue('');
+                hideDialog();
+            }}
+            onConfirm={onInternalConfirm}>
             <DialogContent>more than 3 character, less than 20 character</DialogContent>
-            <TextField value={inputValue} label="add new tag" onChange={(e) => setInputValue(e.target.value)}/>
+            <TextField 
+                fullWidth
+                value={inputValue} 
+                label="add new tag" 
+                onChange={(e) => setInputValue(e.target.value)}
+            />
         </JDialog>
     </>
     );

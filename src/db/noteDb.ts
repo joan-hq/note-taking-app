@@ -1,7 +1,7 @@
 import { db } from './index';
 import { notes, noteTags } from './schema';
 import { eq, and, desc} from 'drizzle-orm';
-import { Note, NoteStatus } from '@/types';
+import { Note, NoteStatus } from '@/features/notes/types/noteType';
 
 const mapNoteRows = (noteRows: any[], relation:any[]):Note[] => {
     return noteRows.map(note => ({
