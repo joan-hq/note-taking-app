@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { DeleteableTagUnit } from "../components/DeleteableTagUnit"; 
-import {Tag} from '@/features/tags/types/tagType'
 import { List } from "@mui/material";
+import { Tag } from "../types/tagType";
+import { useNoteContext } from "@/features/notes/context/noteContext";
+import { JDialog } from "@/components/common/overlays/Dialog/JDialog";
+import { useJDialog } from "@/components/common/overlays/Dialog/useJDialog";
 
-
-interface TagManagementProps {
-    tags: Tag[];
-};
-
-export const TagManagement = ({tags}:TagManagementProps) => {
+export const TagManagement = () => {
+    const {tags,deleteTag} = useNoteContext();
+    console.log('tags',tags);null 
     
     return(<>
         
@@ -16,12 +17,12 @@ export const TagManagement = ({tags}:TagManagementProps) => {
                 <DeleteableTagUnit key={tag.id}
                 tagName={tag.label}
                 handleConfirm={() => {
-                    console.log('deleting',tag.id)
-                    //Parent need handle this function
+                    deleteTag(tag.id)
                 }}
-                />
+                />           
                 ))}
             </List>
+          
         </>);
 
 };

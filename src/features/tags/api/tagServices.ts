@@ -1,4 +1,3 @@
-
 import {Tag} from '@/features/tags/types/tagType';
 import { v4 as uuidv4 } from 'uuid';
 import { isEmptyString } from '@/utils/string';
@@ -10,7 +9,9 @@ export const TagService = {
 
     getAll: async() : Promise<Tag[]>=> {
         try{
+            console.log(TagDb.getAll());
             return await TagDb.getAll()
+            
         }catch(error){
             console.log("Failed to fetch tags:", error)
             throw error;

@@ -43,7 +43,5 @@ export const NoteTagDisplay = ({allTags,linkedTags,handleConfirm,handleLinkedTag
         </Stack>
         <AddNewTagDialog handleConfirm={handleConfirm}/>
 
-
-
     </>);
 };

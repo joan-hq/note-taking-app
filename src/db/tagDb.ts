@@ -1,7 +1,7 @@
 import { db } from './index';
 import { tags } from './schema';
 import { eq } from 'drizzle-orm';
-import { Tag } from '@/types';
+import { Tag } from '@/features/tags/types/tagType';
 
 
 export const TagDb = {

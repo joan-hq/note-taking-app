@@ -1,4 +1,4 @@
-import {Box,Card,CardContent,CardHeader,CardActionArea,Typography,Chip} from '@mui/material';
+import {Box,Card,CardHeader,CardActionArea,Typography,Chip} from '@mui/material';
 import { Tag } from '@/features/tags/types/tagType';
 import { Archive as ArchiveIcon, AccessTime as AccessTimeIcon } from "@mui/icons-material";
 
@@ -50,8 +50,7 @@ export const NoteCard = ({title,tags,tagDisplayLimit,lastEdit,isArchived,handleN
             <CardActionArea onClick={handleNoteCardClick}>
                 <Header title={title} isArchived={isArchived}/>
                 <TagDisplay tags={tags} tagDisplayLimit={tagDisplayLimit}/>
-                <Footer lastEdit={lastEdit}/>
-                
+                <Footer lastEdit={lastEdit}/>                
             </CardActionArea>
         </Card>
     </>);

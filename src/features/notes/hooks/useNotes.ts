@@ -1,7 +1,10 @@
+'use client'
+
 import { useEffect, useState, useMemo, useCallback } from "react";
 import {Note} from '@/features/notes/types/noteType';
-import { NoteService } from "@/features/notes/api/noteServices";
-import { filter } from "lodash";
+//import { NoteService } from "@/features/notes/api/noteServices";
+import { getAllNotesAction,createNoteAction, updateNoteAction, deleteNoteAction } from '../actions/noteActions';
+
 
 /**
  * 1. load all note
@@ -24,12 +27,14 @@ export const useNotes = () => {
    const [filterTagId, setFilterTagId] = useState<string | null>(null);
    const [filterStatus, setFilterStatus] = useState<'all' | 'archived' | 'trashed'>('all')
    const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
+   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
    const fetchNotes = useCallback(async () => {
       setStatus('loading');
 
       try {
-         const data = await NoteService.getAll();
+         const data = await getAllNotesAction();
+         console.log('note data', data);
          setNotes(data);
          setStatus('success')
       } catch (error) {
@@ -58,7 +63,7 @@ export const useNotes = () => {
 
    const createNote = useCallback(async ()=>{
       try{
-         const newNote = await NoteService.create();
+         const newNote = await createNoteAction();
          setNotes((prev => [newNote, ...prev]))
       }catch(error){
          const message = error instanceof Error ? error.message : "Create failed";
@@ -71,7 +76,7 @@ export const useNotes = () => {
       setNotes(prev => prev.map(note => note.id === id ? {...note, ...changes} :  note));
 
       try{
-         await NoteService.update(id,changes);
+         await updateNoteAction(id,changes);
       }catch(error){
          setNotes(previousNotes);
          const message = error instanceof Error ? error.message : "Update failed";
@@ -84,7 +89,7 @@ export const useNotes = () => {
       setNotes(prev => prev.filter(n => n.id !== id));
       
       try {
-         await NoteService.delete(id);
+         await deleteNoteAction(id);
       } catch (error) {
          setNotes(previousNotes);
          const message = error instanceof Error ? error.message : "Delete failed";
@@ -137,9 +142,12 @@ export const useNotes = () => {
       setFilterStatus,
       countsNote,
       setSortBy,
+      selectedNoteId,
+      setSelectedNoteId,
       createNote,
       updateNote,
       deleteNote,
+      setNotes,
       refresh: fetchNotes,
    }
 

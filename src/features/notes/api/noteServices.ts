@@ -1,3 +1,4 @@
+
 import {Note,FilterType, NoteStatus} from '@/features/notes/types/noteType';
 import {Tag} from '@/features/tags/types/tagType';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,9 +10,16 @@ import { isEmptyString } from '@/utils/string';
 export const NoteService = {
 
     getAll: async() => {
-        const notes = await NoteDb.getAll();
 
-        return notes.map(note => ({...note, title: note.title || 'no title'}));
+        try{
+            console.log("fetch NOte",NoteDb.getAll());
+            const notes = await NoteDb.getAll();
+            return notes.map(note => ({...note, title: note.title || 'no title'}));
+        }catch(error){
+            console.log("Failed to fetch notes:", error)
+            throw error;
+        }
+     
     },
 
     checkNoteEmpty: (note: Note):boolean => {
@@ -186,20 +194,6 @@ export const NoteService = {
         };
     },
 
-
-    // toggleTag: (note:Note,tagId: string) => {
-    //     const {tags} = note;
-
-    //     const hasTag = tags.includes(tagId);
-
-    //     if(hasTag){
-    //         return tags.filter(id => id !== tagId)
-    //     } else {
-    //         return [...tags,tagId]
-    //     }
-    // },
-
- 
 
     syncTagToggle: async (note: Note, tagId: string): Promise<void> => {
         const { id: noteId, tags } = note;

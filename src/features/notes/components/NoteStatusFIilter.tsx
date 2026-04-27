@@ -5,12 +5,6 @@ import FolderDeleteOutlinedIcon from '@mui/icons-material/FolderDeleteOutlined';
 import { Typography } from "@mui/material";
 import { useNoteContext } from "../context/noteContext";
 
-// interface NoteStatusFilterProps {
-//     currentFilter: string;
-//     counts: number;
-//     handleFilterChange: () => void;
-// };
-
 export const NoteStatusFilter = () => {
     
     const {filterStatus, setFilterStatus,countsNote} = useNoteContext();

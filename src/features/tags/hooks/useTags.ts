@@ -1,6 +1,7 @@
+'use client'
 import { useMemo, useCallback,useEffect, useState } from "react";
 import {Tag} from '@/features/tags/types/tagType';
-import { TagService } from "@/features/tags/api/tagServices";
+import { getAllTagsAction,createTagAction, updateTagAction, deleteTagAction} from "../actions/tagActions";
 
 /**
  * 1. load all tags
@@ -25,10 +26,13 @@ export const useTags = () => {
         setStatus('loading');
 
         try{
-             const data = await TagService.getAll();
+             console.log('fetchTags called');  
+             const data = await getAllTagsAction();
+              console.log('fetchTags data', data);
                 setTags(data);
                 setStatus('success');
         }catch(error){
+            console.log('fetchTags error:', error); 
             setStatus('error');
             const message = error instanceof Error ? error.message : 'Fail to fetch tags';
             setErrorMessage(message);
@@ -37,6 +41,7 @@ export const useTags = () => {
     }, []);
 
     useEffect(()=>{
+    
         let isMounted = true; 
         const loadData = async () => {
             if (!isMounted) return;           
@@ -52,7 +57,7 @@ export const useTags = () => {
 
     const updateTag = useCallback(async (id:string, changes: Partial<Tag>) => {
         try {
-            await TagService.update(id, tags, changes);
+            await updateTagAction(id, tags, changes);
             setTags(prev => prev.map(tag => tag.id === id ? {...tag, ...changes} : tag));
         } catch(error) {
             fetchTags();
@@ -62,7 +67,7 @@ export const useTags = () => {
     const addTag = useCallback(async (label: string,color?:string) => {
         setErrorMessage(null);
         try{
-            const newTag = await TagService.create(label,tags,color);
+            const newTag = await createTagAction(label,tags,color);
             setTags(prev => [...prev, newTag]);
             return newTag
         }catch(error){
@@ -77,7 +82,7 @@ export const useTags = () => {
             setTags(prevTags => prevTags.filter(t => t.id !== id));
         try{
         
-            await TagService.delete(id);
+            await deleteTagAction(id);
         }catch(error){
             setTags(preTags);
             setErrorMessage("Delete failed, rolling back...");
@@ -93,6 +98,7 @@ export const useTags = () => {
             clearError: () => setErrorMessage(null),
             refresh: fetchTags,
             addTag,
+            setTags,
             updateTag,
             deleteTag,
         }

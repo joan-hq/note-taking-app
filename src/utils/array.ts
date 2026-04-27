@@ -28,8 +28,13 @@ export const findManyObjectsByIds = <Item extends {id: string}>(
     ids: string[],
     list: Item[],
 ):Item[] => {
-    const findObjects = ids.map((eachId) => list.find((item) => item.id === eachId)  )
-    return findObjects.filter((object) : object is Item  => object !== undefined)
+
+    const itemMap = new Map(list.map(item => [item.id,item]));
+
+    return ids
+        .map(id => itemMap.get(id))
+        .filter((item): item is Item => item !== undefined)
+
 }
 
 

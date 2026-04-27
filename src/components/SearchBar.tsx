@@ -14,7 +14,7 @@ interface SearchBarProps {
 
 export const SearchBar = ({placeholder,handleSearchBar,handleClearSearch}:SearchBarProps)=> {
     const[inputValue,setInputValue] = useState('');
-
+ 
     const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
         setInputValue(value);

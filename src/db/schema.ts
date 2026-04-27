@@ -19,7 +19,7 @@ export const tags = pgTable("tags", {
   color: text("color").default("#cbd5e1"),
 });
 
-export const noteTags = pgTable("noteTags", {
+export const noteTags = pgTable("note_tags", {
   noteId: uuid("note_id")
     .notNull()
     .references(() => notes.id, { onDelete: "cascade" }), 

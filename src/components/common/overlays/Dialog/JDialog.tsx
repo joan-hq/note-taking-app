@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 interface JDialogProps {
     open: boolean,
     title:string,
-    children: ReactNode,
+    children?: ReactNode,
     confirmText?: string,
     confirmBtnColor?: 'primary',
     onCancel: ()=>void,
