@@ -4,6 +4,7 @@ import { Box, Typography, Container } from '@mui/material';
 import { SideBar } from '@/features/notes/views/SideBar';
 import { MiddlerBar } from '@/features/notes/views/MiddleBar';
 import { NoteDetail } from '@/features/notes/components/NoteDetail';
+import {NoteDisplay} from '@/features/notes/views/NoteDisplay';
 
 
 export default function HomePage() {
@@ -11,9 +12,7 @@ export default function HomePage() {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
               
-      {/*  Sidebar */}
        <Container sx={{ flex:1, py: 2 }}>
-
           <SideBar/>
     </Container>
 
@@ -21,9 +20,8 @@ export default function HomePage() {
         <MiddlerBar/>
      </Container>
 
-      {/* main content */}
       <Container sx={{ flex:5,py: 8 }} >
-        <NoteDetail/>   
+        <NoteDisplay/>   
       </Container>
     </Box>
   );

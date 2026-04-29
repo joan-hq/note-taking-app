@@ -7,7 +7,7 @@ import { useNoteContext } from "../context/noteContext";
 
 export const NoteStatusFilter = () => {
     
-    const {filterStatus, setFilterStatus,countsNote} = useNoteContext();
+    const {filterStatus, setFilterStatus,countsNote,setSelectedNoteId} = useNoteContext();
 
     const filterOptions = [
         {type: 'all', title: 'All Notes', icon:<FolderCopyOutlinedIcon/> },
@@ -22,7 +22,7 @@ export const NoteStatusFilter = () => {
             title={opt.title}
             icon={opt.icon}
             selected={filterStatus === opt.type}
-            handleFilter={()=>setFilterStatus(opt.type)}
+            handleFilter={()=>{setFilterStatus(opt.type); setSelectedNoteId(null)}}
             action={<Typography>{countsNote[opt.type] || 0}</Typography>} />
             
         ))} 

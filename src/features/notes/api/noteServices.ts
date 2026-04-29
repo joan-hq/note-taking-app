@@ -50,6 +50,7 @@ export const NoteService = {
     },
 
     update: async (id:string, changes: Partial<Note>):Promise<void> => {
+        console.log('updateNote called', id, changes);
         if(!id){
             console.log("Error: Attempted toi update note without ID");
             return;

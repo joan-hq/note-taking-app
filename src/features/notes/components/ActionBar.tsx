@@ -6,21 +6,23 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { Box } from "@mui/material";
 import { useNoteContext } from '../context/noteContext';
 import {Note} from '@/features/notes/types/noteType'
-interface ActionBarProps {
-    note: Note;
-};
 
-export const ActionBar = ({note}: ActionBarProps) => {
-    const {updateNote, deleteNote} = useNoteContext();
-    const isArchived = note.status === 'archived';
+
+export const ActionBar = () => {
+    const {updateNote, deleteNote,selectedNote,setSelectedNoteId} = useNoteContext();
+    if(!selectedNote)return null;
+    const isArchived = selectedNote.status === 'archived';
     return(<>
     {
         isArchived ? 
         <Box>
-            <ActionButton handleFabClick={()=>updateNote(note.id, {status: 'active'})}>
+            <ActionButton handleFabClick={()=>{
+                        updateNote(selectedNote.id, {status: 'active'});
+                        setSelectedNoteId(null)
+                                            }}>
                 <UnarchiveOutlinedIcon />
             </ActionButton>
-            <ActionButton handleFabClick={()=>deleteNote(note.id)}>
+            <ActionButton handleFabClick={()=>{deleteNote(selectedNote.id);setSelectedNoteId(null)}}>
                 <DeleteForeverOutlinedIcon/>
             </ActionButton>
         </Box> 
@@ -28,10 +30,19 @@ export const ActionBar = ({note}: ActionBarProps) => {
         : 
         
         <Box>
-            <ActionButton handleFabClick={()=>updateNote(note.id, {status: 'archived'})}>
+            <ActionButton handleFabClick={()=>{
+                updateNote(selectedNote.id, {status: 'archived'});
+                setSelectedNoteId(null);
+                }}>
                 <ArchiveOutlinedIcon />
             </ActionButton>
-            <ActionButton handleFabClick={()=>updateNote(note.id, {status:'trashed'})}>
+            <ActionButton handleFabClick={()=>{
+                 console.log('trash clicked', selectedNote.id); 
+                updateNote(selectedNote.id, {status:'trashed'});
+                 setSelectedNoteId(null);
+                 
+                }                
+                }>
                 <FolderDeleteOutlinedIcon />
             </ActionButton>
         </Box>

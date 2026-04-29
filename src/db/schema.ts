@@ -31,3 +31,10 @@ export const noteTags = pgTable("note_tags", {
   primaryKey({ columns: [table.noteId, table.tagId] }),
 ]);
 
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name"),
+  email: text("email").notNull().unique(),
+  image: text("image"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

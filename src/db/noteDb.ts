@@ -41,11 +41,20 @@ export const NoteDb = {
             ...validChanges,
             lastEdit: new Date(),
         }
+        console.log('DB update called', id, data);
 
-        await db
+        try{
+             await db
                     .update(notes)
                     .set(updatedData)
                     .where(eq(notes.id,id));
+            console.log('DB update success');
+        }catch(error){
+            console.log('DB update error', error);
+            throw error;
+        }
+
+       
     },
 
     permanentlyDelete: async(id: string) => {

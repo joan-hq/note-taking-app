@@ -29,6 +29,8 @@ export const useNotes = () => {
    const [sortBy, setSortBy] = useState<'date' | 'name'>('date');
    const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
+   const selectedNote = notes.find(note => note.id === selectedNoteId) ?? null;
+
    const fetchNotes = useCallback(async () => {
       setStatus('loading');
 
@@ -72,10 +74,12 @@ export const useNotes = () => {
    }, []);
 
    const updateNote = useCallback(async (id: string, changes: Partial<Note>) : Promise<void> => {
+       console.log('updateNote called', id, changes);
       const previousNotes = [...notes];
       setNotes(prev => prev.map(note => note.id === id ? {...note, ...changes} :  note));
 
       try{
+         console.log('before updateNoteAction');
          await updateNoteAction(id,changes);
       }catch(error){
          setNotes(previousNotes);
@@ -144,6 +148,7 @@ export const useNotes = () => {
       setSortBy,
       selectedNoteId,
       setSelectedNoteId,
+      selectedNote,
       createNote,
       updateNote,
       deleteNote,

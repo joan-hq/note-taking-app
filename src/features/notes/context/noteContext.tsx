@@ -28,7 +28,6 @@ export const NoteProvider = ({children}: {children: ReactNode}) => {
     const {notes,setNotes} = noteMethods;
 
     const {tags,setTags,addTag} = useTagContext();
-    console.log('note context',notes);
 
     const deleteTagAndCleanupNotes = useCallback(async (tagId:string)=>{
         const preTags = [...tags];

@@ -14,7 +14,13 @@ export const createNoteAction = async (): Promise<Note> => {
 }
 
 export const updateNoteAction = async (id: string, changes: Partial<Note>) => {
-    return await NoteService.update(id, changes);
+    console.log('updateNoteAction called', id, changes);
+    try {
+        return await NoteService.update(id, changes);
+    } catch(error) {
+        console.error('updateNoteAction error:', error); 
+        throw error;
+    }
 }
 
 export const deleteNoteAction = async (id: string) => {
