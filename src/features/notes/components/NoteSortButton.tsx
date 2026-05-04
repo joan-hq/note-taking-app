@@ -5,41 +5,25 @@ import { Box } from '@mui/material';
 import SortOutlinedIcon from '@mui/icons-material/SortOutlined';
 import { useNoteContext } from '../context/noteContext';
 import { useState } from 'react';
+import { DropDown } from '@/components/DropDown';
 
 
 export const NoteSortButton = () => {
 
 const {setSortBy} = useNoteContext();
 
-const [anchorEl, setAnchorEl] =useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenuOnOff = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleClose = () => {
-    setAnchorEl(null);
-  }
-
-  const handleSort = (type: 'name' | 'date') => {
-    setSortBy(type);
-    handleClose();
-  };
-
     return(<>
-        <Box>
-            <IconButton onClick={handleMenuOnOff}>
-                <SortOutlinedIcon/>
+        <DropDown trigger={(onClick) => (
+            <IconButton onClick={onClick}>
+                <SortOutlinedIcon />
             </IconButton>
-            <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
-                <MenuItem onClick={() => handleSort('name')}>
-                    Sort By Name
-                </MenuItem>
-                <MenuItem onClick={() => handleSort('date')}>
-                    Sort By Edit Time
-                </MenuItem>
-            </Menu>
-        </Box>
+        )}
+        items = {[
+            { label: 'Sort by name', onClick: () => setSortBy('name') },
+            { label: 'Sort by edit time', onClick: () => setSortBy('date') },
+        ]}
+        
+        />
     </>);
 };
 

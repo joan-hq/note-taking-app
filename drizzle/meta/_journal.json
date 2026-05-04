@@ -15,6 +15,13 @@
       "when": 1777451644817,
       "tag": "0001_free_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777870030647,
+      "tag": "0002_parallel_sandman",
+      "breakpoints": true
     }
   ]
 }

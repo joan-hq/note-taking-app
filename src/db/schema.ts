@@ -5,6 +5,7 @@ export const noteStatusEnum = pgEnum("note_status", ["active", "archived", "tras
 
 export const notes = pgTable("notes", {
   id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: text("title").notNull().default(''),
   content: text("content").notNull().default(''),
   status: noteStatusEnum("status").default("active").notNull(),
