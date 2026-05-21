@@ -1,6 +1,6 @@
 'use client'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+//import { CssBaseline } from '@mui/material';
 
 const theme = createTheme({
   palette: {
@@ -8,15 +8,12 @@ const theme = createTheme({
       default: 'var(--color-cream)'
     },
 
-    // text: {
-    //   primary: 'var(--color-dark)',
-    // },
   }
 })
 
 export default function ThemeProviders({children}: {children: React.ReactNode}) {
   return <ThemeProvider theme={theme}>
-    <CssBaseline />
+    {/* <CssBaseline /> */}
       {children}
   </ThemeProvider>;
 }

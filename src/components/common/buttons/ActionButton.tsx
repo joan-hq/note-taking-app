@@ -1,4 +1,4 @@
-import {Fab,FabProps} from '@mui/material';
+import { IconButton, IconButtonProps, Tooltip} from '@mui/material';
 import { ReactNode } from 'react';
 
 interface CustomActionButtonProps {
@@ -8,7 +8,7 @@ interface CustomActionButtonProps {
 
 };
 
-interface ActionButtonProps extends CustomActionButtonProps, FabProps{}
+interface ActionButtonProps extends CustomActionButtonProps, IconButtonProps{}
 
 export const ActionButton = ({
     title,
@@ -16,10 +16,11 @@ export const ActionButton = ({
     handleFabClick,
     ...props
 }:ActionButtonProps) => {
-    return(<>
-        <Fab color="primary" {...props} onClick={handleFabClick}>            
-            {children}
-            {title}
-        </Fab>    
-    </>);
+    return(
+        <Tooltip title={title ?? ''}>
+            <IconButton onClick={handleFabClick} size="small" {...props}>
+                {children}
+            </IconButton>
+        </Tooltip>
+        );
 };

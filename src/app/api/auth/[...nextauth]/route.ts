@@ -1,10 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import {db} from '@/db/index';
+import { db } from '@/db/index';
 import { users } from "@/db/schema";
 
-
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -12,12 +11,21 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub!;
+      }
+      return session;
+    },
     async signIn({ user }) {
+    console.log('signIn user:', user.email); // ← 加这行
+    console.log('allowedEmails:', process.env.ALLOWED_EMAILS); 
       const allowedEmails = process.env.ALLOWED_EMAILS?.split(",") ?? [];
       if (!allowedEmails.includes(user.email!)) return false;
       
       await db.insert(users)
         .values({
+          id:user.id!,
           email: user.email!,
           name: user.name,
           image: user.image,
@@ -30,6 +38,7 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
   },
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

@@ -16,8 +16,10 @@ const mapNoteRows = (noteRows: any[], relation:any[]):Note[] => {
 
 
 export const NoteDb = {
-    getAll: async(): Promise<Note[]> => {
-            const allNotes = await db.select().from(notes).orderBy(desc(notes.lastEdit));
+    getAll: async(userId:string): Promise<Note[]> => {
+            const allNotes = await db.select().from(notes)
+             .where(eq(notes.userId, userId))
+             .orderBy(desc(notes.lastEdit));
             const allRelatedTags = await db.select().from(noteTags);
 
             return mapNoteRows(allNotes,allRelatedTags);
@@ -27,6 +29,7 @@ export const NoteDb = {
     insert: async (newNote: Note) => {
         return await db.insert(notes).values({
             id: newNote.id,
+            userId: newNote.userId,
             title: newNote.title,
             content: newNote.content,
             status: newNote.status,
@@ -58,11 +61,14 @@ export const NoteDb = {
     },
 
     permanentlyDelete: async(id: string) => {
-        return await db.delete(notes).where(eq(notes.id,id));
+        console.log('permanentlyDelete called, id:', id);
+        const result =  await db.delete(notes).where(eq(notes.id,id));
+        console.log('permanentlyDelete done', result);
+        return result;
     },
 
-    getByStatus: async (status: NoteStatus): Promise<Note[]> => {
-        const result = await db.select().from(notes).where(eq(notes.status,status));
+    getByStatus: async (userId:string,status: NoteStatus): Promise<Note[]> => {
+        const result = await db.select().from(notes).where(and(eq(notes.status,status),eq(notes.userId, userId)));
         const rels = await db.select().from(noteTags);
         return mapNoteRows(result,rels);
     },

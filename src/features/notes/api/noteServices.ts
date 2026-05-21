@@ -9,11 +9,11 @@ import { isEmptyString } from '@/utils/string';
 
 export const NoteService = {
 
-    getAll: async() => {
+    getAll: async(userId:string) => {
 
         try{
-            console.log("fetch NOte",NoteDb.getAll());
-            const notes = await NoteDb.getAll();
+            console.log("fetch NOte",NoteDb.getAll(userId));
+            const notes = await NoteDb.getAll(userId);
             return notes.map(note => ({...note, title: note.title || 'no title'}));
         }catch(error){
             console.log("Failed to fetch notes:", error)
@@ -27,9 +27,10 @@ export const NoteService = {
     },
 
 //create new note and insert to DB
-    create: async (): Promise<Note>=>{
+    create: async (userId:string): Promise<Note>=>{
        const newNote:Note = { 
         id: uuidv4(),
+        userId,
         title: "",
         content: "",
         status: 'active' as NoteStatus,
@@ -37,7 +38,7 @@ export const NoteService = {
         createdAt: new Date().toISOString(),
         lastEdit: new Date().toISOString(),
        
-    };
+        };
 
         try{
             await NoteDb.insert(newNote);
@@ -88,10 +89,10 @@ export const NoteService = {
     },
 
     /**update tags */
-    updateTags: async (noteId: string, newTagIds: string[]): Promise<void> => {
+    updateTags: async (userId:string, noteId: string, newTagIds: string[]): Promise<void> => {
             try {
                 // 1. get all Tags
-                const currentNotes = await NoteDb.getAll(); // 实际项目中建议写个 getById
+                const currentNotes = await NoteDb.getAll(userId); 
                 const currentNote = currentNotes.find(n => n.id === noteId);
                 const oldTagIds = currentNote?.tags || [];
 
@@ -114,14 +115,13 @@ export const NoteService = {
 
 
 
-    filterNoteByStatus: async (status: FilterType): Promise<Note[]> => {
+    filterNoteByStatus: async (userId:string,status: FilterType): Promise<Note[]> => {
         try{
 
             if(status === 'all') {
-            return await NoteDb.getAll();
+            return await NoteDb.getAll(userId);
         }
-
-            return await NoteDb.getByStatus(status as NoteStatus);
+            return await NoteDb.getByStatus(userId,status as NoteStatus);
         }catch(error){
             console.log("Failed to filter notes by status",error);
             throw error;
@@ -130,51 +130,52 @@ export const NoteService = {
     },
 
 
-    getFilteredNote: async(
-        allTags: Tag[],
-        options: {
-            status?: FilterType;
-            selectedTagIds?: string[];
-            searchQuery?: string;
-        }
-    ): Promise<Note[]> => {
+    // getFilteredNote: async(
+    //     userId:string,
+    //     allTags: Tag[],
+    //     options: {
+    //         status?: FilterType;
+    //         selectedTagIds?: string[];
+    //         searchQuery?: string;
+    //     }
+    // ): Promise<Note[]> => {
 
-        const {
-            status="active", 
-            selectedTagIds=[],
-            searchQuery=""
-            } = options;
+    //     const {
+    //         status="active", 
+    //         selectedTagIds=[],
+    //         searchQuery=""
+    //         } = options;
 
-        const query = searchQuery.toLowerCase().trim();
+    //     const query = searchQuery.toLowerCase().trim();
 
-        let filteredNote  = await NoteService.filterNoteByStatus(status);
+    //     let filteredNote  = await NoteService.filterNoteByStatus(userId,status);
 
-        if(selectedTagIds.length > 0){
-            filteredNote = filteredNote.filter( 
-                (note: Note) =>selectedTagIds.every(id => note.tags.includes(id))
-            )
-        }
+    //     if(selectedTagIds.length > 0){
+    //         filteredNote = filteredNote.filter( 
+    //             (note: Note) =>selectedTagIds.every(id => note.tags.includes(id))
+    //         )
+    //     }
 
-        if(query){
-            const getMachedTagIdsFromQuery = allTags.filter(
-                tag => tag.label.toLowerCase().includes(query)
-            ).map( tag => tag.id)
+    //     if(query){
+    //         const getMachedTagIdsFromQuery = allTags.filter(
+    //             tag => tag.label.toLowerCase().includes(query)
+    //         ).map( tag => tag.id)
 
-            filteredNote = filteredNote.filter(
-                (note:Note) => {
-                   const contentMatch =  note.content.toLowerCase().includes(query);
-                   const titleMatch = note.title.toLowerCase().includes(query); 
-                   const tagsMatch = note.tags.some(id => getMachedTagIdsFromQuery.includes(id))
+    //         filteredNote = filteredNote.filter(
+    //             (note:Note) => {
+    //                const contentMatch =  note.content.toLowerCase().includes(query);
+    //                const titleMatch = note.title.toLowerCase().includes(query); 
+    //                const tagsMatch = note.tags.some(id => getMachedTagIdsFromQuery.includes(id))
 
-                   return contentMatch || titleMatch || tagsMatch;
-                }
-            )
-        }
+    //                return contentMatch || titleMatch || tagsMatch;
+    //             }
+    //         )
+    //     }
 
-        return filteredNote;
+    //     return filteredNote;
 
 
-    },
+    // },
 
     sortNoteByEdit: (notes: Note[]):Note[] => {
 

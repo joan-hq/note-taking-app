@@ -16,9 +16,9 @@ interface NoteTagDisplayProps {
 };
 
 export const NoteTagDisplay = ({allTags,linkedTags,handleConfirm,handleLinkedTag}:NoteTagDisplayProps ) => {
-    return(<>
+    return(<div className="flex items-center gap-2">
         <LocalOfferOutlinedIcon/>
-        <Stack>
+        <div className="flex-1">
             <Autocomplete 
             multiple
             fullWidth
@@ -40,8 +40,7 @@ export const NoteTagDisplay = ({allTags,linkedTags,handleConfirm,handleLinkedTag
             )}
             onChange={(event,changedValue)=>{handleLinkedTag(changedValue)}}
             />
-        </Stack>
+        </div>
         <AddNewTagDialog handleConfirm={handleConfirm}/>
-
-    </>);
+    </div>);
 };

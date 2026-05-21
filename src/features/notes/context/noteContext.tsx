@@ -1,10 +1,9 @@
-import { createContext,ReactNode,useCallback,useContext } from "react";
+import { createContext, ReactNode, useCallback, useContext } from "react";
 import { useNotes } from "@/features/notes/hooks/useNotes";
-import { useTagContext } from "@/features/tags/context/tagContext"; 
+import { useTagContext } from "@/features/tags/context/tagContext";
 import { deleteTagAction } from "@/features/tags/actions/tagActions";
-import { updateNoteAction } from "../actions/noteActions";
 
-interface NoteContextType extends ReturnType<typeof useNotes>{
+interface NoteContextType extends ReturnType<typeof useNotes> {
     tags: ReturnType<typeof useTagContext>['tags'];
     deleteTag: (tagId: string) => Promise<void>;
     createTagAndAttachToNote: (noteId: string, label: string) => Promise<void>;
@@ -15,21 +14,22 @@ const NoteContext = createContext<NoteContextType | undefined>(undefined);
 //check if NoteContext is undefined,if yes, throw error
 export const useNoteContext = () => {
     const context = useContext(NoteContext);
-    if(!context){
+    if (!context) {
         throw new Error("use useNoteContext inside NoteProvider")
     }
     return context;
 };
 
 // use NoteContext
-export const NoteProvider = ({children}: {children: ReactNode}) => {
+export const NoteProvider = ({ children }: { children: ReactNode }) => {
+    console.log('NoteProvider rendered');
     const noteMethods = useNotes();
 
-    const {notes,setNotes} = noteMethods;
+    const { notes, setNotes } = noteMethods;
 
-    const {tags,setTags,addTag} = useTagContext();
+    const { tags, setTags, addTag } = useTagContext();
 
-    const deleteTagAndCleanupNotes = useCallback(async (tagId:string)=>{
+    const deleteTagAndCleanupNotes = useCallback(async (tagId: string) => {
         const preTags = [...tags];
         const preNotes = [...notes];
 
@@ -39,45 +39,45 @@ export const NoteProvider = ({children}: {children: ReactNode}) => {
             tags: note.tags.filter(id => id !== tagId)
         })))
 
-        try{
+        try {
             await deleteTagAction(tagId);
-        }catch(error){
+        } catch (error) {
             setTags(preTags);
             setNotes(preNotes);
         }
-    },[tags,notes,setTags,setNotes]);
+    }, [tags, notes, setTags, setNotes]);
 
     const createTagAndAttachToNote = useCallback(async (noteId: string, label: string) => {
-    try {
-        const newTag = await addTag(label); 
-        
-        if (newTag && newTag.id) {
-            setNotes(prevNotes => prevNotes.map(note => {
-                if (note.id === noteId) {
-                    const hasTag = note.tags.includes(newTag.id);
-                    return {
-                        ...note,
-                        tags: hasTag ? note.tags : [...note.tags, newTag.id]
-                    };
-                }
-                return note;
-            }));
+        try {
+            const newTag = await addTag(label);
+
+            if (newTag && newTag.id) {
+                setNotes(prevNotes => prevNotes.map(note => {
+                    if (note.id === noteId) {
+                        const hasTag = note.tags.includes(newTag.id);
+                        return {
+                            ...note,
+                            tags: hasTag ? note.tags : [...note.tags, newTag.id]
+                        };
+                    }
+                    return note;
+                }));
+            }
+        } catch (error) {
+            throw error;
         }
-    } catch (error) {
-        console.error("创建并关联标签失败:", error);
-    }
-}, [addTag, setNotes]);
+    }, [addTag, setNotes]);
 
 
 
     return (
-        <NoteContext.Provider value={{ 
-        ...noteMethods,
-        tags,
-        deleteTag:deleteTagAndCleanupNotes,
-        createTagAndAttachToNote,
+        <NoteContext.Provider value={{
+            ...noteMethods,
+            tags,
+            deleteTag: deleteTagAndCleanupNotes,
+            createTagAndAttachToNote,
         }}>
-        {children}
+            {children}
         </NoteContext.Provider>
     );
 };

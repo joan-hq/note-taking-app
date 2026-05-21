@@ -5,47 +5,64 @@ import FolderDeleteOutlinedIcon from '@mui/icons-material/FolderDeleteOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { Box } from "@mui/material";
 import { useNoteContext } from '../context/noteContext';
-import {Note} from '@/features/notes/types/noteType'
 
 
 export const ActionBar = () => {
-    const {updateNote, deleteNote,selectedNote,setSelectedNoteId} = useNoteContext();
+    const {updateNote,selectedNote,setSelectedNoteId,permanentlyDeleteNote} = useNoteContext();
     if(!selectedNote)return null;
     const isArchived = selectedNote.status === 'archived';
+     const isTrashed = selectedNote.status === 'trashed';
     return(<>
     {
-        isArchived ? 
-        <Box>
-            <ActionButton handleFabClick={()=>{
+      isTrashed? (
+            //
+            <Box>
+                <ActionButton title="Restore" handleFabClick={() => { 
+                        updateNote(selectedNote.id, { status: 'active' }); 
+                        setSelectedNoteId(null); 
+                        }}>
+                    <UnarchiveOutlinedIcon /> 
+                </ActionButton>
+                <ActionButton title="Delete Forever" handleFabClick={() => permanentlyDeleteNote(selectedNote.id)}>
+                    <DeleteForeverOutlinedIcon /> 
+                </ActionButton>
+            </Box>
+        ) : isArchived ? 
+        //to active satus
+       ( <Box>
+            <ActionButton title="Restore" handleFabClick={()=>{
                         updateNote(selectedNote.id, {status: 'active'});
                         setSelectedNoteId(null)
                                             }}>
                 <UnarchiveOutlinedIcon />
             </ActionButton>
-            <ActionButton handleFabClick={()=>{deleteNote(selectedNote.id);setSelectedNoteId(null)}}>
-                <DeleteForeverOutlinedIcon/>
+            <ActionButton title="Move to Trash" handleFabClick={()=>{
+                updateNote(selectedNote.id, {status: 'trashed'});
+                setSelectedNoteId(null)
+                }}>
+                <FolderDeleteOutlinedIcon/>
             </ActionButton>
-        </Box> 
+        </Box> )
         
         : 
-        
-        <Box>
-            <ActionButton handleFabClick={()=>{
+        //to archived satus
+       ( <Box>
+            <ActionButton title="Archive" handleFabClick={()=>{
                 updateNote(selectedNote.id, {status: 'archived'});
                 setSelectedNoteId(null);
                 }}>
                 <ArchiveOutlinedIcon />
             </ActionButton>
-            <ActionButton handleFabClick={()=>{
+            <ActionButton title="Move to Trash" handleFabClick={()=>{
                  console.log('trash clicked', selectedNote.id); 
-                updateNote(selectedNote.id, {status:'trashed'});
-                 setSelectedNoteId(null);
+                    updateNote(selectedNote.id, {status:'trashed'});
+                    setSelectedNoteId(null);
                  
-                }                
+                    }                
                 }>
                 <FolderDeleteOutlinedIcon />
             </ActionButton>
-        </Box>
+        </Box>)
     }
         
     

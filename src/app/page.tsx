@@ -1,28 +1,24 @@
-'use client'; // 因为我们要从 Context 拿数据，所以它是客户端组件
+'use client';
 
-import { Box, Typography, Container } from '@mui/material';
 import { SideBar } from '@/features/notes/views/SideBar';
 import { MiddlerBar } from '@/features/notes/views/MiddleBar';
-import { NoteDetail } from '@/features/notes/components/NoteDetail';
-import {NoteDisplay} from '@/features/notes/views/NoteDisplay';
+
+import { NoteDisplay } from '@/features/notes/views/NoteDisplay';
 
 
 export default function HomePage() {
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-              
-       <Container sx={{ flex:1, py: 2 }}>
-          <SideBar/>
-    </Container>
-
-      <Container sx={{flex:2, py: 2 }}>
-        <MiddlerBar/>
-     </Container>
-
-      <Container sx={{ flex:5,py: 8 }} >
-        <NoteDisplay/>   
-      </Container>
-    </Box>
+    <div className="flex h-screen bg-[--color-bg-secondary]">
+      <div className="w-60 border-r border-gray-100 bg-[--color-bg-sidebar] flex flex-col h-screen">
+        <SideBar />
+      </div>
+      <div className="w-72 border-r border-gray-100 bg-[--color-bg-primary] h-screen overflow-hidden">
+        <MiddlerBar />
+      </div>
+      <div className="flex-1 bg-[--color-bg-primary] relative overflow-hidden">
+        <NoteDisplay />
+      </div>
+    </div>
   );
 }

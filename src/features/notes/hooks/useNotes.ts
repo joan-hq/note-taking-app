@@ -3,7 +3,11 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import {Note} from '@/features/notes/types/noteType';
 //import { NoteService } from "@/features/notes/api/noteServices";
-import { getAllNotesAction,createNoteAction, updateNoteAction, deleteNoteAction } from '../actions/noteActions';
+import { getAllNotesAction,
+         createNoteAction, 
+         updateNoteAction, 
+         deleteNoteAction,
+      permanentlyDeleteNoteAction } from '../actions/noteActions';
 
 
 /**
@@ -14,8 +18,6 @@ import { getAllNotesAction,createNoteAction, updateNoteAction, deleteNoteAction 
  *  2.3 delete
  *  2.4 sort by edit, or name
  *  2.5 filter by searchquery or tag
- * 
- * 
  */
 
 export const useNotes = () => {
@@ -32,11 +34,13 @@ export const useNotes = () => {
    const selectedNote = notes.find(note => note.id === selectedNoteId) ?? null;
 
    const fetchNotes = useCallback(async () => {
+      console.log('fetchNotes called'); 
+       console.trace();
       setStatus('loading');
 
       try {
          const data = await getAllNotesAction();
-         console.log('note data', data);
+         console.log(' Fetch Note data', data);
          setNotes(data);
          setStatus('success')
       } catch (error) {
@@ -47,6 +51,7 @@ export const useNotes = () => {
    }, [])
 
    useEffect(() => {
+      console.log('useEffect triggered');
 
       let isMounted = true;
 
@@ -64,14 +69,22 @@ export const useNotes = () => {
 
 
    const createNote = useCallback(async ()=>{
+
+      const emptyNote = notes.find(note => !note.title && !note.content && note.status === 'active');
+      if(emptyNote){
+         setSelectedNoteId(emptyNote.id);
+         return;
+      }
+
       try{
          const newNote = await createNoteAction();
-         setNotes((prev => [newNote, ...prev]))
+         setNotes((prev => [newNote, ...prev]));
+         setSelectedNoteId(newNote.id);
       }catch(error){
          const message = error instanceof Error ? error.message : "Create failed";
          setErrorMessage(message);
       };
-   }, []);
+   }, [notes]);
 
    const updateNote = useCallback(async (id: string, changes: Partial<Note>) : Promise<void> => {
        console.log('updateNote called', id, changes);
@@ -102,6 +115,52 @@ export const useNotes = () => {
       }
    }, [notes]);
 
+   // const permanentlyDeleteNote = useCallback(async (id: string) => {
+   //    console.log('before delete, notes:', notes.length);
+   //    const previousNotes = [...notes];
+   //    setNotes(prev => {
+   //       console.log('after delete, notes:', prev.filter(n => n.id !== id).length);
+   //       return prev.filter(n => n.id !== id);
+   //    });
+   //    setSelectedNoteId(null);
+      
+   //    try {
+   //       await permanentlyDeleteNoteAction(id);
+   //    } catch(error) {
+   //       setNotes(previousNotes);
+   //       const message = error instanceof Error ? error.message : "Delete failed";
+   //       setErrorMessage(message);
+   //    }
+   // }, [notes]);
+
+   const permanentlyDeleteNote = useCallback(async (id: string) => {
+    const previousNotes = [...notes];
+    setNotes(prev => prev.filter(n => n.id !== id));
+    setSelectedNoteId(null);
+    
+    try {
+        await fetch(`/notes-api/delete/${id}`, { method: 'DELETE' });
+    } catch(error) {
+        setNotes(previousNotes);
+        const message = error instanceof Error ? error.message : "Delete failed";
+        setErrorMessage(message);
+    }
+}, [notes]);
+
+
+   const selectNote = useCallback(async (id: string | null) => {
+    
+    if (selectedNoteId) {
+        const currentNote = notes.find(n => n.id === selectedNoteId);
+        if (currentNote && !currentNote.title && !currentNote.content) {
+            setNotes(prev => prev.filter(n => n.id !== selectedNoteId));
+            deleteNoteAction(selectedNoteId).catch(console.error);
+        }
+    }
+    setSelectedNoteId(id);
+}, [selectedNoteId, notes]);
+
+
    const filteredAndSortedNotes = useMemo(()=>{
    
       let result = notes.filter(note => {
@@ -128,6 +187,7 @@ export const useNotes = () => {
    },[notes, searchQuery,filterTagId,sortBy,filterStatus]);
    
    const countsNote = useMemo(() => {
+      console.log('countsNote recalculated, trashed:', notes.filter(note => note.status === 'trashed').length);
       return {
          all: notes.filter(note=> note.status === 'active').length,
          archived: notes.filter(note=> note.status === 'archived').length,
@@ -136,11 +196,13 @@ export const useNotes = () => {
    }, [notes])
 
 
+
    return {
       notes: filteredAndSortedNotes,
       isLoading: status === 'loading',
       error: errorMessage,
       setSearchQuery,
+      filterTagId,
       setFilterTagId,
       filterStatus,
       setFilterStatus,
@@ -149,11 +211,14 @@ export const useNotes = () => {
       selectedNoteId,
       setSelectedNoteId,
       selectedNote,
+      selectNote,
       createNote,
       updateNote,
       deleteNote,
+      permanentlyDeleteNote,
       setNotes,
       refresh: fetchNotes,
+      
    }
 
 };

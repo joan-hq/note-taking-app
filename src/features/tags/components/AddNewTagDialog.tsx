@@ -21,11 +21,13 @@ export const AddNewTagDialog = ({handleConfirm}: AddNewTagDialogProps) => {
     };
     
     return(<>
-        <IconButton onClick={showDialog}><AddOutlinedIcon/></IconButton>
+        <IconButton onClick={showDialog} size="small">
+            <AddOutlinedIcon fontSize="small"/>
+        </IconButton>
         <JDialog 
             open={open} 
-            title='Create a new tag'
-            confirmText='save'
+            title='New Tag'
+            confirmText='Create'
             confirmBtnColor='primary'
             onCancel={() => {
                 setInputValue('');
@@ -38,6 +40,7 @@ export const AddNewTagDialog = ({handleConfirm}: AddNewTagDialogProps) => {
                 value={inputValue} 
                 label="add new tag" 
                 onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && onInternalConfirm()}
             />
         </JDialog>
     </>

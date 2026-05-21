@@ -1,16 +1,12 @@
-import{NoteIcon} from'@/components/common/icons/NoteIcon';
+'use client';
+import { NoteIcon } from '@/components/common/icons/NoteIcon';
 
-import Typography from '@mui/material/Typography';
 
-interface NoteLogo {
-  className?: string;
-}
-
-export const NoteLogo = ({ className }: NoteLogo) => {
+export const NoteLogo = () => {
   return (
-    <>
-    <NoteIcon className="w-11 h-11 text-primary-color stroke-[4]" />
-    <Typography>DashNote</Typography>
-    </>
+    <div className="flex items-center gap-2">
+      <NoteIcon style={{ width: 28, height: 28, color: '#0d9488' }} />
+      <span style={{ fontSize: '20px', fontWeight: 700, color: '#0d9488' }}>DashNote</span>
+    </div>
   );
 };
