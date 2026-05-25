@@ -1,36 +1,42 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Box, Button, Typography, Alert } from "@mui/material";
 
-// Helper function to map error keys to user-friendly messages during render
-function getAuthErrorMessage(errorType: string | null): string | null {
-  if (!errorType) return null;
-
-  switch (errorType) {
-    case "OAuthSignin":
-      return "Could not initialize Google sign-in. Please check your server-side Google provider configuration.";
-    case "OAuthCallback":
-      return "An error occurred during the Google callback. Please verify your Authorized Redirect URIs.";
-    case "OAuthCreateAccount":
-      return "Failed to create user account. Please check your database connection.";
-    case "EmailSignin":
-      return "Failed to send the email verification link.";
-    case "CredentialsSignin":
-      return "Sign-in failed. Please check your credentials and try again.";
-    default:
-      return "An unexpected authentication error occurred. Please try again.";
-  }
-}
-
 export function LoginForm() {
-  const searchParams = useSearchParams();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Compute the error message dynamically during the render phase.
-  // No useEffect, no state synchronization, completely legal!
-  const errorType = searchParams.get("error");
-  const errorMessage = getAuthErrorMessage(errorType);
+  // 核心改动：把逻辑全部收拢进 useEffect，让 Next.js 打包时完全抓不到它
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const errorType = params.get("error");
+
+      if (errorType) {
+        switch (errorType) {
+          case "OAuthSignin":
+            setErrorMessage("Could not initialize Google sign-in. Please check your server-side Google provider configuration.");
+            break;
+          case "OAuthCallback":
+            setErrorMessage("An error occurred during the Google callback. Please verify your Authorized Redirect URIs.");
+            break;
+          case "OAuthCreateAccount":
+            setErrorMessage("Failed to create user account. Please check your database connection.");
+            break;
+          case "EmailSignin":
+            setErrorMessage("Failed to send the email verification link.");
+            break;
+          case "CredentialsSignin":
+            setErrorMessage("Sign-in failed. Please check your credentials and try again.");
+            break;
+          default:
+            setErrorMessage("An unexpected authentication error occurred. Please try again.");
+            break;
+        }
+      }
+    }
+  }, []); // 仅在客户端挂载时执行一次
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#f5f5f3' }}>
@@ -40,7 +46,7 @@ export function LoginForm() {
         <Typography variant="h5" fontWeight={500} mb={1}>Welcome back</Typography>
         <Typography variant="body2" color="text.secondary" mb={4}>Sign in to access your notes</Typography>
 
-        {/* Render the alert instantly if the URL contains an error parameter */}
+        {/* 只有在浏览器抓到错误后才会无缝弹出 */}
         {errorMessage && (
           <Alert severity="error" sx={{ mb: 3, textAlign: 'left', borderRadius: 2, fontSize: '0.85rem' }}>
             {errorMessage}
