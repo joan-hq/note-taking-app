@@ -1,77 +1,172 @@
 'use client';
-
+import { useEffect } from 'react';
 import { useAIChat } from '@/components/common/overlays/AIChat/useAIChat';
 
 interface AIChatDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   noteContent: string;
+  onCreateNote: (title: string, content: string) => void;
 }
 
-export const AIChatDrawer = ({ isOpen, onClose, noteContent }: AIChatDrawerProps) => {
+export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIChatDrawerProps) => {
+  const {
+    messages,
+    input,
+    setInput,
+    loading,
+    handleSend,
+    clearChat,
+    handleSummarizeAndSave
+  } = useAIChat({
+    noteContent,
+    onCreateNote
+  });
 
-  const { messages, input, setInput, loading, handleSend } = useAIChat({ noteContent });
+  useEffect(() => {
+    if (!isOpen) {
+      clearChat();
+    }
+  }, [isOpen, clearChat]);
 
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed', right: 0, top: 0, width: '400px', height: '100vh',
-      background: '#fff', boxShadow: '-4px 0 20px rgba(0,0,0,0.1)', zIndex: 1000,
-      display: 'flex', flexDirection: 'column', padding: '20px', color: '#000', fontFamily: 'sans-serif'
-    }}>
-      {/* header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
-        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>🤖 DashNote AI Assistant</h3>
-        <button onClick={onClose} style={{ cursor: 'pointer', background: 'none', border: 'none', fontSize: '18px', color: '#666' }}>✕</button>
+    <div
+      className="fixed right-0 top-0 
+      h-screen z-[1000] flex flex-col 
+      p-5 font-sans border-l
+       border-gray-100
+  w-full md:w-[400px]"
+      style={{
+        width: '400px',
+        background: 'var(--surface)',
+        color: 'var(--text-primary)',
+        boxShadow: '-4px 0 24px rgba(30,58,138,0.08)',
+      }}
+    >
+      {/* Header */}
+      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
+        <h3 className="m-0 flex items-center gap-1.5 font-bold text-base">
+          <span>✦</span> DashNote AI
+        </h3>
+        <button
+          onClick={onClose}
+          className="cursor-pointer bg-transparent border-none text-xl p-1 transition-colors"
+          style={{ color: 'var(--text-secondary)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+        >
+          ✕
+        </button>
       </div>
 
-      {/* content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 0' }}>
+      {/* Summarize button */}
+      {messages.length > 0 && (
+        <div className="pt-3 pb-2">
+          <button
+            onClick={() => handleSummarizeAndSave(onClose)}
+            disabled={loading}
+            className="btn-primary w-full text-xs rounded-xl disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]"
+          >
+            {loading ? (
+              <>
+                <svg className="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Summarizing & saving...</span>
+              </>
+            ) : (
+              <>
+                <span>📝</span>
+                <span>Summarize and save to a note</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Chat content */}
+      <div className="flex-1 overflow-y-auto py-3 space-y-3">
         {messages.length === 0 && (
-          <p style={{ color: '#999', fontSize: '14px', lineHeight: '1.5', padding: '10px' }}>
-            Hay, How can I help you:<br />
-            ✨ Summarize?<br />
-            💡 Brainstorm?<br />
-          </p>
+          <div
+            className="text-sm leading-relaxed p-3 rounded-xl border"
+            style={{
+              background: 'var(--ghost-hover)',
+              borderColor: 'var(--border)',
+              color: 'var(--text-secondary)',
+            }}
+          >
+            <p className="font-semibold m-0 mb-1" style={{ color: 'var(--text-primary)' }}>
+              Hey, how can I help you:
+            </p>
+            <ul className="list-disc pl-4 m-0 space-y-0.5 text-xs">
+              <li>✨ Summarize your note</li>
+              <li>💡 Brainstorm ideas</li>
+            </ul>
+          </div>
         )}
+
         {messages.map(m => (
-          <div key={m.id} style={{ margin: '12px 0', textAlign: m.role === 'user' ? 'right' : 'left' }}>
-            <span style={{
-              display: 'inline-block',
-              background: m.role === 'user' ? '#eaeaea' : '#f5f5f5',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              maxWidth: '85%',
-              fontSize: '14px',
-              textAlign: 'left',
-              wordBreak: 'break-word'
-            }}>
+          <div
+            key={m.id}
+            className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <span
+              className="inline-block px-3.5 py-2 rounded-2xl max-w-[85%] text-sm leading-relaxed break-words shadow-sm"
+              style={
+                m.role === 'user'
+                  ? { backgroundColor: 'var(--primary)', color: '#fff', borderTopRightRadius: 4 }
+                  : { backgroundColor: 'var(--secondary)', color: 'var(--text-primary)', borderTopLeftRadius: 4 }
+              }
+            >
               {m.content}
             </span>
           </div>
         ))}
-        {loading && <p style={{ color: '#888', fontSize: '13px', fontStyle: 'italic', paddingLeft: '5px' }}>Gemini 正在组织语言...</p>}
+
+        {loading && (
+          <div
+            className="text-xs italic flex items-center gap-1.5 pl-1"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            <div
+              className="w-1.5 h-1.5 rounded-full animate-bounce"
+              style={{ backgroundColor: 'var(--text-secondary)' }}
+            />
+            Thinking...
+          </div>
+        )}
       </div>
 
-      {/* footer */}
-      <div style={{ display: 'flex', gap: '8px', paddingTop: '10px', borderTop: '1px solid #eee' }}>
+      {/* Footer */}
+      <div className="flex gap-2 pt-3 border-t border-gray-100">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
-          placeholder="Ask Something..."
+          placeholder="Ask something..."
           disabled={loading}
-          style={{ flex: 1, padding: '12px', borderRadius: '6px', border: '1px solid #ccc', background: '#fff', color: '#000', fontSize: '14px' }}
+          className="flex-1 px-3 py-2.5 rounded-xl 
+          text-sm focus:outline-none transition-all 
+          disabled:opacity-60"
+          style={{
+            background: 'var(--ghost-hover)',
+            border: '1.5px solid var(--border)',
+            color: 'var(--text-primary)',
+          }}
+          onFocus={e => (e.currentTarget.style.borderColor = 'var(--primary)')}
+          onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
         />
         <button
           onClick={handleSend}
           disabled={loading}
-          style={{ padding: '0 18px', background: '#000', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', opacity: loading ? 0.6 : 1 }}
+          className="btn-primary px-4 rounded-xl active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
         >
           Send
         </button>
       </div>
     </div>
   );
-}
+};

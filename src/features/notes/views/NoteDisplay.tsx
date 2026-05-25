@@ -1,42 +1,65 @@
 import { NoteDetail } from '@/features/notes/components/NoteDetail';
 import { ActionBar } from '@/features/notes/components/ActionBar';
 import { useNoteContext } from "../context/noteContext";
-import { useState } from 'react';
 import { AIChatDrawer } from '@/components/common/overlays/AIChat/AIChatDrawer';
 
+interface NoteDisplayProps {
+    isAiOpen: boolean;
+    onAiOpen: () => void;
+    onAiClose: () => void;
+}
 
-
-export const NoteDisplay = () => {
-    const { selectedNote } = useNoteContext();
-    const [isAiOpen, setIsAiOpen] = useState(false);
+export const NoteDisplay = ({ isAiOpen, onAiOpen, onAiClose }: NoteDisplayProps) => {
+    const { selectedNote, createNote } = useNoteContext();
 
     return (
-        <div className="relative h-screen overflow-hidden">
-            <div className="absolute top-4 right-4 z-10">
+        <div className="relative w-full h-full flex flex-col overflow-hidden bg-transparent">
+            <div className="absolute hidden md:block top-4 right-4 z-20">
                 <ActionBar />
             </div>
-            <div className="h-full overflow-y-auto">
-                <NoteDetail />
+
+            <div className="flex-1 min-h-0 relative w-full overflow-hidden">
+                {selectedNote ? (
+                    <NoteDetail key={selectedNote.id} />
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-full p-6 text-slate-400/80">
+                        <svg
+                            className="w-12 h-12 mb-3 text-slate-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                            />
+                        </svg>
+                        <p className="text-sm font-medium tracking-wide">Please select or create a new note</p>
+                    </div>
+                )}
             </div>
 
-            {selectedNote && (<>
+            {/* Desktop AI button - hidden on mobile */}
+            <div className="hidden md:block absolute bottom-6 right-6 z-20">
+                <button
+                    onClick={onAiOpen}
+                    className="btn-primary rounded-xl shadow-lg active:scale-95"
+                >
+                    <span>✨</span> AI Assistant
+                </button>
+            </div>
 
-                <div className="absolute bottom-6 right-6">
-                    <button
-                        onClick={() => setIsAiOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-semibold shadow-sm transition-all active:scale-95"
-                    >
-                        <span>✨</span> AI Assistant
-                    </button>
-                </div>
-
-
-                <AIChatDrawer
-                    isOpen={isAiOpen}
-                    onClose={() => setIsAiOpen(false)}
-                    noteContent={selectedNote.content || ""}
-                />
-            </>)}
+            <AIChatDrawer
+                isOpen={isAiOpen}
+                onClose={onAiClose}
+                noteContent={selectedNote ? (selectedNote.content || "") : ""}
+                onCreateNote={(aiTitle, aiContent) => {
+                    onAiClose();
+                    createNote(aiTitle, aiContent);
+                }}
+            />
         </div>
     );
-}
+};

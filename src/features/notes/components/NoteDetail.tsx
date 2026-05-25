@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { NoteTagDisplay } from "./NoteTagDisplay";
-import { Divider, Typography } from "@mui/material";
+import { Divider, Typography, TextareaAutosize } from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-
+import MDEditor from '@uiw/react-md-editor';
 import { useNoteContext } from "../context/noteContext";
 import { findManyObjectsByIds } from "@/utils/array";
+import { MarkdownEditor } from "@/features/notes/components/MarkdownEditor";
 
 
 interface NoteDetailProps {
@@ -46,25 +47,30 @@ const LastEditInfo = ({ lastEdit }: Pick<NoteDetailProps, 'lastEdit'>) => {
 };
 
 
-const Content = ({ content, onContentChange }: Pick<NoteDetailProps, 'content' | 'onContentChange'>) => {
-    return (
-        <textarea
-            value={content}
-            onChange={(e) => onContentChange(e.target.value)}
-            placeholder="Start writing..."
-            className="w-full min-h-96 outline-none bg-transparent 
-            text-[--color-text-primary] placeholder:text-[--color-text-muted] resize-none 
-            text-sm leading-relaxed"
-        />
-    );
-};
+// const Content = ({ content, onContentChange }: Pick<NoteDetailProps, 'content' | 'onContentChange'>) => {
+//     return (
+//         <MDEditor
+//             value={content}
+//             // onChange={() => onContentChange(e.target.value)}
+//             onChange={(val) => onContentChange(val || "")}
+//             // placeholder="Start writing..."
+//             textareaProps={{
+//                 placeholder: "Start writing..."
+//             }}
+//             preview="live"
+//             height="100%"
+//             // className="w-full min-h-full outline-none bg-transparent 
+//             // text-[--color-text-primary] placeholder:text-[--color-text-muted] resize-none 
+//             // text-sm leading-relaxed"
+//             className="w-full h-full text-[--color-text-primary]"
+//         />
+//     );
+// };
 
 
 export const NoteDetail = () => {
 
     const { tags, updateNote, selectedNote, createTagAndAttachToNote } = useNoteContext();
-
-    const [isAiOpen, setIsAiOpen] = useState(false);
 
 
     if (!selectedNote) {
@@ -80,23 +86,29 @@ export const NoteDetail = () => {
 
     return (
         <div className="relative p-6 flex flex-col gap-3 h-full">
-            <Header
-                title={selectedNote.title}
-                onTitleChange={(newTitle) => updateNote(selectedNote.id, { title: newTitle })}
 
-            />
-            <LastEditInfo lastEdit={selectedNote.lastEdit} />
-            <NoteTagDisplay
-                allTags={tags}
-                linkedTags={findManyObjectsByIds(selectedNote.tags, tags)}
-                handleLinkedTag={(newTags) => updateNote(selectedNote.id, { tags: newTags.map(t => t.id) })}
-                handleConfirm={(newTagName) => createTagAndAttachToNote(selectedNote.id, newTagName)}
-            />
-            <Divider />
-            <Content
-                content={selectedNote.content}
-                onContentChange={(newContent) => updateNote(selectedNote.id, { content: newContent })}
-            />
+            <div className="flex flex-col gap-3 flex-shrink-0">
+                <Header
+                    title={selectedNote.title}
+                    onTitleChange={(newTitle) => updateNote(selectedNote.id, { title: newTitle })}
+
+                />
+                <LastEditInfo lastEdit={selectedNote.lastEdit} />
+                <NoteTagDisplay
+                    allTags={tags}
+                    linkedTags={findManyObjectsByIds(selectedNote.tags, tags)}
+                    handleLinkedTag={(newTags) => updateNote(selectedNote.id, { tags: newTags.map(t => t.id) })}
+                    handleConfirm={(newTagName) => createTagAndAttachToNote(selectedNote.id, newTagName)}
+                />
+                <Divider />
+            </div>
+
+            <div className="flex-1 min-h-0">
+                <MarkdownEditor
+                    value={selectedNote.content}
+                    onChange={(newContent) => updateNote(selectedNote.id, { content: newContent })}
+                />
+            </div>
 
         </div>
     );

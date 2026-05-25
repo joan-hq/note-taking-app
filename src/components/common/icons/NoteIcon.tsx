@@ -13,7 +13,7 @@ export const NoteIcon: React.FC<IconProps> = ({ className, ...props }) => {
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2"
+      strokeWidth="4"
       className={className}
       {...props}
     >

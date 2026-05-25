@@ -1,46 +1,379 @@
 @import "tailwindcss";
 
 
+:root {
+  /* Primary */
+  --primary: #1E3A8A;
+  --primary-hover: #1D3578;
+  --primary-active: #172D68;
+ 
+  /* Secondary */
+  --secondary: #DBEAFE;
+  --secondary-hover: #BFDBFE;
+  --secondary-active: #93C5FD;
+ 
+  /* Danger */
+  --danger: #DC2626;
+  --danger-hover: #B91C1C;
+  --danger-active: #991B1B;
+ 
+  /* Ghost */
+  --ghost-hover: #EFF6FF;
+  --ghost-active: #DBEAFE;
+  --ghost-selected: #DBEAFE;
+ 
+  /* Surface */
+  --bg: #F8FAFF;
+  --surface: #FFFFFF;
+  --text-primary: #1E3A8A;
+  --text-secondary: #64748B;
+  --text-muted: #9CA3AF;
+  --text-title: #111827;
+  --border: #DBEAFE;
+  --border-card: #E5E7EB;
+ 
+  /* General */
+  --radius: 8px;
+  --transition: all 0.15s ease;
+}
+
 @theme {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f5f5f3;
-  --color-bg-sidebar: #fafaf9;
-  --color-bg-hover: #f0f0ee;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-border: #e5e7eb;
-  --color-brand-primary: #2B3A67;
-  --color-brand-hover:#1e2d52;
-   --color-brand: #eef0f7;
-  --color-brand-hover: #2B3A67;
-}
+  /* Backgrounds */
+  --color-bg-primary: var(--surface);
+  --color-bg-secondary: var(--bg);
+  --color-bg-sidebar: #FAFBFF;
+  --color-bg-hover: var(--ghost-hover);
 
-@layer utilities {
-  .text-brand {
-    color: var(--color-brand-primary);
-  }
-  .text-brand-hover {
-    color: var(--color-brand-hover);
-  }
-  .bg-brand {
-    background-color: var(--color-brand-primary);
-  }
-}
 
+/* Text */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-title: var(--text-title);
+
+ /* Border */
+  --color-border: var(--border);
+  --color-border-card: var(--border-card); 
+
+  /* Brand */
+  --color-brand-primary: var(--primary);
+  --color-brand-primary-hover: var(--primary-hover);
+  --color-brand-light: var(--secondary);
+
+
+  /* Semantic */
+  --color-active-bg: var(--secondary);
+  --color-active-text: var(--primary);
+
+ /* Danger */
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+
+
+  /* Note Card */
+  --color-card-selected-bg: var(--ghost-selected);
+  --color-card-selected-border: var(--primary);
+  --color-card-hover: var(--ghost-hover);
+
+    /* Tag */
+  --color-tag-selected-bg: var(--primary);
+  --color-tag-selected-text: #FFFFFF;
+  --color-tag-default-bg: var(--ghost-hover);
+  --color-tag-default-text: var(--text-secondary);
+
+}
 
 @layer base {
   body {
-    @apply bg-[--color-cream] antialiased;
+    @apply bg-[--color-bg-secondary] antialiased;
   
   }
 }
 
+
+@utility btn-base {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
 @layer components {
+ /* --- Buttons --- */
+ 
+
+  .btn-primary {
+    @apply btn-base text-white;
+    background-color: var(--primary);
+  }
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
+  }
+  .btn-primary:active {
+    background-color: var(--primary-active);
+  }
+  .btn-primary:focus-visible {
+    @apply ring-2 ring-offset-2;
+    ring-color: var(--primary);
+  }
+  .btn-primary:disabled {
+    @apply bg-gray-200 text-gray-400 cursor-not-allowed;
+  }
+ 
+  .btn-secondary {
+    @apply btn-base;
+    background-color: var(--secondary);
+    color: var(--primary);
+  }
+  .btn-secondary:hover {
+    background-color: var(--secondary-hover);
+  }
+  .btn-secondary:active {
+    background-color: var(--secondary-active);
+  }
+ 
+  .btn-ghost {
+    @apply btn-base;
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+  .btn-ghost:hover {
+    background-color: var(--ghost-hover);
+    color: var(--text-primary);
+  }
+  .btn-ghost:active {
+    background-color: var(--ghost-active);
+  }
+ 
+  .btn-danger {
+    @apply btn-base text-white;
+    background-color: var(--danger);
+  }
+  .btn-danger:hover {
+    background-color: var(--danger-hover);
+  }
+  .btn-danger:active {
+    background-color: var(--danger-active);
+  }
+
+  /* --- Filter / Status Buttons --- */
+ 
   .filter-btn {
-    @apply w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors outline-none text-[--color-text-secondary] hover:bg-[--color-bg-hover];
+    @apply w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-normal 
+    transition-colors outline-none cursor-pointer;
+    color: var(--text-secondary);
+    background-color: transparent;
+  }
+  .filter-btn:hover {
+    background-color: var(--ghost-hover);
+    color: var(--text-primary);
   }
   .filter-btn-active {
-    @apply bg-teal-50 text-teal-700 font-medium;
+    background-color: var(--secondary);
+    color: var(--primary);
+    @apply font-medium;
   }
+  .filter-btn-active:hover {
+    background-color: var(--secondary-hover);
+  }
+ 
+ 
+  /* --- Note Card --- */
+ 
+  .note-card {
+    @apply px-4 py-3 cursor-pointer rounded-xl transition-all duration-200 ease-in-out;
+    background-color: transparent;
+  }
+  .note-card:not(.note-card-active):hover {
+    background-color: var(--ghost-hover);
+  }
+  .note-card-title {
+    @apply text-base font-semibold mb-1;
+    color: var(--text-title);
+  }
+  .note-card-active {
+    background-color: var(--ghost-selected);
+    border: 1.5px solid var(--primary);
+    @apply shadow-[0_4px_12px_rgba(30,58,138,0.12)];
+  }
+  .note-card-active:hover {
+    background-color: var(--secondary-hover);
+  }
+
+
+
+ /* --- Markdown Editor --- */
+
+/* Override default editor container styles */
+.custom-md-editor-container .w-md-editor {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+}
+
+/* 1. Toolbar: Increase height and padding for a more spacious feel */
+.custom-md-editor-container .w-md-editor-toolbar {
+  background-color: var(--bg) !important; 
+  border-bottom: 1px solid var(--border) !important;
+  border-top-left-radius: var(--radius) !important;
+  border-top-right-radius: var(--radius) !important;
+  padding: 10px 16px !important; /* Larger padding to give top/bottom elements breathing room */
+  min-height: 48px !important;   /* Ensures a firm, solid height for the toolbar */
+}
+
+/* 2. Toolbar internal container: Expand horizontal spacing between button groups */
+.custom-md-editor-container .w-md-editor-toolbar ul {
+  gap: 6px !important; /* Prevents buttons from feeling cramped together */
+  align-items: center !important;
+}
+
+/* 3. Toolbar buttons: Enlarge icon font size and expand clickable hit areas */
+.custom-md-editor-container .w-md-editor-toolbar button {
+  color: var(--text-secondary) !important;
+  border-radius: 6px !important;
+  transition: var(--transition) !important;
+  
+  /* Core sizing properties */
+  width: 32px !important;       /* Increased button width */
+  height: 32px !important;      /* Increased button height */
+  padding: 0 !important;        /* Clears default padding to perfectly align with flex center */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Enlarge inner SVG icons or font text inside buttons */
+.custom-md-editor-container .w-md-editor-toolbar button svg,
+.custom-md-editor-container .w-md-editor-toolbar button[data-name="title"] {
+  font-size: 16px !important;   /* Upscaled from default 12-14px to a distinct 16px */
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Adjust vertical divider height and margins */
+.custom-md-editor-container .w-md-editor-toolbar .w-md-editor-divider {
+  height: 18px !important;
+  margin: 0 6px !important;
+  background-color: var(--border) !important;
+}
+
+/* 4. Button interaction states: Hover and Active/Selected */
+.custom-md-editor-container .w-md-editor-toolbar button:hover {
+  background-color: var(--ghost-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+.custom-md-editor-container .w-md-editor-toolbar button.active {
+  background-color: var(--secondary) !important;
+  color: var(--primary) !important;
+}
+
+/* Unify text colors for both the input area and the preview area */
+.custom-md-editor-container .w-md-editor-text-input,
+.custom-md-editor-container .w-md-editor-preview {
+  color: var(--text-primary) !important;
+  font-size: 0.875rem !important; /* Matches text-sm */
+}
+
+/* Fix mid-split border color between the two columns */
+.custom-md-editor-container .w-md-editor-split {
+  background-color: var(--border) !important;
+}
+
+/* 5. Mobile responsive layout */
+@media (max-width: 767px) {
+  
+  /* 1. Remove the default text container border and background entirely */
+  .custom-md-editor-container .w-md-editor {
+    border: none !important;
+    background-color: transparent !important;
+  }
+  
+  /* Ensure the active area inside also has no layout frames */
+  .custom-md-editor-container .w-md-editor-content {
+    border: none !important;
+    background-color: transparent !important;
+  }
+
+  /* 2. Position the toolbar elegantly at the TOP center of the content area */
+  .custom-md-editor-container .w-md-editor-toolbar {
+    position: absolute !important;
+    top: 12px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* Responsive width adjustments without horizontal wrapping */
+    width: auto !important;
+    white-space: nowrap !important;
+    z-index: 50 !important;
+    
+    /* Styling: Premium minimal iOS floating capsule dock */
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 24px !important; 
+    box-shadow: 0 4px 16px rgba(30, 58, 138, 0.08) !important;
+    
+    /* Accurate sleek sizing controls */
+    padding: 2px 8px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* 3. Strict container behavior to prevent any form of text/icon wrapping */
+  .custom-md-editor-container .w-md-editor-toolbar ul {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Force icons to stay on a single line */
+    overflow: hidden !important;
+    gap: 4px !important;
+  }
+
+  /* Mini operational button layouts inside the top dock */
+  .custom-md-editor-container .w-md-editor-toolbar button {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .custom-md-editor-container .w-md-editor-toolbar button svg {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .custom-md-editor-container .w-md-editor-toolbar .w-md-editor-divider {
+    height: 12px !important;
+    margin: 0 1px !important;
+  }
+
+  /* 4. Push text area down so writing content is never covered by the bar */
+  .custom-md-editor-container .w-md-editor-text {
+    padding-top: 60px !important;
+  }
+  
+  /* Highlight styling for the "More options" button switch */
+  .custom-md-editor-container .w-md-editor-toolbar [data-name="more"] {
+    background-color: var(--ghost-hover) !important;
+    color: var(--primary) !important;
+    border-radius: 14px !important;
+  }
+}
+
+
 }

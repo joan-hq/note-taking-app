@@ -20,11 +20,11 @@ export const getAllNotesAction = async () => {
 }
 
 
-export const createNoteAction = async (): Promise<Note> => {
+export const createNoteAction = async (title?: string, content?: string): Promise<Note> => {
     try {
         const userId = await getUserId();
         console.log('userId:', userId); // ← 加这行
-        return await NoteService.create(userId);
+        return await NoteService.create(userId,title, content);
     } catch(error) {
         console.error('createNoteAction error:', error); // ← 加这行
         throw error;

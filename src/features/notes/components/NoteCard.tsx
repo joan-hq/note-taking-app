@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardActionArea, Typography, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 import { Tag } from '@/features/tags/types/tagType';
 import { Archive as ArchiveIcon, AccessTime as AccessTimeIcon } from "@mui/icons-material";
 
@@ -21,35 +21,45 @@ export const NoteCard = ({ title, tags, tagDisplayLimit, lastEdit, isArchived, i
     return (
         <div
             onClick={handleNoteCardClick}
-            className="px-4 py-3 cursor-pointer border-b border-gray-100 transition-colors"
-            style={{
-                backgroundColor: isSelected ? '#f0fdfa' : '',
-                borderLeft: isSelected ? '2px solid #0d9488' : '',
-            }}
+            className={`note-card ${isSelected
+                ? 'note-card-active'
+                : ''
+                }`}
         >
             <div className="flex items-center justify-between mb-1">
                 <span className="font-medium text-[--color-text-primary] truncate">{title}</span>
-                {isArchived && <ArchiveIcon fontSize="small" className="text-[--color-text-muted]" />}
+                {isArchived && <ArchiveIcon fontSize="small" style={{ color: 'var(--text-secondary)' }} />}
             </div>
 
             {tags.length > 0 && (
                 <div className="flex gap-1 flex-wrap mb-2">
-                    {tagsToShow.map((tag) => (
-                        <Chip key={tag.id} label={tag.label} size="small"
-                            sx={tag.id === selectedTagId ? {
-                                bgcolor: '#1e40af',
-                                color: 'white',
-                                '& .MuiChip-label': { color: 'white' }
-                            } : {}} />
-                    ))}
+                    {tagsToShow.map((tag) => {
+                        const isTagSelected = tag.id === selectedTagId;
+                        return (
+                            <Chip key={tag.id} label={tag.label} size="small"
+                                sx={isTagSelected ? {
+                                    bgcolor: 'var(--color-tag-selected-bg)',
+                                    color: 'var(--color-tag-selected-text)',
+                                    '& .MuiChip-label': { color: 'var(--color-tag-selected-text)' }
+                                } : {
+                                    bgcolor: 'var(--color-tag-default-bg)',
+                                    color: 'var(--color-tag-default-text)',
+                                    '& .MuiChip-label': { color: 'var(--color-tag-default-text)' },
+
+                                    '&:hover': {
+                                        bgcolor: 'var(--color-bg-hover)',
+                                    }
+                                }} />
+                        )
+                    })}
                     {tagsHide > 0 && (
-                        <span className="text-xs text-[--color-text-muted]">+{tagsHide}</span>
+                        <span className="text-xs text-[--color-text-muted] self-center ml-0.5">+{tagsHide}</span>
                     )}
                 </div>
             )}
 
             <div className="flex items-center gap-1 text-xs text-[--color-text-muted]">
-                <AccessTimeIcon sx={{ fontSize: 12 }} />
+                <AccessTimeIcon style={{ fontSize: 12 }} />
                 <span>{lastEdit}</span>
             </div>
         </div>

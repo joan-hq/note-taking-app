@@ -5,8 +5,7 @@ import { useNoteContext } from "@/features/notes/context/noteContext";
 
 
 export const TagManagement = () => {
-    const { tags, deleteTag } = useNoteContext();
-    console.log('tags', tags);
+    const { tags, deleteTag, filterTagId, setFilterTagId } = useNoteContext();
 
     return (<>
         <div className="px-3 py-2">
@@ -16,16 +15,26 @@ export const TagManagement = () => {
         </div>
 
         <List>
-            {tags.map((tag) => (
-                <DeleteableTagUnit
-                    key={tag.id}
-                    tagId={tag.id}
-                    tagName={tag.label}
-                    handleConfirm={() => {
-                        deleteTag(tag.id)
-                    }}
-                />
-            ))}
+            {tags.map((tag) => {
+
+                const isSelected = filterTagId === tag.id;
+                return (
+                    <DeleteableTagUnit
+                        key={tag.id}
+                        tagId={tag.id}
+                        tagName={tag.label}
+                        handleConfirm={() => {
+                            deleteTag(tag.id)
+                            if (filterTagId === tag.id) setFilterTagId(null);
+                        }}
+
+                        onClickTag={() => {
+                            setFilterTagId(isSelected ? null : tag.id);
+                        }}
+                        isSelected={isSelected}
+                    />
+                )
+            })}
         </List>
 
     </>);

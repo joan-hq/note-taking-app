@@ -14,7 +14,7 @@ export const NoteList = () => {
     );
 
     return (<>
-        <Stack spacing={2} sx={{ p: 2 }}>
+        <div className="flex flex-col p-2 gap-0.5">
             {notes.map(
                 (note) => {
                     const displayTags = findManyObjectsByIds(note.tags, tags);
@@ -25,22 +25,27 @@ export const NoteList = () => {
                             ...displayTags
                         ]
                         : displayTags;
-                    return (
-                        <NoteCard
 
-                            key={note.id}
-                            title={isAi ? `🤖 ${note.date || ''} | ${note.title}` : note.title}
-                            tags={finalTags}
-                            tagDisplayLimit={3}
-                            isArchived={note.status === 'archived'}
-                            lastEdit={new Date(note.lastEdit).toLocaleDateString()}
-                            handleNoteCardClick={() => selectNote(note.id)}
-                            selectedTagId={filterTagId}
-                            isSelected={note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId))}
-                        />
+                    const isSelected = note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId));
+                    return (
+                        <div key={note.id} className={isSelected ?
+                            '' :
+                            'border-b border-gray-100 last:border-b-0'}>
+                            <NoteCard
+                                key={note.id}
+                                title={isAi ? `🤖 ${note.date || ''} | ${note.title}` : note.title}
+                                tags={finalTags}
+                                tagDisplayLimit={3}
+                                isArchived={note.status === 'archived'}
+                                lastEdit={new Date(note.lastEdit).toLocaleDateString()}
+                                handleNoteCardClick={() => selectNote(note.id)}
+                                selectedTagId={filterTagId}
+                                isSelected={note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId))}
+                            />
+                        </div>
                     );
                 }
             )}
-        </Stack>
+        </div>
     </>);
 };

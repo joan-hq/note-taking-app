@@ -5,8 +5,20 @@ import { NoteIcon } from '@/components/common/icons/NoteIcon';
 export const NoteLogo = () => {
   return (
     <div className="flex items-center gap-2">
-      <NoteIcon style={{ width: 28, height: 28, color: '#0d9488' }} />
-      <span style={{ fontSize: '20px', fontWeight: 700, color: '#0d9488' }}>DashNote</span>
+      <NoteIcon style={{
+        width: 36,
+        height: 36,
+        fontWeight: 900,
+        color: 'var(--color-brand-primary)',
+        display: 'block'
+      }} />
+
+      <span style={{
+        fontSize: '28px',
+        fontWeight: 700,
+        color: 'var(--color-brand-primary)',
+        lineHeight: 1
+      }}>DashNote</span>
     </div>
   );
 };

@@ -1,33 +1,37 @@
 import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import { DeleteTagDialog } from './DeleteTagDialog';
-import { useNoteContext } from '@/features/notes/context/noteContext';
 
 interface TagUnitProps {
     handleConfirm: () => void;
     tagName: string;
     tagId: string;
+    isSelected: boolean;
+    onClickTag: () => void;
 }
 
-export const DeleteableTagUnit = ({ tagName, handleConfirm, tagId }: TagUnitProps) => {
-    const { filterTagId, setFilterTagId } = useNoteContext();
-    const isSelected = filterTagId === tagId;
-
+export const DeleteableTagUnit = ({ tagName, handleConfirm, isSelected, onClickTag, tagId }: TagUnitProps) => {
     return (
         <div
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer transition-colors
-                ${isSelected ? 'bg-teal-50 text-teal-700' : 'hover:bg-[--color-bg-hover] text-[--color-text-secondary]'}`}
+            onClick={onClickTag}
+            className={`filter-btn group justify-between ${isSelected ? 'filter-btn-active' : ''}`}
         >
-            <SellOutlinedIcon sx={{ fontSize: 14 }} />
-            <span
-                className="flex-1 text-sm"
-                onClick={() => setFilterTagId(isSelected ? null : tagId)}
-            >
-                {tagName}
-            </span>
-            <DeleteTagDialog handleConfirm={handleConfirm} tagName={tagName}>
-                <ClearOutlinedIcon sx={{ fontSize: 14 }} />
-            </DeleteTagDialog>
+            <div className="flex items-center gap-2 truncate">
+                <SellOutlinedIcon style={{ fontSize: 14 }} />
+                <span className="text-sm truncate">{tagName}</span>
+            </div>
+
+            <div onClick={(e) => e.stopPropagation()}>
+                <DeleteTagDialog handleConfirm={handleConfirm} tagName={tagName}>
+                    <ClearOutlinedIcon
+                        style={{ fontSize: 14 }}
+                        className={`transition-colors cursor-pointer ${isSelected
+                                ? 'text-[--color-active-text]'
+                                : 'opacity-0 group-hover:opacity-100 text-[--color-text-muted] hover:text-red-500'
+                            }`}
+                    />
+                </DeleteTagDialog>
+            </div>
         </div>
     );
 };

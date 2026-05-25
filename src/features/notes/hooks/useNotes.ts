@@ -68,16 +68,21 @@ export const useNotes = () => {
    }, [fetchNotes]);
 
 
-   const createNote = useCallback(async ()=>{
+   const createNote = useCallback(async (title?: string, content?: string)=>{
 
-      const emptyNote = notes.find(note => !note.title && !note.content && note.status === 'active');
-      if(emptyNote){
-         setSelectedNoteId(emptyNote.id);
-         return;
+      const isAiAction = !!(title || content);
+
+      if(!isAiAction){
+          const emptyNote = notes.find(note => !note.title && !note.content && note.status === 'active');
+         if(emptyNote){
+            setSelectedNoteId(emptyNote.id);
+            return;
+         }
       }
 
+     
       try{
-         const newNote = await createNoteAction();
+         const newNote = await createNoteAction(title, content);
          setNotes((prev => [newNote, ...prev]));
          setSelectedNoteId(newNote.id);
       }catch(error){

@@ -32,13 +32,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProviders>
-
-              <AppProviders>
+          <AppProviders>
             {children}
-            </AppProviders>
- 
-        </ThemeProviders>     
-        </body>
+          </AppProviders>
+        </ThemeProviders>
+      </body>
     </html>
   );
 }

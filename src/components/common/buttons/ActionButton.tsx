@@ -1,26 +1,34 @@
-import { IconButton, IconButtonProps, Tooltip} from '@mui/material';
 import { ReactNode } from 'react';
+import { Tooltip } from '@mui/material';
 
-interface CustomActionButtonProps {
-    title?:string,
+
+interface ActionButtonProps {
+    title?: string,
     children?: ReactNode,
-    handleFabClick: () => void;
+    handleFabClick: (e?: React.MouseEvent<HTMLElement>) => void;
+    variant?: 'ghost' | 'danger';
 
 };
-
-interface ActionButtonProps extends CustomActionButtonProps, IconButtonProps{}
 
 export const ActionButton = ({
     title,
     children,
     handleFabClick,
-    ...props
-}:ActionButtonProps) => {
-    return(
-        <Tooltip title={title ?? ''}>
-            <IconButton onClick={handleFabClick} size="small" {...props}>
+    variant = 'ghost',
+}: ActionButtonProps) => {
+    return (
+        <Tooltip title={title ?? ''} arrow placement="top">
+            <button
+                onClick={handleFabClick}
+                className={variant === 'danger'
+                    ? 'p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer'
+                    : 'p-1.5 rounded-lg transition-colors cursor-pointer'}
+                style={variant === 'ghost' ? { color: 'var(--text-secondary)' } : {}}
+                onMouseEnter={e => variant === 'ghost' && (e.currentTarget.style.background = 'var(--ghost-hover)')}
+                onMouseLeave={e => variant === 'ghost' && (e.currentTarget.style.background = 'transparent')}
+            >
                 {children}
-            </IconButton>
+            </button>
         </Tooltip>
-        );
+    );
 };

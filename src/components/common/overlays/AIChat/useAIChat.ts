@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState,useCallback } from 'react';
 
 export interface Message {
   id: string;
@@ -10,12 +10,14 @@ export interface Message {
 
 interface UseAIChatOptions {
   noteContent: string;
+  onCreateNote?: (title: string, content: string) => void;
 }
 
-export function useAIChat({ noteContent }: UseAIChatOptions) {
+export function useAIChat({ noteContent, onCreateNote }: UseAIChatOptions) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [summarizing, setSummarizing] = useState(false);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -37,7 +39,7 @@ export function useAIChat({ noteContent }: UseAIChatOptions) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           messages: updatedMessages,
-          noteContext: noteContent // 将当前实时的笔记内容喂给 AI
+          noteContext: noteContent
         }),
       });
 
@@ -61,26 +63,74 @@ export function useAIChat({ noteContent }: UseAIChatOptions) {
           content: `⚠️ 未能解析文本，后端返回: ${JSON.stringify(data)}`
         }]);
       }
-    } catch (error:any) {
-      console.error("AI 请求失败:", error);
+    } catch (error: any) {
+      console.error("AI request error:", error);
       setMessages(prev => [...prev, {
         id: 'assistant-catch-' + Date.now(),
         role: 'assistant',
-        content: `❌ 网络连接失败: ${error.message || 'Unknown Error'}`
+        content: `❌ network connect: ${error.message || 'Unknown Error'}`
       }]);
     } finally {
       setLoading(false);
     }
   };
 
-  const clearChat = () => setMessages([]);
+  // 💡 on success, close drawer
+  const handleSummarizeAndSave = async (onSuccess?: () => void) => {
+    if (messages.length === 0 || summarizing) return;
+
+    setSummarizing(true);
+    setLoading(true); // loading status
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: messages,
+          noteContext: noteContent,
+          isSummarizeAction: true 
+        })
+      });
+
+      const data = await res.json();
+      let isSuccess = false;
+      
+      if (data && data.title && data.content) {
+        onCreateNote?.(data.title, data.content);
+        isSuccess = true;
+      } else if (data.text) {
+        const lines = data.text.split('\n');
+        const title = lines[0].replace('#', '').trim() || 'AI Summary';
+        const content = lines.slice(1).join('\n').trim();
+        onCreateNote?.(title, content);
+        isSuccess = true;
+      }
+
+      // 💡 如果创建笔记成功，触发外部关闭回调
+      if (isSuccess && onSuccess) {
+        onSuccess();
+      }
+    } catch (err) {
+      console.error("总结并保存笔记失败:", err);
+    } finally {
+      setSummarizing(false);
+      setLoading(false);
+    }
+  };
+
+  const clearChat = useCallback(() => {
+    setMessages([]);
+    setInput('');
+  }, []);
 
   return {
     messages,
+    setMessages,
     input,
     setInput,
-    loading,
+    loading: loading || summarizing, 
     handleSend,
-    clearChat
+    clearChat,
+    handleSummarizeAndSave
   };
 }

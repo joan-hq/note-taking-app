@@ -20,7 +20,7 @@ export const MiddlerBar = () => {
 
             <div className="px-4 pt-4 pb-2">
 
-                <h2 className="text-xl font-semibold text-[--color-text-primary] mb-3">
+                <h2 className="text-2xl font-semibold mb-5" style={{ color: 'var(--color-brand-primary)' }}>
                     {titleMap[filterStatus]}
                 </h2>
 

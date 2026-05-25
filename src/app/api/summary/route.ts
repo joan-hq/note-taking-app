@@ -57,7 +57,7 @@ export async function POST(req: Request){
 
         let rawAiText = (response.text?.trim()) ?? "";
         if (!rawAiText) {
-            throw new Error("AI 没有返回任何有效文本");
+            throw new Error("No text return from AI");
         }
         if (rawAiText.startsWith("```")) {
             rawAiText = rawAiText.replace(/^```json\s*/i, "").replace(/```$/, "").trim();

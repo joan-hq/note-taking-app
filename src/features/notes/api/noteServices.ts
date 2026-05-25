@@ -27,12 +27,15 @@ export const NoteService = {
     },
 
 //create new note and insert to DB
-    create: async (userId:string): Promise<Note>=>{
-       const newNote:Note = { 
+    create: async (userId:string,title?: string, content?: string): Promise<Note>=>{
+       
+        const safeUserId = userId || "mock-user-id-for-ai";
+       
+        const newNote:Note = { 
         id: uuidv4(),
-        userId,
-        title: "",
-        content: "",
+        userId: safeUserId,
+        title: title || "",
+        content: content || "",
         status: 'active' as NoteStatus,
         tags: [],
         createdAt: new Date().toISOString(),
@@ -41,11 +44,12 @@ export const NoteService = {
         };
 
         try{
+            console.log("🚀 [NoteDb] 准备插入新笔记，数据摘要如下:", { id: newNote.id, title: newNote.title });
             await NoteDb.insert(newNote);
             return newNote;
 
         }catch(error){
-            console.log("Failed to create new note:",error);
+            console.error("❌ [NoteDb Insert Error] 数据库落库失败! 错误详情:", error);
             throw error;
         }
     },
