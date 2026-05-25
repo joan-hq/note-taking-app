@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // 匹配你刚刚写的接口路径
+        
         source: "/api/summary",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
