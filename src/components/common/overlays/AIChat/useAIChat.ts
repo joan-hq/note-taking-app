@@ -60,7 +60,7 @@ export function useAIChat({ noteContent, onCreateNote }: UseAIChatOptions) {
         setMessages(prev => [...prev, {
           id: 'assistant-err-' + Date.now(),
           role: 'assistant',
-          content: `⚠️ 未能解析文本，后端返回: ${JSON.stringify(data)}`
+          content: `⚠️ Cannot get text, backend return: ${JSON.stringify(data)}`
         }]);
       }
     } catch (error: any) {
@@ -106,7 +106,7 @@ export function useAIChat({ noteContent, onCreateNote }: UseAIChatOptions) {
         isSuccess = true;
       }
 
-      // 💡 如果创建笔记成功，触发外部关闭回调
+      // 💡 note create success, close drawer
       if (isSuccess && onSuccess) {
         onSuccess();
       }

@@ -1,23 +1,22 @@
-import { generateText, convertToCoreMessages } from 'ai'; 
+import { generateText } from 'ai';
 import { google } from "@ai-sdk/google";
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
     const { messages, noteContext, isSummarizeAction } = await req.json();
-    // ==========================================
-    // A: summerise
-    // ==========================================
 
+    // ==========================================
+    // A: summarize
+    // ==========================================
     if (isSummarizeAction) {
-      const formattedHistory = Array.isArray(messages) 
+      const formattedHistory = Array.isArray(messages)
         ? messages.map((m: any) => `${m.role === 'user' ? 'User' : 'AI Assistant'}: ${m.content}`).join('\n')
         : '';
 
-      
       const { text } = await generateText({
-        model: google('gemini-2.5-flash'),
-        
+        model: google('gemini-2.0-flash'),
+        system: `You are a professional note extraction, classification, and summarization assistant. Your job is to transform raw content and conversation history into clean, high-value, and elegantly formatted Markdown documents.`,
         messages: [
           {
             role: 'user',
@@ -36,19 +35,15 @@ export async function POST(req: Request) {
                 2. Starting from the second line, output the beautifully refined Markdown [Summary Body Content].`
           }
         ],
-        system: `You are a professional note extraction, classification, and summarization assistant. Your job is to transform raw content and conversation history into clean, high-value, and elegantly formatted Markdown documents.`,
       });
 
-      // to check if is clean text
       if (!text || text.trim() === "") {
         throw new Error("Gemini returned an empty response. Please check your context content.");
       }
 
       const lines = text.split('\n');
       const rawTitle = lines[0].replace(/[#*]/g, '').trim();
-      const title = rawTitle 
-        ? `✦ ${rawTitle}` 
-        : '✦ AI Conversation Summary';
+      const title = rawTitle ? `✦ ${rawTitle}` : '✦ AI Conversation Summary';
       const content = lines.slice(1).join('\n').trim() || text;
 
       return NextResponse.json({ title, content });
@@ -57,17 +52,17 @@ export async function POST(req: Request) {
     // ==========================================
     // B: chat only
     // ==========================================
-    const cleanCoreMessages = convertToCoreMessages(messages);
-    
-    // provent empty message
-    if (!cleanCoreMessages || cleanCoreMessages.length === 0) {
-      return NextResponse.json({ error: "Messages framework cannot be empty" }, { status: 400 });
+    if (!messages || messages.length === 0) {
+      return NextResponse.json({ error: "Messages cannot be empty" }, { status: 400 });
     }
 
     const { text } = await generateText({
-      model: google('gemini-2.5-flash'),
-      messages: cleanCoreMessages, 
+      model: google('gemini-2.0-flash'),
       system: 'You are a DashNote smart assistant. Respond concisely and professionally.',
+      messages: messages.map((m: any) => ({
+        role: m.role,
+        content: m.content,
+      })),
     });
 
     return NextResponse.json({ text: text || "" });
@@ -75,7 +70,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("Backend runtime handling error:", error);
     return NextResponse.json(
-      { error: error.message || "Unknown internal server error" }, 
+      { error: error.message || "Unknown internal server error" },
       { status: 500 }
     );
   }
