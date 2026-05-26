@@ -16,46 +16,38 @@ export const ActionBar = () => {
         <div className="flex items-center gap-1">
             {isTrashed ? (
                 <>
-                    <ActionButton title="Restore" handleFabClick={() => {
-                        updateNote(selectedNote.id, { status: 'active' });
-                        setSelectedNoteId(null);
-                    }}>
+                    <ActionButton title="Restore" handleFabClick={() => { updateNote(selectedNote.id, { status: 'active' }); setSelectedNoteId(null); }}>
                         <UnarchiveOutlinedIcon fontSize="small" />
                     </ActionButton>
-                    <ActionButton title="Delete Forever" variant="danger" handleFabClick={() =>
-                        permanentlyDeleteNote(selectedNote.id)
-                    }>
+                    <ActionButton title="Archive" handleFabClick={() => { updateNote(selectedNote.id, { status: 'archived' }); setSelectedNoteId(null); }}>
+                        <ArchiveOutlinedIcon fontSize="small" />
+                    </ActionButton>
+                    <ActionButton title="Delete Forever" variant="danger" handleFabClick={() => permanentlyDeleteNote(selectedNote.id)}>
                         <DeleteForeverOutlinedIcon fontSize="small" />
                     </ActionButton>
                 </>
             ) : isArchived ? (
                 <>
-                    <ActionButton title="Restore" handleFabClick={() => {
-                        updateNote(selectedNote.id, { status: 'active' });
-                        setSelectedNoteId(null);
-                    }}>
+                    <ActionButton title="Restore" handleFabClick={() => { updateNote(selectedNote.id, { status: 'active' }); setSelectedNoteId(null); }}>
                         <UnarchiveOutlinedIcon fontSize="small" />
                     </ActionButton>
-                    <ActionButton title="Move to Trash" handleFabClick={() => {
-                        updateNote(selectedNote.id, { status: 'trashed' });
-                        setSelectedNoteId(null);
-                    }}>
+                    <ActionButton title="Move to Trash" handleFabClick={() => { updateNote(selectedNote.id, { status: 'trashed' }); setSelectedNoteId(null); }}>
                         <FolderDeleteOutlinedIcon fontSize="small" />
+                    </ActionButton>
+                    <ActionButton title="Delete Forever" variant="danger" handleFabClick={() => permanentlyDeleteNote(selectedNote.id)}>
+                        <DeleteForeverOutlinedIcon fontSize="small" />
                     </ActionButton>
                 </>
             ) : (
                 <>
-                    <ActionButton title="Archive" handleFabClick={() => {
-                        updateNote(selectedNote.id, { status: 'archived' });
-                        setSelectedNoteId(null);
-                    }}>
+                    <ActionButton title="Archive" handleFabClick={() => { updateNote(selectedNote.id, { status: 'archived' }); setSelectedNoteId(null); }}>
                         <ArchiveOutlinedIcon fontSize="small" />
                     </ActionButton>
-                    <ActionButton title="Move to Trash" handleFabClick={() => {
-                        updateNote(selectedNote.id, { status: 'trashed' });
-                        setSelectedNoteId(null);
-                    }}>
+                    <ActionButton title="Move to Trash" handleFabClick={() => { updateNote(selectedNote.id, { status: 'trashed' }); setSelectedNoteId(null); }}>
                         <FolderDeleteOutlinedIcon fontSize="small" />
+                    </ActionButton>
+                    <ActionButton title="Delete Forever" variant="danger" handleFabClick={() => permanentlyDeleteNote(selectedNote.id)}>
+                        <DeleteForeverOutlinedIcon fontSize="small" />
                     </ActionButton>
                 </>
             )}

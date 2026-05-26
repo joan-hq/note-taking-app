@@ -100,7 +100,6 @@ export const NoteDetail = () => {
                     handleLinkedTag={(newTags) => updateNote(selectedNote.id, { tags: newTags.map(t => t.id) })}
                     handleConfirm={(newTagName) => createTagAndAttachToNote(selectedNote.id, newTagName)}
                 />
-                <Divider />
             </div>
 
             <div className="flex-1 min-h-0">
