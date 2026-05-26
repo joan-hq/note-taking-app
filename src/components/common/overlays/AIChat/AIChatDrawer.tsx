@@ -37,9 +37,8 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
       h-screen z-[1000] flex flex-col 
       p-5 font-sans border-l
        border-gray-100
-  w-full md:w-[400px]"
+        w-full md:w-[400px]"
       style={{
-        width: '400px',
         background: 'var(--surface)',
         color: 'var(--text-primary)',
         boxShadow: '-4px 0 24px rgba(30,58,138,0.08)',

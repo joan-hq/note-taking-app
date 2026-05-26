@@ -10,6 +10,7 @@ import { ActionButton } from '@/components/common/buttons/ActionButton';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import { DropDown } from '@/components/DropDown';
+import { AIChatDrawer } from '@/components/common/overlays/AIChat/AIChatDrawer';
 
 export const ClientOnly = ({ children }: { children: ReactNode }) => {
   const [mounted, setMounted] = useState(false);
@@ -26,7 +27,6 @@ const HomePageContent = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAiOpen, setIsAiOpen] = useState(false);
   const { selectedNote, selectNote, updateNote, setSelectedNoteId, permanentlyDeleteNote, createNote } = useNoteContext();
-
 
   const isArchived = selectedNote?.status === 'archived';
   const isTrashed = selectedNote?.status === 'trashed';
@@ -62,7 +62,6 @@ const HomePageContent = () => {
       </div>
 
       {/* ===================== MOBILE ===================== */}
-
       <div className="flex flex-col md:hidden h-screen w-screen overflow-hidden bg-[--color-bg-secondary]">
 
         {/* Mobile Header */}
@@ -96,7 +95,6 @@ const HomePageContent = () => {
               <span className="font-bold text-base" style={{ color: 'var(--primary)' }}>
                 DashNote
               </span>
-
               <button
                 onClick={() => createNote()}
                 className="btn-primary w-8 h-8 rounded-full text-lg flex items-center justify-center"
@@ -111,10 +109,11 @@ const HomePageContent = () => {
         <div className="flex-1 overflow-hidden relative">
           {selectedNote ? (
             <div className="h-full bg-[--color-bg-primary]">
+              {/* NoteDisplay 只负责桌面端 AI，移动端 AI 由下方统一管理 */}
               <NoteDisplay
-                isAiOpen={isAiOpen}
-                onAiOpen={() => setIsAiOpen(true)}
-                onAiClose={() => setIsAiOpen(false)}
+                isAiOpen={false}
+                onAiOpen={() => { }}
+                onAiClose={() => { }}
               />
             </div>
           ) : (
@@ -124,7 +123,7 @@ const HomePageContent = () => {
           )}
         </div>
 
-
+        {/* Mobile AI 浮动按钮 — 始终显示 */}
         <button
           onClick={() => setIsAiOpen(true)}
           className="btn-primary fixed bottom-6 right-6 z-20 rounded-xl shadow-lg active:scale-95"
@@ -132,6 +131,16 @@ const HomePageContent = () => {
           <span>✨</span> AI
         </button>
 
+        {/* Mobile AI Drawer — 挂在顶层，不依赖 selectedNote */}
+        <AIChatDrawer
+          isOpen={isAiOpen}
+          onClose={() => setIsAiOpen(false)}
+          noteContent={selectedNote?.content ?? ""}
+          onCreateNote={(aiTitle, aiContent) => {
+            setIsAiOpen(false);
+            createNote(aiTitle, aiContent);
+          }}
+        />
 
         {/* Sidebar drawer */}
         {isSidebarOpen && (
@@ -148,11 +157,10 @@ const HomePageContent = () => {
             </div>
           </>
         )}
-
       </div>
     </>
   );
-}
+};
 
 export default function HomePage() {
   return (

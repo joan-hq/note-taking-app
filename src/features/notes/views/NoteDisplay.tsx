@@ -51,15 +51,17 @@ export const NoteDisplay = ({ isAiOpen, onAiOpen, onAiClose }: NoteDisplayProps)
                 </button>
             </div>
 
-            <AIChatDrawer
-                isOpen={isAiOpen}
-                onClose={onAiClose}
-                noteContent={selectedNote ? (selectedNote.content || "") : ""}
-                onCreateNote={(aiTitle, aiContent) => {
-                    onAiClose();
-                    createNote(aiTitle, aiContent);
-                }}
-            />
+            <div className="hidden md:block">
+                <AIChatDrawer
+                    isOpen={isAiOpen}
+                    onClose={onAiClose}
+                    noteContent={selectedNote?.content ?? ""}
+                    onCreateNote={(aiTitle, aiContent) => {
+                        onAiClose();
+                        createNote(aiTitle, aiContent);
+                    }}
+                />
+            </div>
         </div>
     );
 };

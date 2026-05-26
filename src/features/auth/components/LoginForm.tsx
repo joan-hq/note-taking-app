@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
-import { Box, Button, Typography, Alert } from "@mui/material";
+import { NoteIcon } from "@/components/common/icons/NoteIcon";
+import { GoogleIcon } from "@/components/common/icons/GoogleIcon";
 
 export function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // 核心改动：把逻辑全部收拢进 useEffect，让 Next.js 打包时完全抓不到它
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -36,45 +37,153 @@ export function LoginForm() {
         }
       }
     }
-  }, []); // 仅在客户端挂载时执行一次
+  }, []);
+
+  const handleSignIn = async () => {
+    setLoading(true);
+    await signIn("google", { callbackUrl: "/" });
+  };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#f5f5f3' }}>
-      <Box sx={{ bgcolor: 'white', border: '1px solid #e0e0e0', borderRadius: 3, p: 6, width: 360, textAlign: 'center' }}>
+    <div style={{
+      minHeight: "100vh",
+      background: "var(--bg)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "2rem",
+    }}>
+      <div style={{
+        background: "var(--surface)",
+        border: "0.5px solid var(--border-card)",
+        borderRadius: "20px",
+        padding: "2.75rem 2rem 2rem",
+        width: "100%",
+        maxWidth: "340px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}>
 
-        <Typography variant="h6" fontWeight={500} mb={1}>DashNote</Typography>
-        <Typography variant="h5" fontWeight={500} mb={1}>Welcome back</Typography>
-        <Typography variant="body2" color="text.secondary" mb={4}>Sign in to access your notes</Typography>
+        {/* Icon */}
+        <div style={{
+          width: "56px",
+          height: "56px",
+          borderRadius: "14px",
+          background: "var(--ghost-hover)",
+          border: "1px solid var(--border)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "1.25rem",
+        }}>
+          <NoteIcon
+            width={30}
+            height={30}
+            stroke="var(--primary)"
+          />
+        </div>
 
-        {/* 只有在浏览器抓到错误后才会无缝弹出 */}
+        {/* Brand */}
+        <p style={{
+          fontSize: "17px",
+          fontWeight: 500,
+          color: "var(--text-primary)",
+          marginBottom: "0.35rem",
+        }}>
+          DashNote
+        </p>
+        <p style={{
+          fontSize: "13px",
+          color: "var(--text-secondary)",
+          marginBottom: "1.75rem",
+          textAlign: "center",
+        }}>
+          Your notes, always within reach.
+        </p>
+
+        {/* Error */}
         {errorMessage && (
-          <Alert severity="error" sx={{ mb: 3, textAlign: 'left', borderRadius: 2, fontSize: '0.85rem' }}>
-            {errorMessage}
-          </Alert>
+          <div style={{
+            width: "100%",
+            background: "#FEF2F2",
+            border: "0.5px solid #FECACA",
+            borderRadius: "var(--radius)",
+            padding: "9px 12px",
+            marginBottom: "1rem",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "7px",
+          }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: "1px" }}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span style={{ fontSize: "12px", color: "#991B1B", lineHeight: 1.5 }}>
+              {errorMessage}
+            </span>
+          </div>
         )}
 
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
-          sx={{ py: 1.5, borderRadius: 2, textTransform: 'none', gap: 1 }}
+        {/* Google sign-in button */}
+        <button
+          onClick={handleSignIn}
+          disabled={loading}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "9px",
+            padding: "10px 16px",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--border)",
+            background: "var(--surface)",
+            color: loading ? "var(--text-muted)" : "var(--text-primary)",
+            fontSize: "14px",
+            fontWeight: 500,
+            cursor: loading ? "not-allowed" : "pointer",
+            transition: "var(--transition)",
+          }}
+          onMouseEnter={e => {
+            if (!loading) {
+              (e.currentTarget as HTMLButtonElement).style.background = "var(--ghost-hover)";
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--secondary-hover)";
+            }
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--surface)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
+          }}
+          onMouseDown={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--secondary)";
+          }}
+          onMouseUp={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--ghost-hover)";
+          }}
         >
-          <GoogleIcon />
-          Continue with Google
-        </Button>
+          {loading ? (
+            <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>Signing in…</span>
+          ) : (
+            <>
+              <GoogleIcon width={15} height={15} />
+              Continue with Google
+            </>
+          )}
+        </button>
 
-      </Box>
-    </Box>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 48 48">
-      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-    </svg>
+        {/* Footer note */}
+        <p style={{
+          marginTop: "1.5rem",
+          fontSize: "12px",
+          color: "var(--text-muted)",
+          textAlign: "center",
+          lineHeight: 1.6,
+        }}>
+          Only approved accounts can access DashNote.
+        </p>
+      </div>
+    </div>
   );
 }

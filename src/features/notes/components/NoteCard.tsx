@@ -15,8 +15,17 @@ interface NoteCardProps {
 };
 
 export const NoteCard = ({ title, tags, tagDisplayLimit, lastEdit, isArchived, isSelected, selectedTagId, handleNoteCardClick }: NoteCardProps) => {
-    const tagsToShow = tags.slice(0, tagDisplayLimit);
-    const tagsHide = tags.length - tagDisplayLimit;
+
+    const sortedTags = selectedTagId
+        ? [...tags].sort((a, b) => {
+            if (a.id === selectedTagId) return -1;
+            if (b.id === selectedTagId) return 1;
+            return 0;
+        })
+        : tags;
+
+    const tagsToShow = sortedTags.slice(0, tagDisplayLimit);
+    const tagsHide = sortedTags.length - tagDisplayLimit;
 
     return (
         <div
@@ -25,6 +34,8 @@ export const NoteCard = ({ title, tags, tagDisplayLimit, lastEdit, isArchived, i
                 ? 'note-card-active'
                 : ''
                 }`}
+
+            style={isSelected && selectedTagId ? { border: 'none', boxShadow: 'none' } : undefined}
         >
             <div className="flex items-center justify-between mb-1">
                 <span className="font-medium text-[--color-text-primary] truncate">{title}</span>
