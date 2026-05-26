@@ -3,10 +3,10 @@ frontend:
   phases:
     preBuild:
       commands:
-        - env | grep -E 'NEXTAUTH|DATABASE|GOOGLE|GEMINI|ALLOWED' >> .env.production
         - npm ci --cache .npm --prefer-offline --legacy-peer-deps
     build:
       commands:
+      - env | grep -E 'NEXTAUTH|DATABASE|GOOGLE|GEMINI|ALLOWED' >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
