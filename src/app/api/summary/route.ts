@@ -6,6 +6,28 @@ import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({apiKey : process.env.GEMINI_API_KEY});
 
+// ✅ 加在这里
+async function generateWithRetry(prompt: string, retries = 3, delay = 2000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+            });
+            return response;
+        } catch (error: any) {
+            const is503 = error?.status === 503 || error?.message?.includes('503');
+            if (is503 && i < retries - 1) {
+                console.log(`Gemini 503, retry ${i + 1}/${retries}, waiting ${delay}ms...`);
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2; 
+            } else {
+                throw error; 
+            }
+        }
+    }
+}
+
 export async function OPTIONS() {
     return new NextResponse(null, {
         status: 204,
@@ -35,27 +57,26 @@ export async function POST(req: Request){
             )
         }
 
-        // Neon user Id:
         const currentUserId = "116326447384599892761"; 
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: `
-                You are a concise personal knowledge management assistant. Analyze the following chat logs between the user and the AI today. 
-                Filter out casual small talk and lengthy, repetitive debugging code to extract high-value, core knowledge points.
+        const prompt = `
+            You are a concise personal knowledge management assistant. Analyze the following chat logs between the user and the AI today. 
+            Filter out casual small talk and lengthy, repetitive debugging code to extract high-value, core knowledge points.
 
-                Strictly output the response in the following JSON format. Do not include any markdown code blocks (such as \`\`\`json):
-                {
-                "title": "A 5-10 word summary of the topic",
-                "content": "Today's summary written in elegant Markdown format. Include: Today's Review, Key Conclusions, and Code/Technical Highlights (if applicable)"
-                }
+            Strictly output the response in the following JSON format. Do not include any markdown code blocks (such as \`\`\`json):
+            {
+            "title": "A 5-10 word summary of the topic",
+            "content": "Today's summary written in elegant Markdown format. Include: Today's Review, Key Conclusions, and Code/Technical Highlights (if applicable)"
+            }
 
-                The raw chat logs are as follows:
-                ${rawText}
-            `,
-        });
+            The raw chat logs are as follows:
+            ${rawText}
+        `;
 
-        let rawAiText = (response.text?.trim()) ?? "";
+        // ✅ 换成这个
+        const response = await generateWithRetry(prompt);
+
+        let rawAiText = (response?.text?.trim()) ?? "";
         if (!rawAiText) {
             throw new Error("No text return from AI");
         }
@@ -64,9 +85,7 @@ export async function POST(req: Request){
         }
 
         const aiResult = JSON.parse(rawAiText);
-        
 
-        // 2.  Drizzle  Upsert 
         const result = await db.insert(notes)
             .values({
                 userId: currentUserId, 
@@ -76,7 +95,6 @@ export async function POST(req: Request){
                 type: "ai_summary",
             })
             .onConflictDoUpdate({
-                // contain userId and NoteId for complex search
                 target: [notes.userId, notes.date], 
                 set: {
                     title: aiResult.title,
@@ -94,7 +112,7 @@ export async function POST(req: Request){
     } catch(error) {
         console.error('DashNote Sync Error:', error);
         return NextResponse.json(
-            { error: '服务器内部错误，总结生成失败' }, 
+            { error: 'internal error, summarise failed' }, 
             { status: 500, headers: corsHeaders }
         );
     }
