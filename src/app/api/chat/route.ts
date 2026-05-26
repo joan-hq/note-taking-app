@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         : '';
 
       const { text } = await generateText({
-        model: google('gemini-2.0-flash'),
+        model: google('gemini-2.5-flash'),
         system: `You are a professional note extraction, classification, and summarization assistant. Your job is to transform raw content and conversation history into clean, high-value, and elegantly formatted Markdown documents.`,
         messages: [
           {
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     }
 
     const { text } = await generateText({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-2.5-flash'),
       system: 'You are a DashNote smart assistant. Respond concisely and professionally.',
       messages: messages.map((m: any) => ({
         role: m.role,
