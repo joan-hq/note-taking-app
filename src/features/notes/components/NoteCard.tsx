@@ -34,8 +34,6 @@ export const NoteCard = ({ title, tags, tagDisplayLimit, lastEdit, isArchived, i
                 ? 'note-card-active'
                 : ''
                 }`}
-
-            style={isSelected && selectedTagId ? { border: 'none', boxShadow: 'none' } : undefined}
         >
             <div className="flex items-center justify-between mb-1">
                 <span className="font-medium text-[--color-text-primary] truncate">{title}</span>

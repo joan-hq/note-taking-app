@@ -28,9 +28,7 @@ export const NoteList = () => {
 
                     const isSelected = note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId));
                     return (
-                        <div key={note.id} className={isSelected ?
-                            '' :
-                            'border-b border-gray-100 last:border-b-0'}>
+                        <div key={note.id}>
                             <NoteCard
                                 key={note.id}
                                 title={isAi ? `🤖 ${note.date || ''} | ${note.title}` : note.title}

@@ -189,7 +189,8 @@
   /* --- Note Card --- */
  
   .note-card {
-    @apply px-4 py-3 cursor-pointer rounded-xl transition-all duration-200 ease-in-out;
+    @apply px-4 py-3 cursor-pointer rounded-xl;
+    transition: background-color 0.2s ease;
     background-color: transparent;
   }
   .note-card:not(.note-card-active):hover {
@@ -201,8 +202,8 @@
   }
   .note-card-active {
     background-color: var(--ghost-selected);
-    border: 1.5px solid var(--primary);
-    @apply shadow-[0_4px_12px_rgba(30,58,138,0.12)];
+    border: none;
+    /* @apply shadow-[0_4px_12px_rgba(30,58,138,0.12)]; */
   }
   .note-card-active:hover {
     background-color: var(--secondary-hover);
