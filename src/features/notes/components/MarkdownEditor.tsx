@@ -1,7 +1,8 @@
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import { useEffect, useState } from 'react';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import rehypePrism from 'rehype-prism-plus';
+import rehypeHighlight from 'rehype-highlight';
+
 
 
 interface MarkdownEditorProps {
@@ -98,7 +99,7 @@ export const MarkdownEditor = ({ value, onChange }: MarkdownEditorProps) => {
                 extraCommands={isMobile ? [] : englishExtraCommands}
                 className="w-full h-full"
                 previewOptions={{
-                    rehypePlugins: [[rehypePrism]],
+                    rehypePlugins: [[rehypeHighlight]],
                 }}
             />
         </div>
