@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import 'highlight.js/styles/github.css';
 
 
 :root {
@@ -211,7 +213,32 @@
 
 
 
- /* --- Markdown Editor --- */
+
+
+/* Markdown preview typography */
+.prose h1 { font-size: 1.875rem; font-weight: 700; color: var(--text-title); margin-bottom: 0.5rem; }
+.prose h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-title); margin-bottom: 0.5rem; }
+.prose h3 { font-size: 1.25rem; font-weight: 600; color: var(--text-title); margin-bottom: 0.5rem; }
+.prose h4 { font-size: 1rem; font-weight: 600; color: var(--text-title); }
+.prose h5 { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); }
+.prose h6 { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
+.prose a { color: var(--primary); text-decoration: underline; }
+.prose code { background: var(--secondary); color: var(--primary); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.8rem; }
+.prose pre { background: #f6f8fa; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+.prose pre code { background: transparent; color: inherit; padding: 0; }
+.prose blockquote { border-left: 3px solid var(--primary); padding-left: 1rem; color: var(--text-secondary); }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose th { background: var(--secondary); color: var(--primary); padding: 0.5rem 1rem; text-align: left; font-weight: 600; }
+.prose td { padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
+.prose pre {
+    background: #f6f8fa;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    border: none;  /* 去掉黑色边框 */
+}
+
+/* --- Markdown Editor --- */
 
 
  .w-md-editor-preview ol {
@@ -222,6 +249,20 @@
 .w-md-editor-preview ul {
     list-style-type: disc;
     padding-left: 1.5rem;
+}
+
+.w-md-editor-preview pre code {
+    background-color: #f6f8fa;
+    padding: 1rem;
+    border-radius: 6px;
+    display: block;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+.custom-md-editor-container .w-md-editor-text-input {
+    -webkit-text-fill-color: transparent;
 }
 
 /* Override default editor container styles */

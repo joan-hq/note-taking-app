@@ -83,6 +83,7 @@ export const NoteDetail = () => {
             </div>
         );
     }
+    console.log("*****markdown******", JSON.stringify(selectedNote.content))
 
     return (
         <div className="relative p-6 flex flex-col gap-3 h-full">

@@ -26,7 +26,7 @@ export const NoteList = () => {
                         ]
                         : displayTags;
 
-                    const isSelected = note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId));
+
                     return (
                         <div key={note.id}>
                             <NoteCard
