@@ -9,45 +9,45 @@ export async function POST(req: Request) {
     // ==========================================
     // A: summarize
     // ==========================================
-    if (isSummarizeAction) {
+   if (isSummarizeAction) {
       const formattedHistory = Array.isArray(messages)
         ? messages.map((m: any) => `${m.role === 'user' ? 'User' : 'AI Assistant'}: ${m.content}`).join('\n')
         : '';
 
       const { text } = await generateText({
         model: google('gemini-2.5-flash'),
-        system: `You are a professional note extraction, classification, and summarization assistant. Your job is to transform raw content and conversation history into clean, high-value, and elegantly formatted Markdown documents.`,
+        system: `You are a professional note-taking assistant. Your job is to summarize conversations into clean, well-structured Markdown notes.`,
         messages: [
           {
             role: 'user',
-            content: `Please help me summarize and refine my note based on the context provided below.
+            content: `Summarize the conversation below into a structured note.
 
-                ---
-                [Raw Note Content]:
-                ${noteContext || '(Current note is empty)'}
+            IMPORTANT: Base your summary ONLY on the conversation history. Ignore the background note unless the user explicitly discussed it.
 
-                [Chat Context History]:
-                ${formattedHistory || '(Current chat history is empty)'}
-                ---
+            [Conversation History]:
+            ${formattedHistory || '(empty)'}
 
-                Strictly adhere to the following output format specifications:
-                1. The first line of your response must be only the [Title] of this newly summarized note (Do not use Markdown headers like '#' here).
-                2. Starting from the second line, output the beautifully refined Markdown [Summary Body Content].`
-          }
-        ],
-      });
+            [Background Note - ignore unless discussed]:
+            ${noteContext || '(empty)'}
 
-      if (!text || text.trim() === "") {
-        throw new Error("Gemini returned an empty response. Please check your context content.");
+            Output format:
+            1. First line: title only (no # symbol, reflect what was discussed in the conversation)
+            2. From second line: clean Markdown summary of the conversation`
+                  }
+                ],
+        });
+
+        if (!text || text.trim() === "") {
+          throw new Error("Gemini returned an empty response.");
+        }
+
+        const lines = text.split('\n');
+        const rawTitle = lines[0].replace(/[#*]/g, '').trim();
+        const title = rawTitle ? `✦ ${rawTitle}` : '✦ AI Conversation Summary';
+        const content = lines.slice(1).join('\n').trim() || text;
+
+        return NextResponse.json({ title, content });
       }
-
-      const lines = text.split('\n');
-      const rawTitle = lines[0].replace(/[#*]/g, '').trim();
-      const title = rawTitle ? `✦ ${rawTitle}` : '✦ AI Conversation Summary';
-      const content = lines.slice(1).join('\n').trim() || text;
-
-      return NextResponse.json({ title, content });
-    }
 
     // ==========================================
     // B: chat only
@@ -56,9 +56,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Messages cannot be empty" }, { status: 400 });
     }
 
+   const systemPrompt = noteContext
+  ? `You are a DashNote smart assistant. 
+
+      IMPORTANT RULES:
+      1. ALWAYS answer the user's question directly first.
+      2. ONLY mention the note if the user explicitly says "this note", "summarize", "my note" etc.
+      3. If the user asks about grammar, vocabulary, facts, or anything unrelated to the note — answer it as a general question. IGNORE the note content completely.
+      4. The note below is provided as background context ONLY, not as the topic of conversation.
+
+      [Background Note Context - use ONLY if user asks about it]:
+      ${noteContext}`
+        : `You are a DashNote smart assistant. Respond concisely and professionally.`;
+
     const { text } = await generateText({
       model: google('gemini-2.5-flash'),
-      system: 'You are a DashNote smart assistant. Respond concisely and professionally.',
+      system: systemPrompt,
       messages: messages.map((m: any) => ({
         role: m.role,
         content: m.content,

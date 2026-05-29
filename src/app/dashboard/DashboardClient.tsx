@@ -27,7 +27,6 @@ export const DashboardClient = ({ children }: { children: ReactNode }) => {
                 <div className="w-72 border-r border-gray-200 bg-[--color-bg-primary] h-full overflow-hidden">
                     <MiddlerBar />
                 </div>
-                {/* children = page.tsx 或 [id]/page.tsx */}
                 <div className="flex-1 bg-[--color-bg-primary] relative h-full overflow-hidden">
                     {children}
                 </div>
@@ -80,23 +79,6 @@ export const DashboardClient = ({ children }: { children: ReactNode }) => {
                     )}
                 </div>
 
-                {/* Mobile AI Button */}
-                <button
-                    onClick={() => setIsAiOpen(true)}
-                    className="btn-primary fixed bottom-6 right-6 z-20 rounded-xl shadow-lg active:scale-95"
-                >
-                    <span>✨</span> AI
-                </button>
-
-                <AIChatDrawer
-                    isOpen={isAiOpen}
-                    onClose={() => setIsAiOpen(false)}
-                    noteContent={selectedNote?.content ?? ''}
-                    onCreateNote={(aiTitle, aiContent) => {
-                        setIsAiOpen(false);
-                        createNote(aiTitle, aiContent);
-                    }}
-                />
 
                 {/* Sidebar Drawer */}
                 {isSidebarOpen && (
@@ -110,7 +92,29 @@ export const DashboardClient = ({ children }: { children: ReactNode }) => {
                         </div>
                     </>
                 )}
+
+
             </div>
+
+
+            {/* ===================== AI Agent ===================== */}
+            <button
+                onClick={() => setIsAiOpen(true)}
+                className="btn-primary fixed bottom-6 right-6 z-20 rounded-xl shadow-lg active:scale-95"
+            >
+                <span>✨</span> AI
+            </button>
+
+            <AIChatDrawer
+                isOpen={isAiOpen}
+                onClose={() => setIsAiOpen(false)}
+                noteContent={selectedNote?.content ?? ''}
+                onCreateNote={(aiTitle, aiContent) => {
+                    setIsAiOpen(false);
+                    createNote(aiTitle, aiContent);
+                }}
+
+            />
         </>
     );
 }

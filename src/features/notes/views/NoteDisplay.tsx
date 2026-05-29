@@ -41,27 +41,6 @@ export const NoteDisplay = ({ isAiOpen, onAiOpen, onAiClose }: NoteDisplayProps)
                 )}
             </div>
 
-            {/* Desktop AI button - hidden on mobile */}
-            <div className="hidden md:block absolute bottom-6 right-6 z-20">
-                <button
-                    onClick={onAiOpen}
-                    className="btn-primary rounded-xl shadow-lg active:scale-95"
-                >
-                    <span>✨</span> AI Assistant
-                </button>
-            </div>
-
-            <div className="hidden md:block">
-                <AIChatDrawer
-                    isOpen={isAiOpen}
-                    onClose={onAiClose}
-                    noteContent={selectedNote?.content ?? ""}
-                    onCreateNote={(aiTitle, aiContent) => {
-                        onAiClose();
-                        createNote(aiTitle, aiContent);
-                    }}
-                />
-            </div>
         </div>
     );
 };

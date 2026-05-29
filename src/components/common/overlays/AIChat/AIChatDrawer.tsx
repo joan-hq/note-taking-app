@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAIChat } from '@/components/common/overlays/AIChat/useAIChat';
 
 interface AIChatDrawerProps {
@@ -18,37 +18,36 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
     handleSend,
     clearChat,
     handleSummarizeAndSave
-  } = useAIChat({
-    noteContent,
-    onCreateNote
-  });
+  } = useAIChat({ noteContent, onCreateNote });
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isOpen) {
-      clearChat();
+    if (!isOpen) return;
+    const el = chatContainerRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
     }
+  }, [messages, loading, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) clearChat();
   }, [isOpen, clearChat]);
 
   if (!isOpen) return null;
 
   return (
     <div
-      // 改成这个
-      className="fixed right-0 top-0 
-        z-[1000] flex flex-col 
-        p-5 font-sans border-l
-        border-gray-100
-        w-full md:w-[400px]"
+      className="fixed right-0 top-0 z-[1000] flex flex-col w-full md:w-[400px] border-l border-gray-100"
       style={{
         background: 'var(--surface)',
         color: 'var(--text-primary)',
         boxShadow: '-4px 0 24px rgba(30,58,138,0.08)',
-        height: '100dvh',          // ← 关键：dvh 会自动计算真实可视高度
-        paddingBottom: 'calc(1.25rem + env(safe-area-inset-bottom))', // ← 底部安全区
+        height: '100dvh',
       }}
     >
       {/* Header */}
-      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
+      <div className="flex justify-between items-center px-5 py-4 border-b border-gray-100 shrink-0">
         <h3 className="m-0 flex items-center gap-1.5 font-bold text-base">
           <span>✦</span> DashNote AI
         </h3>
@@ -56,8 +55,6 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
           onClick={onClose}
           className="cursor-pointer bg-transparent border-none text-xl p-1 transition-colors"
           style={{ color: 'var(--text-secondary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
         >
           ✕
         </button>
@@ -65,7 +62,7 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
 
       {/* Summarize button */}
       {messages.length > 0 && (
-        <div className="pt-3 pb-2">
+        <div className="px-5 pt-3 pb-2 shrink-0">
           <button
             onClick={() => handleSummarizeAndSave(onClose)}
             disabled={loading}
@@ -80,17 +77,17 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
                 <span>Summarizing & saving...</span>
               </>
             ) : (
-              <>
-                <span>📝</span>
-                <span>Summarize and save to a note</span>
-              </>
+              <><span>📝</span><span>Summarize and save to a note</span></>
             )}
           </button>
         </div>
       )}
 
-      {/* Chat content */}
-      <div className="flex-1 overflow-y-auto py-3 space-y-3">
+      {/* Chat content ← ref */}
+      <div
+        ref={chatContainerRef}
+        className="flex-1 overflow-y-auto px-5 py-3 space-y-3 min-h-0"
+      >
         {messages.length === 0 && (
           <div
             className="text-sm leading-relaxed p-3 rounded-xl border"
@@ -111,10 +108,7 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
         )}
 
         {messages.map(m => (
-          <div
-            key={m.id}
-            className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+          <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <span
               className="inline-block px-3.5 py-2 rounded-2xl max-w-[85%] text-sm leading-relaxed break-words shadow-sm"
               style={
@@ -129,34 +123,41 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
         ))}
 
         {loading && (
-          <div
-            className="text-xs italic flex items-center gap-1.5 pl-1"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            <div
-              className="w-1.5 h-1.5 rounded-full animate-bounce"
-              style={{ backgroundColor: 'var(--text-secondary)' }}
-            />
+          <div className="text-xs italic flex items-center gap-1.5 pl-1" style={{ color: 'var(--text-secondary)' }}>
+            <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: 'var(--text-secondary)' }} />
             Thinking...
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="flex gap-2 pt-3 border-t border-gray-100 shrink-0">
-        <input
+      <div
+        className="flex gap-2 px-5 py-4 border-t border-gray-100 shrink-0"
+        style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
+      >
+        <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
+          onChange={(e) => {
+            setInput(e.target.value);
+            e.target.style.height = 'auto';
+            e.target.style.height = `${e.target.scrollHeight}px`;
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
           placeholder="Ask something..."
           disabled={loading}
-          className="flex-1 px-3 py-2.5 rounded-xl 
-          text-sm focus:outline-none transition-all 
-          disabled:opacity-60"
+          rows={1}
+          className="flex-1 px-3 py-2.5 rounded-xl text-sm focus:outline-none transition-all disabled:opacity-60 resize-none overflow-hidden"
           style={{
             background: 'var(--ghost-hover)',
             border: '1.5px solid var(--border)',
             color: 'var(--text-primary)',
+            maxHeight: '120px',
+            overflowY: 'auto',
           }}
           onFocus={e => (e.currentTarget.style.borderColor = 'var(--primary)')}
           onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
