@@ -15,8 +15,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "DashNote",
+export const metadata = {
+  manifest: '/manifest.json',
+  themeColor: '#1E3A8A',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'DashNote',
+  },
   description: "Joan's DashNote",
 };
 
