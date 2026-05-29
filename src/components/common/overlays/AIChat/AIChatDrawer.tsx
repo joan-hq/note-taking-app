@@ -33,15 +33,18 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
 
   return (
     <div
+      // 改成这个
       className="fixed right-0 top-0 
-      h-screen z-[1000] flex flex-col 
-      p-5 font-sans border-l
-       border-gray-100
+        z-[1000] flex flex-col 
+        p-5 font-sans border-l
+        border-gray-100
         w-full md:w-[400px]"
       style={{
         background: 'var(--surface)',
         color: 'var(--text-primary)',
         boxShadow: '-4px 0 24px rgba(30,58,138,0.08)',
+        height: '100dvh',          // ← 关键：dvh 会自动计算真实可视高度
+        paddingBottom: 'calc(1.25rem + env(safe-area-inset-bottom))', // ← 底部安全区
       }}
     >
       {/* Header */}
@@ -140,7 +143,7 @@ export const AIChatDrawer = ({ isOpen, onClose, noteContent, onCreateNote }: AIC
       </div>
 
       {/* Footer */}
-      <div className="flex gap-2 pt-3 border-t border-gray-100">
+      <div className="flex gap-2 pt-3 border-t border-gray-100 shrink-0">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}

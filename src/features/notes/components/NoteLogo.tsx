@@ -6,11 +6,9 @@ export const NoteLogo = () => {
   return (
     <div className="flex items-center gap-2">
       <NoteIcon style={{
-        width: 36,
-        height: 36,
-        fontWeight: 900,
-        color: 'var(--color-brand-primary)',
-        display: 'block'
+        width: 50,
+        height: 50,
+        fontWeight: 1200,
       }} />
 
       <span style={{

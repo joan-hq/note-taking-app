@@ -2,8 +2,11 @@ import { NoteCard } from "./NoteCard";
 import { useNoteContext } from "../context/noteContext";
 import { findManyObjectsByIds } from "@/utils/array";
 import { Stack, Typography, Box } from "@mui/material";
+import { useRouter } from 'next/navigation';
+
 
 export const NoteList = () => {
+    const router = useRouter();
     const { notes, tags, isLoading, selectNote, selectedNoteId, filterTagId } = useNoteContext();
     console.log("notes", notes);
     if (isLoading) return <Typography sx={{ p: 2 }}>Loading...</Typography>;
@@ -36,7 +39,7 @@ export const NoteList = () => {
                                 tagDisplayLimit={3}
                                 isArchived={note.status === 'archived'}
                                 lastEdit={new Date(note.lastEdit).toLocaleDateString()}
-                                handleNoteCardClick={() => selectNote(note.id)}
+                                handleNoteCardClick={() => router.push(`/dashboard/${note.id}`)}
                                 selectedTagId={filterTagId}
                                 isSelected={note.id === selectedNoteId || (!!filterTagId && note.tags.includes(filterTagId))}
                             />

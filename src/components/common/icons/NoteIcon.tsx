@@ -8,21 +8,29 @@ export const NoteIcon: React.FC<IconProps> = ({ className, ...props }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 50 50"
+      viewBox="0 0 200 200"
       fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="4"
       className={className}
       {...props}
     >
-      <g>
-        <path d="M25 20.833v12.5M29.167 12.5h-8.334a2.083 2.083 0 0 1-2.083-2.083V8.333a2.083 2.083 0 0 1 2.083-2.083h8.334a2.083 2.083 0 0 1 2.083 2.083v2.084a2.083 2.083 0 0 1-2.083 2.083M18.75 20.833h12.5z" />
-        <path d="M37.5 8.333a2.083 2.083 0 0 1 2.083 2.084v31.25A2.083 2.083 0 0 1 37.5 43.75h-25a2.083 2.083 0 0 1-2.083-2.083v-31.25A2.083 2.083 0 0 1 12.5 8.333" />
+
+      <path
+        d="M112 140 Q140 140 140 112 L140 58 Q140 30 112 30 L58 30 Q30 30 30 58 L30 112 Q30 140 58 140 L78 140 L86 158 Z"
+        fill="none"
+        stroke="#1E3A8A"
+        strokeWidth="6"
+      />
+      {/* Pen */}
+      <g transform="translate(85,85) rotate(45)">
+        {/* Cap */}
+        <rect x="-6" y="-36" width="12" height="14" rx="3" fill="#1E3A8A" />
+        {/* Body */}
+        <rect x="-6" y="-22" width="12" height="36" rx="2" fill="#1E3A8A" />
+        {/* Tip */}
+        <polygon points="-6,14 6,14 0,26" fill="#1E3A8A" />
+        {/* Nib */}
+        <circle cx="0" cy="26" r="2" fill="#1E3A8A" />
       </g>
     </svg>
   );
 };
-
-

@@ -76,7 +76,7 @@ export const useNotes = () => {
           const emptyNote = notes.find(note => !note.title && !note.content && note.status === 'active');
          if(emptyNote){
             setSelectedNoteId(emptyNote.id);
-            return;
+            return emptyNote;
          }
       }
 
@@ -85,6 +85,7 @@ export const useNotes = () => {
          const newNote = await createNoteAction(title, content);
          setNotes((prev => [newNote, ...prev]));
          setSelectedNoteId(newNote.id);
+         return newNote; 
       }catch(error){
          const message = error instanceof Error ? error.message : "Create failed";
          setErrorMessage(message);

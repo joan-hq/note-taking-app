@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
-import { NoteIcon } from "@/components/common/icons/NoteIcon";
 import { GoogleIcon } from "@/components/common/icons/GoogleIcon";
+
+import dynamic from 'next/dynamic';
+
+
+const NoteIcon = dynamic(
+  () => import('@/components/common/icons/NoteIcon').then((mod) => mod.NoteIcon),
+  { ssr: false }
+);
 
 export function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -13,27 +20,12 @@ export function LoginForm() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const errorType = params.get("error");
-
       if (errorType) {
         switch (errorType) {
-          case "OAuthSignin":
-            setErrorMessage("Could not initialize Google sign-in. Please check your server-side Google provider configuration.");
-            break;
-          case "OAuthCallback":
-            setErrorMessage("An error occurred during the Google callback. Please verify your Authorized Redirect URIs.");
-            break;
-          case "OAuthCreateAccount":
-            setErrorMessage("Failed to create user account. Please check your database connection.");
-            break;
-          case "EmailSignin":
-            setErrorMessage("Failed to send the email verification link.");
-            break;
-          case "CredentialsSignin":
-            setErrorMessage("Sign-in failed. Please check your credentials and try again.");
-            break;
-          default:
-            setErrorMessage("An unexpected authentication error occurred. Please try again.");
-            break;
+          case "OAuthSignin": setErrorMessage("Could not initialize Google sign-in."); break;
+          case "OAuthCallback": setErrorMessage("An error occurred during the Google callback."); break;
+          case "OAuthCreateAccount": setErrorMessage("Failed to create user account."); break;
+          default: setErrorMessage("An unexpected authentication error occurred."); break;
         }
       }
     }
@@ -41,7 +33,7 @@ export function LoginForm() {
 
   const handleSignIn = async () => {
     setLoading(true);
-    await signIn("google", { callbackUrl: "/" });
+    await signIn("google", { callbackUrl: "/dashboard" });
   };
 
   return (
@@ -51,55 +43,42 @@ export function LoginForm() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "2rem",
     }}>
       <div style={{
-        background: "var(--surface)",
-        border: "0.5px solid var(--border-card)",
-        borderRadius: "20px",
-        padding: "2.75rem 2rem 2rem",
-        width: "100%",
-        maxWidth: "340px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: "100%",
+        maxWidth: "380px",
+        padding: "0 24px",
       }}>
-
         {/* Icon */}
-        <div style={{
-          width: "56px",
-          height: "56px",
-          borderRadius: "14px",
-          background: "var(--ghost-hover)",
-          border: "1px solid var(--border)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "1.25rem",
-        }}>
-          <NoteIcon
-            width={30}
-            height={30}
-            stroke="var(--primary)"
-          />
-        </div>
+        {/* 去掉背景 div，直接渲染 icon */}
+        <NoteIcon width={120} height={120} style={{ marginBottom: "16px" }} />
 
-        {/* Brand */}
         <p style={{
-          fontSize: "17px",
-          fontWeight: 500,
-          color: "var(--text-primary)",
-          marginBottom: "0.35rem",
+          fontSize: "22px",
+          fontWeight: 600,
+          color: "var(--primary)",
+          marginBottom: "20px",
+          marginTop: "10px",
         }}>
           DashNote
         </p>
-        <p style={{
-          fontSize: "13px",
-          color: "var(--text-secondary)",
-          marginBottom: "1.75rem",
-          textAlign: "center",
+
+        {/* Title */}
+        <h1 style={{
+          fontSize: "26px", fontWeight: 700,
+          color: "var(--text-title)",
+          marginBottom: "8px", textAlign: "center",
         }}>
-          Your notes, always within reach.
+          Log in
+        </h1>
+        <p style={{
+          fontSize: "14px", color: "var(--text-secondary)",
+          marginBottom: "36px", textAlign: "center", lineHeight: 1.6,
+        }}>
+          Sign in to access your DashNote knowledge base.
         </p>
 
         {/* Error */}
@@ -110,7 +89,7 @@ export function LoginForm() {
             border: "0.5px solid #FECACA",
             borderRadius: "var(--radius)",
             padding: "9px 12px",
-            marginBottom: "1rem",
+            marginBottom: "16px",
             display: "flex",
             alignItems: "flex-start",
             gap: "7px",
@@ -126,7 +105,7 @@ export function LoginForm() {
           </div>
         )}
 
-        {/* Google sign-in button */}
+        {/* Google button */}
         <button
           onClick={handleSignIn}
           disabled={loading}
@@ -135,53 +114,46 @@ export function LoginForm() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "9px",
-            padding: "10px 16px",
+            gap: "10px",
+            padding: "13px 16px",
             borderRadius: "var(--radius)",
-            border: "1px solid var(--border)",
+            border: "1px solid var(--border-card)",
             background: "var(--surface)",
-            color: loading ? "var(--text-muted)" : "var(--text-primary)",
-            fontSize: "14px",
+            color: loading ? "var(--text-muted)" : "var(--text-title)",
+            fontSize: "15px",
             fontWeight: 500,
             cursor: loading ? "not-allowed" : "pointer",
             transition: "var(--transition)",
           }}
           onMouseEnter={e => {
             if (!loading) {
-              (e.currentTarget as HTMLButtonElement).style.background = "var(--ghost-hover)";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--secondary-hover)";
+              e.currentTarget.style.background = "var(--ghost-hover)";
+              e.currentTarget.style.borderColor = "var(--secondary-hover)";
             }
           }}
           onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.background = "var(--surface)";
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
-          }}
-          onMouseDown={e => {
-            (e.currentTarget as HTMLButtonElement).style.background = "var(--secondary)";
-          }}
-          onMouseUp={e => {
-            (e.currentTarget as HTMLButtonElement).style.background = "var(--ghost-hover)";
+            e.currentTarget.style.background = "var(--surface)";
+            e.currentTarget.style.borderColor = "var(--border-card)";
           }}
         >
           {loading ? (
-            <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>Signing in…</span>
+            <span>Signing in…</span>
           ) : (
             <>
-              <GoogleIcon width={15} height={15} />
+              <GoogleIcon width={16} height={16} />
               Continue with Google
             </>
           )}
         </button>
 
-        {/* Footer note */}
         <p style={{
-          marginTop: "1.5rem",
+          marginTop: "28px",
           fontSize: "12px",
           color: "var(--text-muted)",
           textAlign: "center",
           lineHeight: 1.6,
         }}>
-          Only approved accounts can access DashNote.
+          © 2026 DashNote
         </p>
       </div>
     </div>
